@@ -16,8 +16,8 @@ public class b2EPAxis
 // This holds polygon B expressed in frame A.
 public class b2TempPolygon
 {
-	public b2Vec2[] vertices = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
-	public b2Vec2[] normals = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
+	public b2Vec2[] vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+	public b2Vec2[] normals = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
 	public int count;
 }
 
@@ -315,7 +315,7 @@ public class b2EPCollider
 			primaryAxis = edgeAxis;
 		}
 
-		b2ClipVertex[] ie = new b2ClipVertex[2];
+		b2ClipVertex[] ie = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
 		b2ReferenceFace rf = new b2ReferenceFace();
 		if (primaryAxis.type == b2EPAxis.Type.e_edgeA)
 		{
@@ -403,8 +403,8 @@ public class b2EPCollider
 		rf.sideOffset2 = GlobalMembers.b2Dot(rf.sideNormal2, rf.v2);
 
 		// Clip incident edge against extruded edge1 side edges.
-		b2ClipVertex[] clipPoints1 = new b2ClipVertex[2];
-		b2ClipVertex[] clipPoints2 = new b2ClipVertex[2];
+		b2ClipVertex[] clipPoints1 = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
+		b2ClipVertex[] clipPoints2 = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
 		int np;
 
 		// Clip to box side 1

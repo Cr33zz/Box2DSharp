@@ -72,7 +72,7 @@ public class b2ChainShape : b2Shape
 		}
 
 		m_count = count + 1;
-		m_vertices = new b2Vec2[m_count];
+		m_vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(m_count);
 		Array.Copy(vertices, m_vertices, count);
 		m_vertices[count] = m_vertices[0];
 		m_prevVertex = m_vertices[m_count - 2];
@@ -95,7 +95,7 @@ public class b2ChainShape : b2Shape
 		}
 
 		m_count = count;
-        m_vertices = new b2Vec2[m_count];
+        m_vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(m_count);
         Array.Copy(vertices, m_vertices, m_count);
 
         m_hasPrevVertex = false;

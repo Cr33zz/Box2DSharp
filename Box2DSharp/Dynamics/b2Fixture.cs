@@ -419,10 +419,11 @@ public class b2Fixture
 
 		// Reserve proxy space
 		int childCount = m_shape.GetChildCount();
-		m_proxies = new b2FixtureProxy[childCount];
+		m_proxies = Arrays.InitializeWithDefaultInstances<b2FixtureProxy>(childCount);
 		for (int i = 0; i < childCount; ++i)
 		{
-			m_proxies[i].fixture = null;
+            m_proxies[i] = new b2FixtureProxy();
+            m_proxies[i].fixture = null;
 			m_proxies[i].proxyId = (int)b2BroadPhase.AnonymousEnum.e_nullProxy;
 		}
 		m_proxyCount = 0;

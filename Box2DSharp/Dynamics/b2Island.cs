@@ -155,8 +155,8 @@ public class b2Island : System.IDisposable
 		m_contacts = new b2Contact[contactCapacity];
 		m_joints = new b2Joint[jointCapacity];
 
-		m_velocities = new b2Velocity[m_bodyCapacity];
-		m_positions = new b2Position[m_bodyCapacity];
+		m_velocities = Arrays.InitializeWithDefaultInstances<b2Velocity>(m_bodyCapacity);
+		m_positions = Arrays.InitializeWithDefaultInstances<b2Position>(m_bodyCapacity);
 	}
 
 	public void Dispose()

@@ -130,6 +130,7 @@ public class b2Body : System.IDisposable
 		}
 
 		b2Fixture fixture = new b2Fixture();
+        fixture.Create(this, def);
 
 		if ((m_flags & BodyFlags.e_activeFlag) != 0)
 		{

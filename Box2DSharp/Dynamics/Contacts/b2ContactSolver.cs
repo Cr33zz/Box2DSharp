@@ -33,7 +33,7 @@ public class b2VelocityConstraintPoint
 
 public class b2ContactVelocityConstraint
 {
-	public b2VelocityConstraintPoint[] points = new b2VelocityConstraintPoint[DefineConstants.b2_maxManifoldPoints];
+	public b2VelocityConstraintPoint[] points = Arrays.InitializeWithDefaultInstances<b2VelocityConstraintPoint>(DefineConstants.b2_maxManifoldPoints);
 	public b2Vec2 normal = new b2Vec2();
 	public b2Mat22 normalMass = new b2Mat22();
 	public b2Mat22 K = new b2Mat22();
@@ -65,8 +65,8 @@ public class b2ContactSolver : System.IDisposable
 	{
 		m_step = def.step;
 		m_count = def.count;
-		m_positionConstraints = new b2ContactPositionConstraint[m_count];
-		m_velocityConstraints = new b2ContactVelocityConstraint[m_count];
+		m_positionConstraints = Arrays.InitializeWithDefaultInstances<b2ContactPositionConstraint>(m_count);
+		m_velocityConstraints = Arrays.InitializeWithDefaultInstances<b2ContactVelocityConstraint>(m_count);
 		m_positions = def.positions;
 		m_velocities = def.velocities;
 		m_contacts = def.contacts;
@@ -823,7 +823,7 @@ public class b2ContactSolver : System.IDisposable
 
 public class b2ContactPositionConstraint
 {
-	public b2Vec2[] localPoints = new b2Vec2[DefineConstants.b2_maxManifoldPoints];
+	public b2Vec2[] localPoints = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxManifoldPoints);
 	public b2Vec2 localNormal = new b2Vec2();
 	public b2Vec2 localPoint = new b2Vec2();
 	public int indexA;

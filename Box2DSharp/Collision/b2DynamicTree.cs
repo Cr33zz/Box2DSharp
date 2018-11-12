@@ -62,7 +62,7 @@ public class b2DynamicTree : System.IDisposable
 
 		m_nodeCapacity = 16;
 		m_nodeCount = 0;
-		m_nodes = new b2TreeNode[m_nodeCapacity];
+		m_nodes = Arrays.InitializeWithDefaultInstances<b2TreeNode>(m_nodeCapacity);
 
 		// Build a linked list for the free list.
 		for (int i = 0; i < m_nodeCapacity - 1; ++i)
@@ -504,7 +504,7 @@ public class b2DynamicTree : System.IDisposable
 			// The free list is empty. Rebuild a bigger pool.
 			b2TreeNode[] oldNodes = m_nodes;
 			m_nodeCapacity *= 2;
-			m_nodes = new b2TreeNode[m_nodeCapacity];
+			m_nodes = Arrays.InitializeWithDefaultInstances<b2TreeNode>(m_nodeCapacity);
 			Array.Copy(oldNodes, m_nodes, m_nodeCount);
 			
 			// Build a linked list for the free list. The parentOrNext

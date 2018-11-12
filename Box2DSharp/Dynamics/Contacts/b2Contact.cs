@@ -208,15 +208,17 @@ public abstract class b2Contact : System.IDisposable
 		Debug.Assert(0 <= ((int)type1) && type1 < b2Shape.Type.e_typeCount);
 		Debug.Assert(0 <= ((int)type2) && type2 < b2Shape.Type.e_typeCount);
 
-		s_registers[(int)type1][(int)type2].createFcn = createFcn;
-		s_registers[(int)type1][(int)type2].destroyFcn = destoryFcn;
-		s_registers[(int)type1][(int)type2].primary = true;
+        s_registers[(int)type1, (int)type2] = new b2ContactRegister();
+        s_registers[(int)type1, (int)type2].createFcn = createFcn;
+		s_registers[(int)type1, (int)type2].destroyFcn = destoryFcn;
+		s_registers[(int)type1, (int)type2].primary = true;
 
 		if (type1 != type2)
 		{
-			s_registers[(int)type2][(int)type1].createFcn = createFcn;
-			s_registers[(int)type2][(int)type1].destroyFcn = destoryFcn;
-			s_registers[(int)type2][(int)type1].primary = false;
+            s_registers[(int)type2, (int)type1] = new b2ContactRegister();
+            s_registers[(int)type2, (int)type1].createFcn = createFcn;
+			s_registers[(int)type2, (int)type1].destroyFcn = destoryFcn;
+			s_registers[(int)type2, (int)type1].primary = false;
 		}
 	}
 	protected static void InitializeRegisters()
@@ -243,10 +245,10 @@ public abstract class b2Contact : System.IDisposable
 		Debug.Assert(0 <= ((int)type1) && type1 < b2Shape.Type.e_typeCount);
 		Debug.Assert(0 <= ((int)type2) && type2 < b2Shape.Type.e_typeCount);
 
-		b2ContactCreateFcn createFcn = s_registers[(int)type1][(int)type2].createFcn;
+		b2ContactCreateFcn createFcn = s_registers[(int)type1, (int)type2].createFcn;
 		if (createFcn != null)
 		{
-			if (s_registers[(int)type1][(int)type2].primary)
+			if (s_registers[(int)type1, (int)type2].primary)
 			{
 				return createFcn(fixtureA, indexA, fixtureB, indexB);
 			}
@@ -280,7 +282,7 @@ public abstract class b2Contact : System.IDisposable
 		Debug.Assert(0 <= ((int)typeA) && typeB < b2Shape.Type.e_typeCount);
 		Debug.Assert(0 <= ((int)typeA) && typeB < b2Shape.Type.e_typeCount);
 
-		b2ContactDestroyFcn destroyFcn = s_registers[(int)typeA][(int)typeB].destroyFcn;
+		b2ContactDestroyFcn destroyFcn = s_registers[(int)typeA, (int)typeB].destroyFcn;
 		destroyFcn(ref contact);
 	}
 
@@ -416,7 +418,7 @@ public abstract class b2Contact : System.IDisposable
 		}
 	}
 
-	protected static b2ContactRegister[][] s_registers = new b2ContactRegister[(int)b2Shape.Type.e_typeCount][/*(int)b2Shape.Type.e_typeCount*/];
+	protected static b2ContactRegister[,] s_registers = new b2ContactRegister[(int)b2Shape.Type.e_typeCount, (int)b2Shape.Type.e_typeCount];
     protected static bool s_initialized = false;
 
     internal ContactFlags m_flags;

@@ -40,7 +40,7 @@ public class b2BroadPhase : System.IDisposable
 
 		m_pairCapacity = 16;
 		m_pairCount = 0;
-		m_pairBuffer = new b2Pair[m_pairCapacity];
+		m_pairBuffer = Arrays.InitializeWithDefaultInstances<b2Pair>(m_pairCapacity);
 
 		m_moveCapacity = 16;
 		m_moveCount = 0;
@@ -256,11 +256,12 @@ public class b2BroadPhase : System.IDisposable
 		{
 			b2Pair[] oldBuffer = m_pairBuffer;
 			m_pairCapacity *= 2;
-			m_pairBuffer = new b2Pair[m_pairCapacity];
+			m_pairBuffer = Arrays.InitializeWithDefaultInstances<b2Pair>(m_pairCapacity);
             Array.Copy(oldBuffer, m_pairBuffer, m_pairCount);
 		}
 
-		m_pairBuffer[m_pairCount].proxyIdA = GlobalMembers.b2Min(proxyId, m_queryProxyId);
+        m_pairBuffer[m_pairCount] = new b2Pair();
+        m_pairBuffer[m_pairCount].proxyIdA = GlobalMembers.b2Min(proxyId, m_queryProxyId);
 		m_pairBuffer[m_pairCount].proxyIdB = GlobalMembers.b2Max(proxyId, m_queryProxyId);
 		++m_pairCount;
 

@@ -66,7 +66,7 @@ public class b2PolygonShape : b2Shape
 		int n = GlobalMembers.b2Min(count, DefineConstants.b2_maxPolygonVertices);
 
 		// Perform welding and copy vertices into local buffer.
-		b2Vec2[] ps = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
+		b2Vec2[] ps = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
 		int tempCount = 0;
 		for (int i = 0; i < n; ++i)
 		{
@@ -457,7 +457,7 @@ public class b2PolygonShape : b2Shape
 	}
 
 	public b2Vec2 m_centroid;
-	public b2Vec2[] m_vertices = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
-	public b2Vec2[] m_normals = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
+	public b2Vec2[] m_vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+	public b2Vec2[] m_normals = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
 	public int m_count;
 }

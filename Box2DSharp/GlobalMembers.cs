@@ -72,7 +72,16 @@ public static class GlobalMembers
 	/// This is used to sort pairs.
 	public static int b2PairLessThan(b2Pair pair1, b2Pair pair2)
 	{
-		if (pair1.proxyIdA < pair2.proxyIdA)
+        if (pair1 != null && pair2 == null)
+            return -1;
+
+        if (pair2 != null && pair1 == null)
+            return 1;
+
+        if (pair1 == null && pair2 == null)
+            return 0;
+
+        if (pair1.proxyIdA < pair2.proxyIdA)
 		{
 			return 1;
 		}
@@ -489,7 +498,7 @@ public static class GlobalMembers
 			flip = 0;
 		}
 
-		b2ClipVertex[] incidentEdge = new b2ClipVertex[2];
+		b2ClipVertex[] incidentEdge = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
 		b2FindIncidentEdge(incidentEdge, poly1, xf1, edge1, poly2, xf2);
 
 		int count1 = poly1.m_count;
@@ -525,8 +534,8 @@ public static class GlobalMembers
 		float sideOffset2 = b2Dot(tangent, v12) + totalRadius;
 
 		// Clip incident edge against extruded edge1 side edges.
-		b2ClipVertex[] clipPoints1 = new b2ClipVertex[2];
-		b2ClipVertex[] clipPoints2 = new b2ClipVertex[2];
+		b2ClipVertex[] clipPoints1 = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
+		b2ClipVertex[] clipPoints2 = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
 		int np;
 
 		// Clip to box side 1

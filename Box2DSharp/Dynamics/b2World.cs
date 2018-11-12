@@ -549,7 +549,7 @@ public class b2World : System.IDisposable
 					{
 						b2FixtureProxy proxy = f.m_proxies[i];
 						b2AABB aabb = bp.GetFatAABB(proxy.proxyId);
-						b2Vec2[] vs = new b2Vec2[4];
+						b2Vec2[] vs = Arrays.InitializeWithDefaultInstances<b2Vec2>(4);
 						vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y);
 						vs[1].Set(aabb.upperBound.x, aabb.lowerBound.y);
 						vs[2].Set(aabb.upperBound.x, aabb.upperBound.y);
@@ -1554,7 +1554,7 @@ public class b2World : System.IDisposable
 				b2PolygonShape poly = (b2PolygonShape)fixture.GetShape();
 				int vertexCount = poly.m_count;
 				Debug.Assert(vertexCount <= DefineConstants.b2_maxPolygonVertices);
-				b2Vec2[] vertices = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
+				b2Vec2[] vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
 
 				for (int i = 0; i < vertexCount; ++i)
 				{

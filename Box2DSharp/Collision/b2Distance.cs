@@ -151,7 +151,7 @@ public class b2DistanceProxy
 		return m_vertices[index];
 	}
 
-	public b2Vec2[] m_buffer = new b2Vec2[2];
+	public b2Vec2[] m_buffer = Arrays.InitializeWithDefaultInstances<b2Vec2>(2);
 	public b2Vec2[] m_vertices;
 	public int m_count;
 	public float m_radius;

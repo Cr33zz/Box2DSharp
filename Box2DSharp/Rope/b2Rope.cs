@@ -80,10 +80,10 @@ public class b2Rope : System.IDisposable
 	{
 		Debug.Assert(def.count >= 3);
 		m_count = def.count;
-		m_ps = new b2Vec2[m_count];
-		m_p0s = new b2Vec2[m_count];
-		m_vs = new b2Vec2[m_count];
-		m_ims = new float[m_count];
+		m_ps = Arrays.InitializeWithDefaultInstances<b2Vec2>(m_count);
+		m_p0s = Arrays.InitializeWithDefaultInstances<b2Vec2>(m_count);
+		m_vs = Arrays.InitializeWithDefaultInstances<b2Vec2>(m_count);
+		m_ims = Arrays.InitializeWithDefaultInstances<float>(m_count);
 
 		for (int i = 0; i < m_count; ++i)
 		{

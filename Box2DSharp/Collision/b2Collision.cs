@@ -24,12 +24,8 @@ using System.Runtime.InteropServices;
 
 /// The features that intersect to form the contact point
 /// This must be 4 bytes or less.
-public class b2ContactFeature
+public struct b2ContactFeature
 {
-    public b2ContactFeature()
-    {
-    }
-
     public b2ContactFeature(b2ContactFeature other)
     {
         indexA = other.indexA;
@@ -51,7 +47,7 @@ public class b2ContactFeature
 }
 
 /// Contact ids to facilitate warm starting.
-[StructLayout(LayoutKind.Explicit)]
+[StructLayout(LayoutKind.Explicit, Size=4)]
 public struct b2ContactID
 {
     [FieldOffset(0)]
@@ -104,7 +100,7 @@ public class b2Manifold
 		e_faceB
 	}
 
-	public b2ManifoldPoint[] points = new b2ManifoldPoint[DefineConstants.b2_maxManifoldPoints]; ///< the points of contact
+	public b2ManifoldPoint[] points = Arrays.InitializeWithDefaultInstances<b2ManifoldPoint>(DefineConstants.b2_maxManifoldPoints); ///< the points of contact
 	public b2Vec2 localNormal = new b2Vec2(); ///< not use for Type::e_points
 	public b2Vec2 localPoint = new b2Vec2(); ///< usage depends on manifold type
 	public Type type;
@@ -183,8 +179,8 @@ public class b2WorldManifold
 	}
 
 	public b2Vec2 normal = new b2Vec2(); ///< world vector pointing from A to B
-	public b2Vec2[] points = new b2Vec2[DefineConstants.b2_maxManifoldPoints]; ///< world contact point (point of intersection)
-	public float[] separations = new float[DefineConstants.b2_maxManifoldPoints]; ///< a negative value indicates overlap, in meters
+	public b2Vec2[] points = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxManifoldPoints); ///< world contact point (point of intersection)
+	public float[] separations = Arrays.InitializeWithDefaultInstances<float>(DefineConstants.b2_maxManifoldPoints); ///< a negative value indicates overlap, in meters
 }
 
 /// This is used for determining the state of contact points.
@@ -200,7 +196,7 @@ public enum PointState
 public class b2ClipVertex
 {
 	public b2Vec2 v = new b2Vec2();
-	public b2ContactID id = new b2ContactID();
+	public b2ContactID id;
 }
 
 /// Ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
