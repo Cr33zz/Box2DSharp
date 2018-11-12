@@ -204,22 +204,22 @@ public class b2WeldJoint : b2Joint
 		return m_dampingRatio;
 	}
 
-	/// Dump to Console.Write
+	/// Dump to GlobalMembers.b2Log
 	public override void Dump()
 	{
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		Console.Write("  b2WeldJointDef jd;\n");
-		Console.Write("  jd.bodyA = bodies[%d];\n", indexA);
-		Console.Write("  jd.bodyB = bodies[%d];\n", indexB);
-		Console.Write("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		Console.Write("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		Console.Write("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		Console.Write("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
-		Console.Write("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
-		Console.Write("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
-		Console.Write("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		GlobalMembers.b2Log("  b2WeldJointDef jd;\n");
+		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		GlobalMembers.b2Log("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
+		GlobalMembers.b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
+		GlobalMembers.b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
+		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -241,7 +241,7 @@ public class b2WeldJoint : b2Joint
 		m_impulse.SetZero();
 	}
 
-	protected override void InitVelocityConstraints(b2SolverData data)
+    internal override void InitVelocityConstraints(b2SolverData data)
 	{
 		m_indexA = m_bodyA.m_islandIndex;
 		m_indexB = m_bodyB.m_islandIndex;
@@ -366,7 +366,7 @@ public class b2WeldJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override void SolveVelocityConstraints(b2SolverData data)
+    internal override void SolveVelocityConstraints(b2SolverData data)
 	{
 		b2Vec2 vA = data.velocities[m_indexA].v;
 		float wA = data.velocities[m_indexA].w;
@@ -431,7 +431,7 @@ public class b2WeldJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override bool SolvePositionConstraints(b2SolverData data)
+    internal override bool SolvePositionConstraints(b2SolverData data)
 	{
 		b2Vec2 cA = data.positions[m_indexA].c;
 		float aA = data.positions[m_indexA].a;

@@ -7,8 +7,8 @@
     <ProjectGuid>{C6328F31-DF53-4CE5-B093-F51901BB9030}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Box2D.Net</RootNamespace>
-    <AssemblyName>Box2D.Net</AssemblyName>
+    <RootNamespace>Box2DSharp</RootNamespace>
+    <AssemblyName>Box2DSharp</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

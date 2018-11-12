@@ -164,3 +164,5 @@ public abstract class b2RayCastCallback : System.IDisposable
 }
 
 public delegate void b2BroadphaseCallback(object userDataA, object userDataB);
+public delegate bool b2BroadphaseQueryCallback(int nodeId);
+public delegate float b2BroadphaseRayCastCallback(b2RayCastInput subInput, int nodeId);

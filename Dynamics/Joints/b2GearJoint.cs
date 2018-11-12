@@ -105,14 +105,14 @@ public class b2GearJoint : b2Joint
 		int index1 = m_joint1.m_index;
 		int index2 = m_joint2.m_index;
 
-		Console.Write("  b2GearJointDef jd;\n");
-		Console.Write("  jd.bodyA = bodies[%d];\n", indexA);
-		Console.Write("  jd.bodyB = bodies[%d];\n", indexB);
-		Console.Write("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		Console.Write("  jd.joint1 = joints[%d];\n", index1);
-		Console.Write("  jd.joint2 = joints[%d];\n", index2);
-		Console.Write("  jd.ratio = %.15lef;\n", m_ratio);
-		Console.Write("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		GlobalMembers.b2Log("  b2GearJointDef jd;\n");
+		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		GlobalMembers.b2Log("  jd.joint1 = joints[%d];\n", index1);
+		GlobalMembers.b2Log("  jd.joint2 = joints[%d];\n", index2);
+		GlobalMembers.b2Log("  jd.ratio = %.15lef;\n", m_ratio);
+		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -249,7 +249,7 @@ public class b2GearJoint : b2Joint
 		m_impulse = 0.0f;
 	}
 
-	protected override void InitVelocityConstraints(b2SolverData data)
+    internal override void InitVelocityConstraints(b2SolverData data)
 	{
 		m_indexA = m_bodyA.m_islandIndex;
 		m_indexB = m_bodyB.m_islandIndex;
@@ -373,7 +373,7 @@ public class b2GearJoint : b2Joint
 		data.velocities[m_indexD].v = vD;
 		data.velocities[m_indexD].w = wD;
 	}
-	protected override void SolveVelocityConstraints(b2SolverData data)
+    internal override void SolveVelocityConstraints(b2SolverData data)
 	{
 		b2Vec2 vA = data.velocities[m_indexA].v;
 		float wA = data.velocities[m_indexA].w;
@@ -416,7 +416,7 @@ public class b2GearJoint : b2Joint
 		data.velocities[m_indexD].v = vD;
 		data.velocities[m_indexD].w = wD;
 	}
-	protected override bool SolvePositionConstraints(b2SolverData data)
+    internal override bool SolvePositionConstraints(b2SolverData data)
 	{
 		b2Vec2 cA = data.positions[m_indexA].c;
 		float aA = data.positions[m_indexA].a;

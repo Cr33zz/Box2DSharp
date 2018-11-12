@@ -57,7 +57,7 @@ public abstract class b2Draw : System.IDisposable
 	{
 	}
 
-	public enum AnonymousEnum2
+	public enum DrawFlags
 	{
 		e_shapeBit = 0x0001, ///< draw shapes
 		e_jointBit = 0x0002, ///< draw joint connections
@@ -67,25 +67,25 @@ public abstract class b2Draw : System.IDisposable
 	}
 
 	/// Set the drawing flags.
-	public void SetFlags(uint flags)
+	public void SetFlags(DrawFlags flags)
 	{
 		m_drawFlags = flags;
 	}
 
 	/// Get the drawing flags.
-	public uint GetFlags()
+	public DrawFlags GetFlags()
 	{
 		return m_drawFlags;
 	}
 
 	/// Append flags to the current flags.
-	public void AppendFlags(uint flags)
+	public void AppendFlags(DrawFlags flags)
 	{
 		m_drawFlags |= flags;
 	}
 
 	/// Clear flags from the current flags.
-	public void ClearFlags(uint flags)
+	public void ClearFlags(DrawFlags flags)
 	{
 		m_drawFlags &= ~flags;
 	}
@@ -112,5 +112,5 @@ public abstract class b2Draw : System.IDisposable
 	/// Draw a point.
 	public abstract void DrawPoint(b2Vec2 p, float size, b2Color color);
 
-	protected uint m_drawFlags;
+	protected DrawFlags m_drawFlags;
 }

@@ -475,9 +475,9 @@ public class b2World : System.IDisposable
 			return;
 		}
 
-		uint flags = m_debugDraw.GetFlags();
+        b2Draw.DrawFlags flags = m_debugDraw.GetFlags();
 
-		if ((flags & (int)b2Draw.AnonymousEnum5.e_shapeBit) != 0)
+		if ((flags & b2Draw.DrawFlags.e_shapeBit) != 0)
 		{
 			for (b2Body b = m_bodyList; b != null; b = b.GetNext())
 			{
@@ -508,7 +508,7 @@ public class b2World : System.IDisposable
 			}
 		}
 
-		if ((flags & (int)b2Draw.AnonymousEnum5.e_jointBit) != 0)
+		if ((flags & b2Draw.DrawFlags.e_jointBit) != 0)
 		{
 			for (b2Joint j = m_jointList; j != null; j = j.GetNext())
 			{
@@ -516,7 +516,7 @@ public class b2World : System.IDisposable
 			}
 		}
 
-		if ((flags & (int)b2Draw.AnonymousEnum5.e_pairBit) != 0)
+		if ((flags & b2Draw.DrawFlags.e_pairBit) != 0)
 		{
 			b2Color color = new b2Color(0.3f, 0.9f, 0.9f);
 			for (b2Contact c = m_contactManager.m_contactList; c != null; c = c.GetNext())
@@ -531,7 +531,7 @@ public class b2World : System.IDisposable
 			}
 		}
 
-		if ((flags & (int)b2Draw.AnonymousEnum5.e_aabbBit) != 0)
+		if ((flags & b2Draw.DrawFlags.e_aabbBit) != 0)
 		{
 			b2Color color = new b2Color(0.9f, 0.3f, 0.9f);
 			b2BroadPhase bp = m_contactManager.m_broadPhase;
@@ -549,7 +549,7 @@ public class b2World : System.IDisposable
 					{
 						b2FixtureProxy proxy = f.m_proxies[i];
 						b2AABB aabb = bp.GetFatAABB(proxy.proxyId);
-						b2Vec2[] vs = Arrays.InitializeWithDefaultInstances<b2Vec2>(4);
+						b2Vec2[] vs = new b2Vec2[4];
 						vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y);
 						vs[1].Set(aabb.upperBound.x, aabb.lowerBound.y);
 						vs[2].Set(aabb.upperBound.x, aabb.upperBound.y);
@@ -561,7 +561,7 @@ public class b2World : System.IDisposable
 			}
 		}
 
-		if ((flags & (int)b2Draw.AnonymousEnum5.e_centerOfMassBit) != 0)
+		if ((flags & b2Draw.DrawFlags.e_centerOfMassBit) != 0)
 		{
 			for (b2Body b = m_bodyList; b != null; b = b.GetNext())
 			{
@@ -585,7 +585,7 @@ public class b2World : System.IDisposable
 		b2WorldQueryWrapper wrapper = new b2WorldQueryWrapper();
 		wrapper.broadPhase = m_contactManager.m_broadPhase;
 		wrapper.callback = callback;
-		m_contactManager.m_broadPhase.Query(wrapper, aabb);
+		m_contactManager.m_broadPhase.Query(wrapper.QueryCallback, aabb);
 	}
 
 	/// Ray-cast the world for all fixtures in the path of the ray. Your callback
@@ -609,7 +609,7 @@ public class b2World : System.IDisposable
 
 
 		input.p2 = point2;
-		m_contactManager.m_broadPhase.RayCast(wrapper, input);
+		m_contactManager.m_broadPhase.RayCast(wrapper.RayCastCallback, input);
 	}
 
 	/// Get the world body list. With the returned body, use b2Body::GetNext to get
@@ -822,7 +822,7 @@ public class b2World : System.IDisposable
 			b.m_sweep.c -= newOrigin;
 		}
 
-		for (b2Joint * j = m_jointList; j != null; j = j.m_next)
+		for (b2Joint j = m_jointList; j != null; j = j.m_next)
 		{
 			j.ShiftOrigin(newOrigin);
 		}
@@ -855,11 +855,11 @@ public class b2World : System.IDisposable
 			return;
 		}
 
-		Console.Write("b2Vec2 g(%.15lef, %.15lef);\n", m_gravity.x, m_gravity.y);
-		Console.Write("m_world->SetGravity(g);\n");
+		GlobalMembers.b2Log("b2Vec2 g(%.15lef, %.15lef);\n", m_gravity.x, m_gravity.y);
+		GlobalMembers.b2Log("m_world->SetGravity(g);\n");
 
-		Console.Write("b2Body** bodies = (b2Body**)b2Alloc(%d * sizeof(b2Body*));\n", m_bodyCount);
-		Console.Write("b2Joint** joints = (b2Joint**)b2Alloc(%d * sizeof(b2Joint*));\n", m_jointCount);
+		GlobalMembers.b2Log("b2Body** bodies = (b2Body**)b2Alloc(%d * sizeof(b2Body*));\n", m_bodyCount);
+		GlobalMembers.b2Log("b2Joint** joints = (b2Joint**)b2Alloc(%d * sizeof(b2Joint*));\n", m_jointCount);
 		int i = 0;
 		for (b2Body b = m_bodyList; b != null; b = b.m_next)
 		{
@@ -869,42 +869,42 @@ public class b2World : System.IDisposable
 		}
 
 		i = 0;
-		for (b2Joint * j = m_jointList; j != null; j = j.m_next)
+		for (b2Joint j = m_jointList; j != null; j = j.m_next)
 		{
 			j.m_index = i;
 			++i;
 		}
 
 		// First pass on joints, skip gear joints.
-		for (b2Joint * j = m_jointList; j != null; j = j.m_next)
+		for (b2Joint j = m_jointList; j != null; j = j.m_next)
 		{
 			if (j.m_type == b2JointType.e_gearJoint)
 			{
 				continue;
 			}
 
-			Console.Write("{\n");
+			GlobalMembers.b2Log("{\n");
 			j.Dump();
-			Console.Write("}\n");
+			GlobalMembers.b2Log("}\n");
 		}
 
 		// Second pass on joints, only gear joints.
-		for (b2Joint * j = m_jointList; j != null; j = j.m_next)
+		for (b2Joint j = m_jointList; j != null; j = j.m_next)
 		{
 			if (j.m_type != b2JointType.e_gearJoint)
 			{
 				continue;
 			}
 
-			Console.Write("{\n");
+			GlobalMembers.b2Log("{\n");
 			j.Dump();
-			Console.Write("}\n");
+			GlobalMembers.b2Log("}\n");
 		}
 
-		Console.Write("b2Free(joints);\n");
-		Console.Write("b2Free(bodies);\n");
-		Console.Write("joints = nullptr;\n");
-		Console.Write("bodies = nullptr;\n");
+		GlobalMembers.b2Log("b2Free(joints);\n");
+		GlobalMembers.b2Log("b2Free(bodies);\n");
+		GlobalMembers.b2Log("joints = nullptr;\n");
+		GlobalMembers.b2Log("bodies = nullptr;\n");
 	}
 
 
@@ -1055,7 +1055,7 @@ public class b2World : System.IDisposable
 					island.Add(je.joint);
 					je.joint.m_islandFlag = true;
 
-					if ((other.m_flags & (int)b2Body.BodyFlags.e_islandFlag) != 0)
+					if ((other.m_flags & b2Body.BodyFlags.e_islandFlag) != 0)
 					{
 						continue;
 					}
@@ -1090,7 +1090,7 @@ public class b2World : System.IDisposable
 			for (b2Body b = m_bodyList; b != null; b = b.GetNext())
 			{
 				// If a body was not in an island then it did not move.
-				if ((b.m_flags & (int)b2Body.AnonymousEnum3.e_islandFlag) == 0)
+				if ((b.m_flags & b2Body.BodyFlags.e_islandFlag) == 0)
 				{
 					continue;
 				}
@@ -1132,8 +1132,11 @@ public class b2World : System.IDisposable
 			}
 		}
 
-		// Find TOI events and solve them.
-		for (;;)
+        b2Fixture fA, fB;
+        b2Body bA, bB;
+
+        // Find TOI events and solve them.
+        for (;;)
 		{
 			// Find the first TOI.
 			b2Contact minContact = null;
@@ -1161,8 +1164,8 @@ public class b2World : System.IDisposable
 				}
 				else
 				{
-					b2Fixture fA = c.GetFixtureA();
-					b2Fixture fB = c.GetFixtureB();
+					fA = c.GetFixtureA();
+					fB = c.GetFixtureB();
 
 					// Is there a sensor?
 					if (fA.IsSensor() || fB.IsSensor())
@@ -1170,8 +1173,8 @@ public class b2World : System.IDisposable
 						continue;
 					}
 
-					b2Body bA = fA.GetBody();
-					b2Body bB = fB.GetBody();
+					bA = fA.GetBody();
+					bB = fB.GetBody();
 
 					BodyType typeA = bA.m_type;
 					BodyType typeB = bB.m_type;
@@ -1228,7 +1231,7 @@ public class b2World : System.IDisposable
 					input.tMax = 1.0f;
 
 					b2TOIOutput output = new b2TOIOutput();
-				    b2TimeOfImpact(output, input);
+				    GlobalMembers.b2TimeOfImpact(output, input);
 
 					// Beta is the fraction of the remaining portion of the .
 					float beta = output.t;
@@ -1261,17 +1264,13 @@ public class b2World : System.IDisposable
 			}
 
 			// Advance the bodies to the TOI.
-			b2Fixture fA = minContact.GetFixtureA();
-			b2Fixture fB = minContact.GetFixtureB();
-			b2Body bA = fA.GetBody();
-			b2Body bB = fB.GetBody();
+			fA = minContact.GetFixtureA();
+			fB = minContact.GetFixtureB();
+			bA = fA.GetBody();
+			bB = fB.GetBody();
 
-
-
-			b2Sweep backup1 = new b2Sweep(bA.m_sweep);
-
-
-			b2Sweep backup2 = new b2Sweep(bB.m_sweep);
+			b2Sweep backup1 = bA.m_sweep;
+			b2Sweep backup2 = bB.m_sweep;
 
 			bA.Advance(minAlpha);
 			bB.Advance(minAlpha);
@@ -1555,7 +1554,7 @@ public class b2World : System.IDisposable
 				b2PolygonShape poly = (b2PolygonShape)fixture.GetShape();
 				int vertexCount = poly.m_count;
 				Debug.Assert(vertexCount <= DefineConstants.b2_maxPolygonVertices);
-				b2Vec2[] vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+				b2Vec2[] vertices = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
 
 				for (int i = 0; i < vertexCount; ++i)
 				{

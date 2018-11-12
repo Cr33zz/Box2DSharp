@@ -805,7 +805,7 @@ public class b2Body : System.IDisposable
 	}
 
 	/// Get the type of this body.
-	public BodyType GetType()
+	public new BodyType GetType()
 	{
 		return m_type;
 	}
@@ -1027,30 +1027,30 @@ public class b2Body : System.IDisposable
 	{
 		int bodyIndex = m_islandIndex;
 
-		Console.Write("{\n");
-		Console.Write("  b2BodyDef bd;\n");
-		Console.Write("  bd.type = b2BodyType(%d);\n", m_type);
-		Console.Write("  bd.position.Set(%.15lef, %.15lef);\n", m_xf.p.x, m_xf.p.y);
-		Console.Write("  bd.angle = %.15lef;\n", m_sweep.a);
-		Console.Write("  bd.linearVelocity.Set(%.15lef, %.15lef);\n", m_linearVelocity.x, m_linearVelocity.y);
-		Console.Write("  bd.angularVelocity = %.15lef;\n", m_angularVelocity);
-		Console.Write("  bd.linearDamping = %.15lef;\n", m_linearDamping);
-		Console.Write("  bd.angularDamping = %.15lef;\n", m_angularDamping);
-		Console.Write("  bd.allowSleep = bool(%d);\n", m_flags & BodyFlags.e_autoSleepFlag);
-		Console.Write("  bd.awake = bool(%d);\n", m_flags & BodyFlags.e_awakeFlag);
-		Console.Write("  bd.fixedRotation = bool(%d);\n", m_flags & BodyFlags.e_fixedRotationFlag);
-		Console.Write("  bd.bullet = bool(%d);\n", m_flags & BodyFlags.e_bulletFlag);
-		Console.Write("  bd.active = bool(%d);\n", m_flags & BodyFlags.e_activeFlag);
-		Console.Write("  bd.gravityScale = %.15lef;\n", m_gravityScale);
-		Console.Write("  bodies[%d] = m_world->CreateBody(&bd);\n", m_islandIndex);
-		Console.Write("\n");
+		GlobalMembers.b2Log("{\n");
+		GlobalMembers.b2Log("  b2BodyDef bd;\n");
+		GlobalMembers.b2Log("  bd.type = b2BodyType(%d);\n", m_type);
+		GlobalMembers.b2Log("  bd.position.Set(%.15lef, %.15lef);\n", m_xf.p.x, m_xf.p.y);
+		GlobalMembers.b2Log("  bd.angle = %.15lef;\n", m_sweep.a);
+		GlobalMembers.b2Log("  bd.linearVelocity.Set(%.15lef, %.15lef);\n", m_linearVelocity.x, m_linearVelocity.y);
+		GlobalMembers.b2Log("  bd.angularVelocity = %.15lef;\n", m_angularVelocity);
+		GlobalMembers.b2Log("  bd.linearDamping = %.15lef;\n", m_linearDamping);
+		GlobalMembers.b2Log("  bd.angularDamping = %.15lef;\n", m_angularDamping);
+		GlobalMembers.b2Log("  bd.allowSleep = bool(%d);\n", m_flags & BodyFlags.e_autoSleepFlag);
+		GlobalMembers.b2Log("  bd.awake = bool(%d);\n", m_flags & BodyFlags.e_awakeFlag);
+		GlobalMembers.b2Log("  bd.fixedRotation = bool(%d);\n", m_flags & BodyFlags.e_fixedRotationFlag);
+		GlobalMembers.b2Log("  bd.bullet = bool(%d);\n", m_flags & BodyFlags.e_bulletFlag);
+		GlobalMembers.b2Log("  bd.active = bool(%d);\n", m_flags & BodyFlags.e_activeFlag);
+		GlobalMembers.b2Log("  bd.gravityScale = %.15lef;\n", m_gravityScale);
+		GlobalMembers.b2Log("  bodies[%d] = m_world->CreateBody(&bd);\n", m_islandIndex);
+		GlobalMembers.b2Log("\n");
 		for (b2Fixture f = m_fixtureList; f != null; f = f.m_next)
 		{
-			Console.Write("  {\n");
+			GlobalMembers.b2Log("  {\n");
 			f.Dump(bodyIndex);
-			Console.Write("  }\n");
+			GlobalMembers.b2Log("  }\n");
 		}
-		Console.Write("}\n");
+		GlobalMembers.b2Log("}\n");
 	}
 
 
@@ -1285,9 +1285,9 @@ public class b2Body : System.IDisposable
     internal float m_angularDamping;
     internal float m_gravityScale;
 
-	private float m_sleepTime;
+    internal float m_sleepTime;
 
-	private object m_userData;
+    internal object m_userData;
 }
 
 

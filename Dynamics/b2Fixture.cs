@@ -127,7 +127,7 @@ public class b2Fixture
 {
 	/// Get the type of the child shape. You can use this to down cast to the concrete shape.
 	/// @return the shape type.
-	public b2Shape.Type GetType()
+	public new b2Shape.Type GetType()
 	{
 		return m_shape.GetType();
 	}
@@ -315,67 +315,67 @@ public class b2Fixture
 	/// Dump this fixture to the log file.
 	public void Dump(int bodyIndex)
 	{
-		Console.Write("    b2FixtureDef fd;\n");
-		Console.Write("    fd.friction = %.15lef;\n", m_friction);
-		Console.Write("    fd.restitution = %.15lef;\n", m_restitution);
-		Console.Write("    fd.density = %.15lef;\n", m_density);
-		Console.Write("    fd.isSensor = bool(%d);\n", m_isSensor);
-		Console.Write("    fd.filter.categoryBits = uint16(%d);\n", m_filter.categoryBits);
-		Console.Write("    fd.filter.maskBits = uint16(%d);\n", m_filter.maskBits);
-		Console.Write("    fd.filter.groupIndex = int16(%d);\n", m_filter.groupIndex);
+		GlobalMembers.b2Log("    b2FixtureDef fd;\n");
+		GlobalMembers.b2Log("    fd.friction = %.15lef;\n", m_friction);
+		GlobalMembers.b2Log("    fd.restitution = %.15lef;\n", m_restitution);
+		GlobalMembers.b2Log("    fd.density = %.15lef;\n", m_density);
+		GlobalMembers.b2Log("    fd.isSensor = bool(%d);\n", m_isSensor);
+		GlobalMembers.b2Log("    fd.filter.categoryBits = uint16(%d);\n", m_filter.categoryBits);
+		GlobalMembers.b2Log("    fd.filter.maskBits = uint16(%d);\n", m_filter.maskBits);
+		GlobalMembers.b2Log("    fd.filter.groupIndex = int16(%d);\n", m_filter.groupIndex);
 
 		switch (m_shape.m_type)
 		{
 		case b2Shape.Type.e_circle:
 		{
 				b2CircleShape s = (b2CircleShape)m_shape;
-				Console.Write("    b2CircleShape shape;\n");
-				Console.Write("    shape.m_radius = %.15lef;\n", s.m_radius);
-				Console.Write("    shape.m_p.Set(%.15lef, %.15lef);\n", s.m_p.x, s.m_p.y);
+				GlobalMembers.b2Log("    b2CircleShape shape;\n");
+				GlobalMembers.b2Log("    shape.m_radius = %.15lef;\n", s.m_radius);
+				GlobalMembers.b2Log("    shape.m_p.Set(%.15lef, %.15lef);\n", s.m_p.x, s.m_p.y);
 		}
 			break;
 
 		case b2Shape.Type.e_edge:
 		{
 				b2EdgeShape s = (b2EdgeShape)m_shape;
-				Console.Write("    b2EdgeShape shape;\n");
-				Console.Write("    shape.m_radius = %.15lef;\n", s.m_radius);
-				Console.Write("    shape.m_vertex0.Set(%.15lef, %.15lef);\n", s.m_vertex0.x, s.m_vertex0.y);
-				Console.Write("    shape.m_vertex1.Set(%.15lef, %.15lef);\n", s.m_vertex1.x, s.m_vertex1.y);
-				Console.Write("    shape.m_vertex2.Set(%.15lef, %.15lef);\n", s.m_vertex2.x, s.m_vertex2.y);
-				Console.Write("    shape.m_vertex3.Set(%.15lef, %.15lef);\n", s.m_vertex3.x, s.m_vertex3.y);
-				Console.Write("    shape.m_hasVertex0 = bool(%d);\n", s.m_hasVertex0);
-				Console.Write("    shape.m_hasVertex3 = bool(%d);\n", s.m_hasVertex3);
+				GlobalMembers.b2Log("    b2EdgeShape shape;\n");
+				GlobalMembers.b2Log("    shape.m_radius = %.15lef;\n", s.m_radius);
+				GlobalMembers.b2Log("    shape.m_vertex0.Set(%.15lef, %.15lef);\n", s.m_vertex0.x, s.m_vertex0.y);
+				GlobalMembers.b2Log("    shape.m_vertex1.Set(%.15lef, %.15lef);\n", s.m_vertex1.x, s.m_vertex1.y);
+				GlobalMembers.b2Log("    shape.m_vertex2.Set(%.15lef, %.15lef);\n", s.m_vertex2.x, s.m_vertex2.y);
+				GlobalMembers.b2Log("    shape.m_vertex3.Set(%.15lef, %.15lef);\n", s.m_vertex3.x, s.m_vertex3.y);
+				GlobalMembers.b2Log("    shape.m_hasVertex0 = bool(%d);\n", s.m_hasVertex0);
+				GlobalMembers.b2Log("    shape.m_hasVertex3 = bool(%d);\n", s.m_hasVertex3);
 		}
 			break;
 
 		case b2Shape.Type.e_polygon:
 		{
 				b2PolygonShape s = (b2PolygonShape)m_shape;
-				Console.Write("    b2PolygonShape shape;\n");
-				Console.Write("    b2Vec2 vs[%d];\n", DefineConstants.b2_maxPolygonVertices);
+				GlobalMembers.b2Log("    b2PolygonShape shape;\n");
+				GlobalMembers.b2Log("    b2Vec2 vs[%d];\n", DefineConstants.b2_maxPolygonVertices);
 				for (int i = 0; i < s.m_count; ++i)
 				{
-					Console.Write("    vs[%d].Set(%.15lef, %.15lef);\n", i, s.m_vertices[i].x, s.m_vertices[i].y);
+					GlobalMembers.b2Log("    vs[%d].Set(%.15lef, %.15lef);\n", i, s.m_vertices[i].x, s.m_vertices[i].y);
 				}
-				Console.Write("    shape.Set(vs, %d);\n", s.m_count);
+				GlobalMembers.b2Log("    shape.Set(vs, %d);\n", s.m_count);
 		}
 			break;
 
 		case b2Shape.Type.e_chain:
 		{
 				b2ChainShape s = (b2ChainShape)m_shape;
-				Console.Write("    b2ChainShape shape;\n");
-				Console.Write("    b2Vec2 vs[%d];\n", s.m_count);
+				GlobalMembers.b2Log("    b2ChainShape shape;\n");
+				GlobalMembers.b2Log("    b2Vec2 vs[%d];\n", s.m_count);
 				for (int i = 0; i < s.m_count; ++i)
 				{
-					Console.Write("    vs[%d].Set(%.15lef, %.15lef);\n", i, s.m_vertices[i].x, s.m_vertices[i].y);
+					GlobalMembers.b2Log("    vs[%d].Set(%.15lef, %.15lef);\n", i, s.m_vertices[i].x, s.m_vertices[i].y);
 				}
-				Console.Write("    shape.CreateChain(vs, %d);\n", s.m_count);
-				Console.Write("    shape.m_prevVertex.Set(%.15lef, %.15lef);\n", s.m_prevVertex.x, s.m_prevVertex.y);
-				Console.Write("    shape.m_nextVertex.Set(%.15lef, %.15lef);\n", s.m_nextVertex.x, s.m_nextVertex.y);
-				Console.Write("    shape.m_hasPrevVertex = bool(%d);\n", s.m_hasPrevVertex);
-				Console.Write("    shape.m_hasNextVertex = bool(%d);\n", s.m_hasNextVertex);
+				GlobalMembers.b2Log("    shape.CreateChain(vs, %d);\n", s.m_count);
+				GlobalMembers.b2Log("    shape.m_prevVertex.Set(%.15lef, %.15lef);\n", s.m_prevVertex.x, s.m_prevVertex.y);
+				GlobalMembers.b2Log("    shape.m_nextVertex.Set(%.15lef, %.15lef);\n", s.m_nextVertex.x, s.m_nextVertex.y);
+				GlobalMembers.b2Log("    shape.m_hasPrevVertex = bool(%d);\n", s.m_hasPrevVertex);
+				GlobalMembers.b2Log("    shape.m_hasNextVertex = bool(%d);\n", s.m_hasNextVertex);
 		}
 			break;
 
@@ -383,10 +383,10 @@ public class b2Fixture
 			return;
 		}
 
-		Console.Write("\n");
-		Console.Write("    fd.shape = &shape;\n");
-		Console.Write("\n");
-		Console.Write("    bodies[%d]->CreateFixture(&fd);\n", bodyIndex);
+		GlobalMembers.b2Log("\n");
+		GlobalMembers.b2Log("    fd.shape = &shape;\n");
+		GlobalMembers.b2Log("\n");
+		GlobalMembers.b2Log("    bodies[%d]->CreateFixture(&fd);\n", bodyIndex);
 	}
 
     internal b2Fixture()

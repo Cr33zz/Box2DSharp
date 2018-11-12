@@ -237,22 +237,22 @@ public class b2MotorJoint : b2Joint
 		return m_correctionFactor;
 	}
 
-	/// Dump to Console.Write
+	/// Dump to GlobalMembers.b2Log
 	public override void Dump()
 	{
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		Console.Write("  b2MotorJointDef jd;\n");
-		Console.Write("  jd.bodyA = bodies[%d];\n", indexA);
-		Console.Write("  jd.bodyB = bodies[%d];\n", indexB);
-		Console.Write("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		Console.Write("  jd.linearOffset.Set(%.15lef, %.15lef);\n", m_linearOffset.x, m_linearOffset.y);
-		Console.Write("  jd.angularOffset = %.15lef;\n", m_angularOffset);
-		Console.Write("  jd.maxForce = %.15lef;\n", m_maxForce);
-		Console.Write("  jd.maxTorque = %.15lef;\n", m_maxTorque);
-		Console.Write("  jd.correctionFactor = %.15lef;\n", m_correctionFactor);
-		Console.Write("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		GlobalMembers.b2Log("  b2MotorJointDef jd;\n");
+		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		GlobalMembers.b2Log("  jd.linearOffset.Set(%.15lef, %.15lef);\n", m_linearOffset.x, m_linearOffset.y);
+		GlobalMembers.b2Log("  jd.angularOffset = %.15lef;\n", m_angularOffset);
+		GlobalMembers.b2Log("  jd.maxForce = %.15lef;\n", m_maxForce);
+		GlobalMembers.b2Log("  jd.maxTorque = %.15lef;\n", m_maxTorque);
+		GlobalMembers.b2Log("  jd.correctionFactor = %.15lef;\n", m_correctionFactor);
+		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -274,7 +274,7 @@ public class b2MotorJoint : b2Joint
 		m_correctionFactor = def.correctionFactor;
 	}
 
-	protected override void InitVelocityConstraints(b2SolverData data)
+    internal override void InitVelocityConstraints(b2SolverData data)
 	{
 		m_indexA = m_bodyA.m_islandIndex;
 		m_indexB = m_bodyB.m_islandIndex;
@@ -374,7 +374,7 @@ public class b2MotorJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override void SolveVelocityConstraints(b2SolverData data)
+    internal override void SolveVelocityConstraints(b2SolverData data)
 	{
 		b2Vec2 vA = data.velocities[m_indexA].v;
 		float wA = data.velocities[m_indexA].w;
@@ -439,10 +439,8 @@ public class b2MotorJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override bool SolvePositionConstraints(b2SolverData data)
+    internal override bool SolvePositionConstraints(b2SolverData data)
 	{
-		
-
 		return true;
 	}
 

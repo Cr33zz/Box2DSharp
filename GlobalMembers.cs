@@ -16,6 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Diagnostics;
 
 public static class GlobalMembers
@@ -488,7 +489,7 @@ public static class GlobalMembers
 			flip = 0;
 		}
 
-		b2ClipVertex[] incidentEdge = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
+		b2ClipVertex[] incidentEdge = new b2ClipVertex[2];
 		b2FindIncidentEdge(incidentEdge, poly1, xf1, edge1, poly2, xf2);
 
 		int count1 = poly1.m_count;
@@ -524,8 +525,8 @@ public static class GlobalMembers
 		float sideOffset2 = b2Dot(tangent, v12) + totalRadius;
 
 		// Clip incident edge against extruded edge1 side edges.
-		b2ClipVertex[] clipPoints1 = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
-		b2ClipVertex[] clipPoints2 = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
+		b2ClipVertex[] clipPoints1 = new b2ClipVertex[2];
+		b2ClipVertex[] clipPoints2 = new b2ClipVertex[2];
 		int np;
 
 		// Clip to box side 1
@@ -811,7 +812,7 @@ public static class GlobalMembers
 			b2SimplexVertex vertex = vertices[simplex.m_count];
 			vertex.indexA = proxyA.GetSupport(b2MulT(transformA.q, -d));
 			vertex.wA = b2Mul(transformA, proxyA.GetVertex(vertex.indexA));
-			b2Vec2 wBLocal = new b2Vec2();
+			//b2Vec2 wBLocal = new b2Vec2();
 			vertex.indexB = proxyB.GetSupport(b2MulT(transformB.q, d));
 			vertex.wB = b2Mul(transformB, proxyB.GetVertex(vertex.indexB));
 			vertex.w = vertex.wB - vertex.wA;
@@ -902,14 +903,8 @@ public static class GlobalMembers
 		float radiusB = b2Max(proxyB.m_radius, (2.0f * DefineConstants.b2_linearSlop));
 		float radius = radiusA + radiusB;
 
-
-
 		b2Transform xfA = new b2Transform(input.transformA);
-
-
 		b2Transform xfB = new b2Transform(input.transformB);
-
-
 
 		b2Vec2 r = new b2Vec2(input.translationB);
 		b2Vec2 n = new b2Vec2(0.0f, 0.0f);
@@ -920,7 +915,7 @@ public static class GlobalMembers
 		simplex.m_count = 0;
 
 		// Get simplex vertices as an array.
-		b2SimplexVertex vertices = simplex.m_v1;
+		b2SimplexVertex[] vertices = new[] { simplex.m_v1, simplex.m_v2, simplex.m_v3 };
 
 		// Get support point in -r direction
 		int indexA = proxyA.GetSupport(b2MulT(xfA.q, -r));
@@ -929,8 +924,8 @@ public static class GlobalMembers
 		b2Vec2 wB = b2Mul(xfB, proxyB.GetVertex(indexB));
 		b2Vec2 v = wA - wB;
 
-		// Sigma is the target distance between polygons
-		float sigma = b2Max
+        // Sigma is the target distance between polygons
+        float sigma = GlobalMembers.b2Max(DefineConstants.b2_polygonRadius, radius - DefineConstants.b2_polygonRadius);
 		float tolerance = 0.5f * DefineConstants.b2_linearSlop;
 
 		// Main iteration loop.
@@ -982,7 +977,7 @@ public static class GlobalMembers
 			// Shift by lambda * r because we want the closest point to the current clip point.
 			// Note that the support point p is not shifted because we want the plane equation
 			// to be formed in unshifted space.
-			b2SimplexVertex vertex = vertices + simplex.m_count;
+			b2SimplexVertex vertex = vertices[simplex.m_count];
 			vertex.indexA = indexB;
 
 
@@ -1082,12 +1077,8 @@ public static class GlobalMembers
 		b2DistanceProxy proxyA = input.proxyA;
 		b2DistanceProxy proxyB = input.proxyB;
 
-
-
-		b2Sweep sweepA = new b2Sweep(input.sweepA);
-
-
-		b2Sweep sweepB = new b2Sweep(input.sweepB);
+		b2Sweep sweepA = input.sweepA;
+		b2Sweep sweepB = input.sweepB;
 
 		// Large rotations can make the root finder fail, so we normalize the
 		// sweep angles.
@@ -1191,8 +1182,8 @@ public static class GlobalMembers
 			for (;;)
 			{
 				// Find the deepest point at t2. Store the witness point indices.
-				int indexA;
-				int indexB;
+				int indexA = 0;
+				int indexB = 0;
 				float s2 = fcn.FindMinSeparation(ref indexA, ref indexB, t2);
 
 				// Is the final configuration separated?
@@ -1319,9 +1310,6 @@ public static class GlobalMembers
 		b2_toiTime += time;
 	}
 
-
-
-
 	public static float b2_toiTime;
 	public static float b2_toiMaxTime;
 	public static int b2_toiCalls;
@@ -1329,134 +1317,10 @@ public static class GlobalMembers
 	public static int b2_toiMaxIters;
 	public static int b2_toiRootIters;
 	public static int b2_toiMaxRootIters;
-	/*
-	* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-	/*
-	* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	public static readonly int b2_chunkSize = 16 * 1024;
 	public static readonly int b2_maxBlockSize = 640;
 	public static readonly int b2_blockSizes = 14;
 	public static readonly int b2_chunkArrayIncrement = 128;
-
-
-	//struct b2Block;
-
-	//struct b2Chunk;
-	/*
-	* Copyright (c) 2007-2009 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-	/*
-	* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	/// This function is used to ensure that a floating point number is not a NaN or infinity.
 	public static bool b2IsValid(float x)
@@ -1465,8 +1329,6 @@ public static class GlobalMembers
 	}
 
 	/// Useful constant
-
-	//extern const b2Vec2 b2Vec2_zero;
 
 	/// Perform the dot product on two vectors.
 	public static float b2Dot(b2Vec2 a, b2Vec2 b)
@@ -1508,33 +1370,6 @@ public static class GlobalMembers
 		return new b2Vec2(b2Dot(v, A.ex), b2Dot(v, A.ey));
 	}
 
-	/// Add two vectors component-wise.
-	public static b2Vec2 operator + (b2Vec2 a, b2Vec2 b)
-	{
-		return new b2Vec2(a.x + b.x, a.y + b.y);
-	}
-
-	/// Subtract two vectors component-wise.
-	public static b2Vec2 operator - (b2Vec2 a, b2Vec2 b)
-	{
-		return new b2Vec2(a.x - b.x, a.y - b.y);
-	}
-
-	public static b2Vec2 operator * (float s, b2Vec2 a)
-	{
-		return new b2Vec2(s * a.x, s * a.y);
-	}
-
-	public static bool operator == (b2Vec2 a, b2Vec2 b)
-	{
-		return a.x == b.x && a.y == b.y;
-	}
-
-	public static bool operator != (b2Vec2 a, b2Vec2 b)
-	{
-		return a.x != b.x || a.y != b.y;
-	}
-
 	public static float b2Distance(b2Vec2 a, b2Vec2 b)
 	{
 		b2Vec2 c = a - b;
@@ -1547,23 +1382,6 @@ public static class GlobalMembers
 		return b2Dot(c, c);
 	}
 
-	public static b2Vec3 operator * (float s, b2Vec3 a)
-	{
-		return new b2Vec3(s * a.x, s * a.y, s * a.z);
-	}
-
-	/// Add two vectors component-wise.
-	public static b2Vec3 operator + (b2Vec3 a, b2Vec3 b)
-	{
-		return new b2Vec3(a.x + b.x, a.y + b.y, a.z + b.z);
-	}
-
-	/// Subtract two vectors component-wise.
-	public static b2Vec3 operator - (b2Vec3 a, b2Vec3 b)
-	{
-		return new b2Vec3(a.x - b.x, a.y - b.y, a.z - b.z);
-	}
-
 	/// Perform the dot product on two vectors.
 	public static float b2Dot(b2Vec3 a, b2Vec3 b)
 	{
@@ -1574,11 +1392,6 @@ public static class GlobalMembers
 	public static b2Vec3 b2Cross(b2Vec3 a, b2Vec3 b)
 	{
 		return new b2Vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
-	}
-
-	public static b2Mat22 operator + (b2Mat22 A, b2Mat22 B)
-	{
-		return new b2Mat22(A.ex + B.ex, A.ey + B.ey);
 	}
 
 	// A * B
@@ -1687,14 +1500,17 @@ public static class GlobalMembers
 		return C;
 	}
 
-
-
-	public static T b2Abs<T>(T a)
+    public static float b2Abs(float a)
 	{
-		return a > T(0) ? a : -a;
+		return a > 0 ? a : -a;
 	}
 
-	public static b2Vec2 b2Abs(b2Vec2 a)
+    public static int b2Abs(int a)
+    {
+        return a > 0 ? a : -a;
+    }
+
+    public static b2Vec2 b2Abs(b2Vec2 a)
 	{
 		return new b2Vec2(b2Abs(a.x), b2Abs(a.y));
 	}
@@ -1704,43 +1520,50 @@ public static class GlobalMembers
 		return new b2Mat22(b2Abs(A.ex), b2Abs(A.ey));
 	}
 
-
-
-	public static T b2Min<T>(T a, T b)
+    public static float b2Min(float a, float b)
 	{
-		return a < b != null ? a : b;
+		return a < b ? a : b;
 	}
 
-	public static b2Vec2 b2Min(b2Vec2 a, b2Vec2 b)
+    public static int b2Min(int a, int b)
+    {
+        return a < b ? a : b;
+    }
+
+    public static b2Vec2 b2Min(b2Vec2 a, b2Vec2 b)
 	{
 		return new b2Vec2(b2Min(a.x, b.x), b2Min(a.y, b.y));
 	}
 
-
-
-	public static T b2Max<T>(T a, T b)
+    public static float b2Max(float a, float b)
 	{
-		return a > b != null ? a : b;
+		return a > b ? a : b;
 	}
 
-	public static b2Vec2 b2Max(b2Vec2 a, b2Vec2 b)
+    public static int b2Max(int a, int b)
+    {
+        return a > b ? a : b;
+    }
+
+    public static b2Vec2 b2Max(b2Vec2 a, b2Vec2 b)
 	{
 		return new b2Vec2(b2Max(a.x, b.x), b2Max(a.y, b.y));
 	}
 
-
-
-	public static T b2Clamp<T>(T a, T low, T high)
+	public static float b2Clamp(float a, float low, float high)
 	{
 		return b2Max(low, b2Min(a, high));
 	}
 
-	public static b2Vec2 b2Clamp(b2Vec2 a, b2Vec2 low, b2Vec2 high)
+    public static int b2Clamp(int a, int low, int high)
+    {
+        return b2Max(low, b2Min(a, high));
+    }
+
+    public static b2Vec2 b2Clamp(b2Vec2 a, b2Vec2 low, b2Vec2 high)
 	{
 		return b2Max(low, b2Min(a, high));
 	}
-
-
 
 	public static void b2Swap<T>(ref T a, ref T b)
 	{
@@ -1769,25 +1592,6 @@ public static class GlobalMembers
 		bool result = x > 0 && (x & (x - 1)) == 0;
 		return result;
 	}
-
-
-
-
-	const b2Vec2 b2Vec2_zero(0.0f, 0.0f);
-
-
-// Memory allocators. Modify these to use your own allocator.
-
-	
-	
-	
-	
-
-
-	
-	
-	
-	
 
 	/// @file
 	/// Global tuning constants based on meters-kilograms-seconds (MKS) units.
@@ -1868,101 +1672,16 @@ public static class GlobalMembers
 	
 	
 
-	// Memory Allocation
-
-	/// Implement this function to use your own memory allocator.
-	public static object b2Alloc(int size)
-	{
-
-		return malloc(size);
-	}
-
-	/// If you implement b2Alloc, you should also implement this function.
-	public static void b2Free(object mem)
-	{
-
-		free(mem);
-	}
-
-// You can modify this to use your logging facility.
+    // You can modify this to use your logging facility.
 
 	/// Logging function.
-	public static void Console.Write(string string, params object[] LegacyParamArray)
+	public static void b2Log(string _string, params object[] LegacyParamArray)
 	{
-	//	va_list args;
-	int ParamCount = -1;
-	//	va_start(args, string);
-		vprintf(string, args);
-	//	va_end(args);
+	    Console.Write(_string, LegacyParamArray);
 	}
 
 	/// Current version.
-
-	//extern b2Version b2_version;
-
-
-
 	public static b2Version b2_version = new b2Version(2, 3, 2);
-
-	/*
-	* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-	/*
-	* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	public static readonly int b2_stackSize = 100 * 1024; // 100k
 	public static readonly int b2_maxStackEntries = 32;
@@ -1978,88 +1697,13 @@ public static class GlobalMembers
 	/// For example, a superball bounces on anything.
 	public static float b2MixRestitution(float restitution1, float restitution2)
 	{
-		return restitution1 > restitution2 != 0 ? restitution1 : restitution2;
+		return restitution1 > restitution2 ? restitution1 : restitution2;
 	}
-
-
-	typedef b2Contact * b2ContactCreateFcn(b2Fixture * fixtureA, int indexA, b2Fixture * fixtureB, int indexB, b2BlockAllocator * allocator);
-
-	typedef void b2ContactDestroyFcn(b2Contact * contact, b2BlockAllocator * allocator);
-
-
-
-
 
 	// Solver debugging is normally disabled because the block solver sometimes has to deal with a poorly conditioned effective mass matrix.
 
 	public static bool g_blockSolve = true;
-	/*
-	* Copyright (c) 2007 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-	/*
-	* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
-	*
-	* This software is provided 'as-is', without any express or implied
-	* warranty.  In no event will the authors be held liable for any damages
-	* arising from the use of this software.
-	* Permission is granted to anyone to use this software for any purpose,
-	* including commercial applications, and to alter it and redistribute it
-	* freely, subject to the following restrictions:
-	* 1. The origin of this software must not be misrepresented; you must not
-	* claim that you wrote the original software. If you use this software
-	* in a product, an acknowledgment in the product documentation would be
-	* appreciated but is not required.
-	* 2. Altered source versions must be plainly marked as such, and must not be
-	* misrepresented as being the original software.
-	* 3. This notice may not be removed or altered from any source distribution.
-	*/
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	public static readonly float b2_minPulleyLength = 2.0f;
-
-
 
 	public static b2ContactFilter b2_defaultFilter = new b2ContactFilter();
 	public static b2ContactListener b2_defaultListener = new b2ContactListener();

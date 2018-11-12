@@ -44,7 +44,14 @@
 /// See http://en.wikipedia.org/wiki/Software_versioning
 public class b2Version
 {
-	public int major; ///< significant changes
+    public b2Version(int major, int minor, int revision)
+    {
+        this.major = major;
+        this.minor = minor;
+        this.revision = revision;
+    }
+
+    public int major; ///< significant changes
 	public int minor; ///< incremental changes
 	public int revision; ///< bug fixes
 }

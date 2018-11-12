@@ -20,11 +20,11 @@
 
 public class b2PolygonAndCircleContact : b2Contact
 {
-	public static b2Contact Create(b2Fixture fixtureA, int indexA, b2Fixture fixtureB, int indexB)
+	public new static b2Contact Create(b2Fixture fixtureA, int indexA, b2Fixture fixtureB, int indexB)
 	{
 		return new b2PolygonAndCircleContact(fixtureA, fixtureB);
 	}
-	public static void Destroy(ref b2Contact contact)
+	public new static void Destroy(ref b2Contact contact)
 	{
 	    contact = null;
 	}

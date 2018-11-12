@@ -451,7 +451,7 @@ public class b2ContactSolver : System.IDisposable
 				// Compute b'
 				b -= GlobalMembers.b2Mul(vc.K, a);
 
-				const float k_errorTol = 1e-3f;
+				//const float k_errorTol = 1e-3f;
 
 				for (;;)
 				{

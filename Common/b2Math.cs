@@ -127,6 +127,12 @@ public struct b2Vec2
         return GlobalMembers.b2IsValid(x) && GlobalMembers.b2IsValid(y);
     }
 
+    /// Get the skew vector such that dot(skew_vec, other) == cross(vec, other)
+	public b2Vec2 Skew()
+	{
+		return new b2Vec2(-y, x);
+    }
+
     /// <summary>
     /// Negate this vector.
     /// </summary>
@@ -173,6 +179,16 @@ public struct b2Vec2
     public static bool operator !=(b2Vec2 a, b2Vec2 b)
     {
         return a.x != b.x || a.y != b.y;
+    }
+
+    public override bool Equals(object o)
+    {
+        return (b2Vec2)o == this;
+    }
+
+    public override int GetHashCode()
+    {
+        return x.GetHashCode() + y.GetHashCode();
     }
 
     public static b2Vec2 Zero { get { return new b2Vec2(0, 0); } }

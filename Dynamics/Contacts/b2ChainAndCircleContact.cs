@@ -20,11 +20,11 @@
 
 public class b2ChainAndCircleContact : b2Contact
 {
-	public static b2Contact Create(b2Fixture fixtureA, int indexA, b2Fixture fixtureB, int indexB)
+	public new static b2Contact Create(b2Fixture fixtureA, int indexA, b2Fixture fixtureB, int indexB)
 	{
 		return new b2ChainAndCircleContact(fixtureA, indexA, fixtureB, indexB);
 	}
-	public static void Destroy(ref b2Contact contact)
+	public new static void Destroy(ref b2Contact contact)
 	{
 	    contact = null;
 	}

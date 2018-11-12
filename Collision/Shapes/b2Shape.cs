@@ -53,7 +53,7 @@ public abstract class b2Shape : System.IDisposable
 
 	/// Get the type of this shape. You can use this to down cast to the concrete shape.
 	/// @return the shape type.
-	public b2Shape.Type GetType()
+	public new b2Shape.Type GetType()
 	{
 		return m_type;
 	}

@@ -182,18 +182,18 @@ public class b2PulleyJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		Console.Write("  b2PulleyJointDef jd;\n");
-		Console.Write("  jd.bodyA = bodies[%d];\n", indexA);
-		Console.Write("  jd.bodyB = bodies[%d];\n", indexB);
-		Console.Write("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		Console.Write("  jd.groundAnchorA.Set(%.15lef, %.15lef);\n", m_groundAnchorA.x, m_groundAnchorA.y);
-		Console.Write("  jd.groundAnchorB.Set(%.15lef, %.15lef);\n", m_groundAnchorB.x, m_groundAnchorB.y);
-		Console.Write("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		Console.Write("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		Console.Write("  jd.lengthA = %.15lef;\n", m_lengthA);
-		Console.Write("  jd.lengthB = %.15lef;\n", m_lengthB);
-		Console.Write("  jd.ratio = %.15lef;\n", m_ratio);
-		Console.Write("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		GlobalMembers.b2Log("  b2PulleyJointDef jd;\n");
+		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		GlobalMembers.b2Log("  jd.groundAnchorA.Set(%.15lef, %.15lef);\n", m_groundAnchorA.x, m_groundAnchorA.y);
+		GlobalMembers.b2Log("  jd.groundAnchorB.Set(%.15lef, %.15lef);\n", m_groundAnchorB.x, m_groundAnchorB.y);
+		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		GlobalMembers.b2Log("  jd.lengthA = %.15lef;\n", m_lengthA);
+		GlobalMembers.b2Log("  jd.lengthB = %.15lef;\n", m_lengthB);
+		GlobalMembers.b2Log("  jd.ratio = %.15lef;\n", m_ratio);
+		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 	/// Implement b2Joint::ShiftOrigin
@@ -229,7 +229,7 @@ public class b2PulleyJoint : b2Joint
 		m_impulse = 0.0f;
 	}
 
-	protected override void InitVelocityConstraints(b2SolverData data)
+    internal override void InitVelocityConstraints(b2SolverData data)
 	{
 		m_indexA = m_bodyA.m_islandIndex;
 		m_indexB = m_bodyB.m_islandIndex;
@@ -335,7 +335,7 @@ public class b2PulleyJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override void SolveVelocityConstraints(b2SolverData data)
+    internal override void SolveVelocityConstraints(b2SolverData data)
 	{
 		b2Vec2 vA = data.velocities[m_indexA].v;
 		float wA = data.velocities[m_indexA].w;
@@ -365,7 +365,7 @@ public class b2PulleyJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override bool SolvePositionConstraints(b2SolverData data)
+    internal override bool SolvePositionConstraints(b2SolverData data)
 	{
 		b2Vec2 cA = data.positions[m_indexA].c;
 		float aA = data.positions[m_indexA].a;

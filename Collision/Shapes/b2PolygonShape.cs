@@ -66,7 +66,7 @@ public class b2PolygonShape : b2Shape
 		int n = GlobalMembers.b2Min(count, DefineConstants.b2_maxPolygonVertices);
 
 		// Perform welding and copy vertices into local buffer.
-		b2Vec2[] ps = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+		b2Vec2[] ps = new b2Vec2[DefineConstants.b2_maxPolygonVertices];
 		int tempCount = 0;
 		for (int i = 0; i < n; ++i)
 		{
@@ -75,8 +75,8 @@ public class b2PolygonShape : b2Shape
 			bool unique = true;
 			for (int j = 0; j < tempCount; ++j)
 			{
-				if (GlobalMembers.b2DistanceSquared(v, ps[j]) < 
-				{
+				if (GlobalMembers.b2DistanceSquared(v, ps[j]) < ((0.5f * DefineConstants.b2_linearSlop) * (0.5f * DefineConstants.b2_linearSlop)))
+                {
 					unique = false;
 					break;
 				}

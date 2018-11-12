@@ -18,65 +18,6 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*/
-
-
-
-
-//class b2Contact;
-
-//class b2Joint;
-
-//class b2StackAllocator;
-
-//class b2ContactListener;
-
-//struct b2ContactVelocityConstraint;
-
-//struct b2Profile;
-
 /// This is an internal class.
 public class b2Island : System.IDisposable
 {
@@ -238,28 +179,23 @@ public class b2Island : System.IDisposable
 		// Integrate velocities and apply damping. Initialize the body state.
 		for (int i = 0; i < m_bodyCount; ++i)
 		{
-			b2Body[] b = m_bodies[i];
-
-
+			b2Body b = m_bodies[i];
 
 			b2Vec2 c = new b2Vec2(b.m_sweep.c);
 			float a = b.m_sweep.a;
-
 
 			b2Vec2 v = new b2Vec2(b.m_linearVelocity);
 			float w = b.m_angularVelocity;
 
 			// Store positions for continuous collision.
-
-
 			b.m_sweep.c0 = b.m_sweep.c;
 			b.m_sweep.a0 = b.m_sweep.a;
 
 			if (b.m_type == BodyType.b2_dynamicBody)
 			{
 				// Integrate velocities.
-				v += h * (b.m_gravityScale * gravity + b.m_invMass b[0].m_force);
-				w += h b[0].m_invI b[0].m_torque;
+				v += h * (b.m_gravityScale * gravity + b.m_invMass * b.m_force);
+				w += h * b.m_invI * b.m_torque;
 
 				// Apply damping.
 				// ODE: dv/dt + c * v = 0
@@ -268,16 +204,12 @@ public class b2Island : System.IDisposable
 				// v2 = exp(-c * dt) * v1
 				// Pade approximation:
 				// v2 = v1 * 1 / (1 + c * dt)
-				v *= 1.0f / (1.0f + h b[0].m_linearDamping);
-				w *= 1.0f / (1.0f + h b[0].m_angularDamping);
+				v *= 1.0f / (1.0f + h * b.m_linearDamping);
+				w *= 1.0f / (1.0f + h * b.m_angularDamping);
 			}
-
-
 
 			m_positions[i].c = c;
 			m_positions[i].a = a;
-
-
 			m_velocities[i].v = v;
 			m_velocities[i].w = w;
 		}
@@ -286,8 +218,6 @@ public class b2Island : System.IDisposable
 
 		// Solver data
 		b2SolverData solverData = new b2SolverData();
-
-
 		solverData.step = step;
 		solverData.positions = m_positions;
 		solverData.velocities = m_velocities;
@@ -360,12 +290,8 @@ public class b2Island : System.IDisposable
 			c += h * v;
 			a += h * w;
 
-
-
 			m_positions[i].c = c;
 			m_positions[i].a = a;
-
-
 			m_velocities[i].v = v;
 			m_velocities[i].w = w;
 		}
@@ -395,9 +321,7 @@ public class b2Island : System.IDisposable
 		// Copy state buffers back to the bodies
 		for (int i = 0; i < m_bodyCount; ++i)
 		{
-			b2Body[] body = m_bodies[i];
-
-
+			b2Body body = m_bodies[i];
 			body.m_sweep.c = m_positions[i].c;
 			body.m_sweep.a = m_positions[i].a;
 			body.m_linearVelocity = m_velocities[i].v;
@@ -418,13 +342,13 @@ public class b2Island : System.IDisposable
 
 			for (int i = 0; i < m_bodyCount; ++i)
 			{
-				b2Body[] b = m_bodies[i];
+				b2Body b = m_bodies[i];
 				if (b.GetType() == BodyType.b2_staticBody)
 				{
 					continue;
 				}
 
-				if ((b.m_flags & (int)b2Body.AnonymousEnum.e_autoSleepFlag) == 0 || b.m_angularVelocity b[0].m_angularVelocity > angTolSqr || GlobalMembers.b2Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr)
+				if ((b.m_flags & b2Body.BodyFlags.e_autoSleepFlag) == 0 || b.m_angularVelocity * b.m_angularVelocity > angTolSqr || GlobalMembers.b2Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr)
 				{
 					b.m_sleepTime = 0.0f;
 					minSleepTime = 0.0f;
@@ -440,7 +364,7 @@ public class b2Island : System.IDisposable
 			{
 				for (int i = 0; i < m_bodyCount; ++i)
 				{
-					b2Body[] b = m_bodies[i];
+					b2Body b = m_bodies[i];
 					b.SetAwake(false);
 				}
 			}
@@ -455,7 +379,7 @@ public class b2Island : System.IDisposable
 		// Initialize the body state.
 		for (int i = 0; i < m_bodyCount; ++i)
 		{
-			b2Body[] b = m_bodies[i];
+			b2Body b = m_bodies[i];
 
 
 			m_positions[i].c = b.m_sweep.c;
@@ -554,15 +478,15 @@ public class b2Island : System.IDisposable
 
 			// Check for large velocities
 			b2Vec2 translation = h * v;
-			if (GlobalMembers.b2Dot(translation, translation) > (DefineConstants.b2_maxTranslation * DefineConstants.b2_maxTranslation))
+			if (GlobalMembers.b2Dot(translation, translation) > (DefineConstants.b2_maxTranslationSquared))
 			{
 				float ratio = DefineConstants.b2_maxTranslation / translation.Length();
 				v *= ratio;
 			}
 
 			float rotation = h * w;
-			if (rotation * rotation > 
-			{
+			if (rotation * rotation > DefineConstants.b2_maxRotationSquared)
+            {
 				float ratio = (0.5f * DefineConstants.b2_pi) / GlobalMembers.b2Abs(rotation);
 				w *= ratio;
 			}
@@ -581,7 +505,7 @@ public class b2Island : System.IDisposable
 			m_velocities[i].w = w;
 
 			// Sync bodies
-			b2Body[] body = m_bodies[i];
+			b2Body body = m_bodies[i];
 
 
 			body.m_sweep.c = c;
@@ -614,7 +538,7 @@ public class b2Island : System.IDisposable
 		m_joints[m_jointCount++] = joint;
 	}
 
-	public void Report(b2ContactVelocityConstraint constraints)
+	public void Report(b2ContactVelocityConstraint[] constraints)
 	{
 		if (m_listener == null)
 		{
@@ -623,7 +547,7 @@ public class b2Island : System.IDisposable
 
 		for (int i = 0; i < m_contactCount; ++i)
 		{
-			b2Contact[] c = m_contacts[i];
+			b2Contact c = m_contacts[i];
 
 			b2ContactVelocityConstraint vc = constraints[i];
 

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 /*
 * Copyright (c) 2011 Erin Catto http://box2d.org
@@ -17,55 +18,6 @@
 * misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 */
-
-/*
-* Copyright (c) 2011 Erin Catto http://www.box2d.org
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//class b2Draw;
 
 /// 
 public class b2RopeDef
@@ -121,12 +73,6 @@ public class b2Rope : System.IDisposable
 	}
 	public void Dispose()
 	{
-		b2Free(m_ps);
-		b2Free(m_p0s);
-		b2Free(m_vs);
-		b2Free(m_ims);
-		b2Free(m_Ls);
-		b2Free(m_as);
 	}
 
 	///
@@ -134,10 +80,10 @@ public class b2Rope : System.IDisposable
 	{
 		Debug.Assert(def.count >= 3);
 		m_count = def.count;
-		m_ps = (b2Vec2)b2Alloc(m_count * sizeof(b2Vec2));
-		m_p0s = (b2Vec2)b2Alloc(m_count * sizeof(b2Vec2));
-		m_vs = (b2Vec2)b2Alloc(m_count * sizeof(b2Vec2));
-		m_ims = (float)b2Alloc(m_count * sizeof(float));
+		m_ps = new b2Vec2[m_count];
+		m_p0s = new b2Vec2[m_count];
+		m_vs = new b2Vec2[m_count];
+		m_ims = new float[m_count];
 
 		for (int i = 0; i < m_count; ++i)
 		{
@@ -158,8 +104,8 @@ public class b2Rope : System.IDisposable
 
 		int count2 = m_count - 1;
 		int count3 = m_count - 2;
-		m_Ls = (float)b2Alloc(count2 * sizeof(float));
-		m_as = (float)b2Alloc(count3 * sizeof(float));
+		m_Ls = new float[count2];
+		m_as = new float[count3];
 
 		for (int i = 0; i < count2; ++i)
 		{
@@ -180,10 +126,8 @@ public class b2Rope : System.IDisposable
 			float a = GlobalMembers.b2Cross(d1, d2);
 			float b = GlobalMembers.b2Dot(d1, d2);
 
-			m_as[i] = atan2f(a, b);
+			m_as[i] = (float)Math.Atan2(a, b);
 		}
-
-
 
 		m_gravity = def.gravity;
 		m_damping = def.damping;
@@ -199,7 +143,7 @@ public class b2Rope : System.IDisposable
 			return;
 		}
 
-		float d = expf(- h * m_damping);
+		float d = (float)Math.Exp(- h * m_damping);
 
 		for (int i = 0; i < m_count; ++i)
 		{
@@ -238,7 +182,7 @@ public class b2Rope : System.IDisposable
 	///
 
 
-	public b2Vec2 GetVertices()
+	public b2Vec2[] GetVertices()
 	{
 		return m_ps;
 	}
@@ -325,7 +269,7 @@ public class b2Rope : System.IDisposable
 			float a = GlobalMembers.b2Cross(d1, d2);
 			float b = GlobalMembers.b2Dot(d1, d2);
 
-			float angle = atan2f(a, b);
+			float angle = (float)Math.Atan2(a, b);
 
 			b2Vec2 Jd1 = (-1.0f / L1sqr) * d1.Skew();
 			b2Vec2 Jd2 = (1.0f / L2sqr) * d2.Skew();

@@ -193,7 +193,7 @@ public class b2MouseJoint : b2Joint
 	/// The mouse joint does not support dumping.
 	public override void Dump()
 	{
-		Console.Write("Mouse joint dumping is not supported.\n");
+		GlobalMembers.b2Log("Mouse joint dumping is not supported.\n");
 	}
 
 	/// Implement b2Joint::ShiftOrigin
@@ -238,7 +238,7 @@ public class b2MouseJoint : b2Joint
 		m_gamma = 0.0f;
 	}
 
-	protected override void InitVelocityConstraints(b2SolverData data)
+    internal override void InitVelocityConstraints(b2SolverData data)
 	{
 		m_indexB = m_bodyB.m_islandIndex;
 
@@ -319,7 +319,7 @@ public class b2MouseJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override void SolveVelocityConstraints(b2SolverData data)
+    internal override void SolveVelocityConstraints(b2SolverData data)
 	{
 		b2Vec2 vB = data.velocities[m_indexB].v;
 		float wB = data.velocities[m_indexB].w;
@@ -347,7 +347,7 @@ public class b2MouseJoint : b2Joint
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
-	protected override bool SolvePositionConstraints(b2SolverData data)
+    internal override bool SolvePositionConstraints(b2SolverData data)
 	{
 		
 		return true;

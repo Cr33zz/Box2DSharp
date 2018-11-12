@@ -98,7 +98,7 @@ public abstract class b2Joint : System.IDisposable
 
 	/// Get the type of the concrete joint.
 
-	public b2JointType GetType()
+	public new b2JointType GetType()
 	{
 		return m_type;
 	}
@@ -162,7 +162,7 @@ public abstract class b2Joint : System.IDisposable
 	/// Dump this joint to the log file.
 	public virtual void Dump()
 	{
-		Console.Write("// Dump is not supported for this joint type.\n");
+		GlobalMembers.b2Log("// Dump is not supported for this joint type.\n");
 	}
 
 	/// Shift the origin for any points stored in world coordinates.
@@ -281,11 +281,11 @@ public abstract class b2Joint : System.IDisposable
 	{
 	}
 
-	protected abstract void InitVelocityConstraints(b2SolverData data);
-	protected abstract void SolveVelocityConstraints(b2SolverData data);
+    internal abstract void InitVelocityConstraints(b2SolverData data);
+    internal abstract void SolveVelocityConstraints(b2SolverData data);
 
-	// This returns true if the position errors are within tolerance.
-	protected abstract bool SolvePositionConstraints(b2SolverData data);
+    // This returns true if the position errors are within tolerance.
+    internal abstract bool SolvePositionConstraints(b2SolverData data);
 
     internal b2JointType m_type;
     internal b2Joint m_prev;

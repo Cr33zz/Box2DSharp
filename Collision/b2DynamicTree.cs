@@ -187,7 +187,7 @@ public class b2DynamicTree : System.IDisposable
 
 	/// Query an AABB for overlapping proxies. The callback class
 	/// is called for each proxy that overlaps the supplied AABB.
-	public void Query<T>(T callback, b2AABB aabb)
+	public void Query(b2BroadphaseQueryCallback callback, b2AABB aabb)
 	{
 	    Stack<int> stack = new Stack<int>(256);
         stack.Push(m_root);
@@ -206,7 +206,7 @@ public class b2DynamicTree : System.IDisposable
 			{
 				if (node.IsLeaf())
 				{
-					bool proceed = callback.QueryCallback(nodeId);
+					bool proceed = callback(nodeId);
 					if (proceed == false)
 					{
 						return;
@@ -228,7 +228,7 @@ public class b2DynamicTree : System.IDisposable
 	/// number of proxies in the tree.
 	/// @param input the ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
 	/// @param callback a callback class that is called for each proxy that is hit by the ray.
-	public void RayCast<T>(T callback, b2RayCastInput input)
+	public void RayCast(b2BroadphaseRayCastCallback callback, b2RayCastInput input)
 	{
 		b2Vec2 p1 = new b2Vec2(input.p1);
 		b2Vec2 p2 = new b2Vec2(input.p2);
@@ -288,7 +288,7 @@ public class b2DynamicTree : System.IDisposable
 				subInput.p2 = input.p2;
 				subInput.maxFraction = maxFraction;
 
-				float value = callback.RayCastCallback(subInput, nodeId);
+				float value = callback(subInput, nodeId);
 
 				if (value == 0.0f)
 				{

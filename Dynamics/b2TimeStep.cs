@@ -16,34 +16,6 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /// Profiling data. Times are in milliseconds.
 public class b2Profile
 {

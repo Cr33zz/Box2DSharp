@@ -135,7 +135,7 @@ public class b2BroadPhase : System.IDisposable
 			b2AABB fatAABB = m_tree.GetFatAABB(m_queryProxyId);
 
 			// Query tree, create pairs and add them pair buffer.
-			m_tree.Query(this, fatAABB);
+			m_tree.Query(QueryCallback, fatAABB);
 		}
 
 		// Reset move buffer
@@ -152,7 +152,7 @@ public class b2BroadPhase : System.IDisposable
 			object userDataA = m_tree.GetUserData(primaryPair.proxyIdA);
 			object userDataB = m_tree.GetUserData(primaryPair.proxyIdB);
 
-			callback.AddPair(userDataA, userDataB);
+			callback(userDataA, userDataB);
 			++i;
 
 			// Skip any duplicate pairs.
@@ -173,7 +173,7 @@ public class b2BroadPhase : System.IDisposable
 
 	/// Query an AABB for overlapping proxies. The callback class
 	/// is called for each proxy that overlaps the supplied AABB.
-	public void Query<T>(T callback, b2AABB aabb)
+	public void Query(b2BroadphaseQueryCallback callback, b2AABB aabb)
 	{
 		m_tree.Query(callback, aabb);
 	}
@@ -185,7 +185,7 @@ public class b2BroadPhase : System.IDisposable
 	/// number of proxies in the tree.
 	/// @param input the ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
 	/// @param callback a callback class that is called for each proxy that is hit by the ray.
-	public void RayCast<T>(T callback, b2RayCastInput input)
+	public void RayCast(b2BroadphaseRayCastCallback callback, b2RayCastInput input)
 	{
 		m_tree.RayCast(callback, input);
 	}
