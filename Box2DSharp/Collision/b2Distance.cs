@@ -268,7 +268,7 @@ public class b2Simplex
 		}
 	}
 
-	public void WriteCache(b2SimplexCache cache)
+	public void WriteCache(ref b2SimplexCache cache)
 	{
 		cache.metric = GetMetric();
 		cache.count = (ushort)m_count;

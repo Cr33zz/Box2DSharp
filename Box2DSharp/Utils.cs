@@ -857,7 +857,7 @@ public static class Utils
 		output.iterations = iter;
 
 		// Cache the simplex.
-		simplex.WriteCache(cache);
+		simplex.WriteCache(ref cache);
 
 		// Apply radii if requested.
 		if (input.useRadii)

@@ -18,10 +18,32 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-public class b2Pair
+public class b2Pair : IComparable<b2Pair>
 {
-	public int proxyIdA;
+    public int proxyIdA;
 	public int proxyIdB;
+
+    public int CompareTo(b2Pair other)
+    {
+        if (proxyIdA < other.proxyIdA)
+        {
+            return -1;
+        }
+        if (proxyIdA == other.proxyIdA)
+        {
+            if (proxyIdB < other.proxyIdB)
+            {
+                return -1;
+            }
+            if (proxyIdB == other.proxyIdB)
+            {
+                return 0;
+            }
+        }
+
+        return 1;
+    }
+
 }
 
 /// The broad-phase is used for computing pairs and performing volume queries and ray casts.
@@ -142,7 +164,7 @@ public class b2BroadPhase : System.IDisposable
 		m_moveCount = 0;
 
 		// Sort the pair buffer to expose duplicates.
-		Array.Sort(m_pairBuffer, Utils.b2PairLessThan);
+		Array.Sort(m_pairBuffer, 0, m_pairCount);
 
 		// Send the pairs back to the client.
 		i = 0;
