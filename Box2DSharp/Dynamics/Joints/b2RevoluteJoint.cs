@@ -188,16 +188,12 @@ public class b2RevoluteJoint : b2Joint
 	}
 
 	/// Get the reference angle.
-
-
 	public float GetReferenceAngle()
 	{
 		return m_referenceAngle;
 	}
 
 	/// Get the current joint angle in radians.
-
-
 	public float GetJointAngle()
 	{
 		b2Body bA = m_bodyA;
@@ -206,8 +202,6 @@ public class b2RevoluteJoint : b2Joint
 	}
 
 	/// Get the current joint angle speed in radians per second.
-
-
 	public float GetJointSpeed()
 	{
 		b2Body bA = m_bodyA;
@@ -216,8 +210,6 @@ public class b2RevoluteJoint : b2Joint
 	}
 
 	/// Is the joint limit enabled?
-
-
 	public bool IsLimitEnabled()
 	{
 		return m_enableLimit;
@@ -236,16 +228,12 @@ public class b2RevoluteJoint : b2Joint
 	}
 
 	/// Get the lower joint limit in radians.
-
-
 	public float GetLowerLimit()
 	{
 		return m_lowerAngle;
 	}
 
 	/// Get the upper joint limit in radians.
-
-
 	public float GetUpperLimit()
 	{
 		return m_upperAngle;
@@ -267,8 +255,6 @@ public class b2RevoluteJoint : b2Joint
 	}
 
 	/// Is the joint motor enabled?
-
-
 	public bool IsMotorEnabled()
 	{
 		return m_enableMotor;
@@ -297,8 +283,6 @@ public class b2RevoluteJoint : b2Joint
 	}
 
 	/// Get the motor speed in radians per second.
-
-
 	public float GetMotorSpeed()
 	{
 		return m_motorSpeed;
@@ -315,7 +299,6 @@ public class b2RevoluteJoint : b2Joint
 		}
 	}
 
-
 	public float GetMaxMotorTorque()
 	{
 		return m_maxMotorTorque;
@@ -323,8 +306,6 @@ public class b2RevoluteJoint : b2Joint
 
 	/// Get the reaction force given the inverse time step.
 	/// Unit is N.
-
-
 	public override b2Vec2 GetReactionForce(float inv_dt)
 	{
 		b2Vec2 P = new b2Vec2(m_impulse.x, m_impulse.y);
@@ -333,8 +314,6 @@ public class b2RevoluteJoint : b2Joint
 
 	/// Get the reaction torque due to the joint limit given the inverse time step.
 	/// Unit is N*m.
-
-
 	public override float GetReactionTorque(float inv_dt)
 	{
 		return inv_dt * m_impulse.z;
@@ -371,19 +350,9 @@ public class b2RevoluteJoint : b2Joint
 		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
-
-
-    //	friend class b2Joint;
-
-    //	friend class b2GearJoint;
-
     internal b2RevoluteJoint(b2RevoluteJointDef def) : base(def)
 	{
-
-
 		m_localAnchorA = def.localAnchorA;
-
-
 		m_localAnchorB = def.localAnchorB;
 		m_referenceAngle = def.referenceAngle;
 
@@ -403,11 +372,7 @@ public class b2RevoluteJoint : b2Joint
 	{
 		m_indexA = m_bodyA.m_islandIndex;
 		m_indexB = m_bodyB.m_islandIndex;
-
-
 		m_localCenterA = m_bodyA.m_sweep.localCenter;
-
-
 		m_localCenterB = m_bodyB.m_sweep.localCenter;
 		m_invMassA = m_bodyA.m_invMass;
 		m_invMassB = m_bodyB.m_invMass;
@@ -425,11 +390,7 @@ public class b2RevoluteJoint : b2Joint
 		b2Rot qA = new b2Rot(aA);
 		b2Rot qB = new b2Rot(aB);
 
-
-
 		m_rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
-
-
 		m_rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 		// J = [-I -r1_skew I r2_skew]
@@ -523,12 +484,8 @@ public class b2RevoluteJoint : b2Joint
 			m_motorImpulse = 0.0f;
 		}
 
-
-
 		data.velocities[m_indexA].v = vA;
 		data.velocities[m_indexA].w = wA;
-
-
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
@@ -636,12 +593,8 @@ public class b2RevoluteJoint : b2Joint
 			wB += iB * Utils.b2Cross(m_rB, impulse);
 		}
 
-
-
 		data.velocities[m_indexA].v = vA;
 		data.velocities[m_indexA].w = wA;
-
-
 		data.velocities[m_indexB].v = vB;
 		data.velocities[m_indexB].w = wB;
 	}
@@ -726,12 +679,8 @@ public class b2RevoluteJoint : b2Joint
 			aB += iB * Utils.b2Cross(rB, impulse);
 		}
 
-
-
 		data.positions[m_indexA].c = cA;
 		data.positions[m_indexA].a = aA;
-
-
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
