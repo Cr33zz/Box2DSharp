@@ -67,8 +67,8 @@ public class b2ContactFilter : System.IDisposable
 /// match up one-to-one with the contact points in b2Manifold.
 public class b2ContactImpulse
 {
-	public float[] normalImpulses = new float[DefineConstants.b2_maxManifoldPoints];
-	public float[] tangentImpulses = new float[DefineConstants.b2_maxManifoldPoints];
+	public float[] normalImpulses = new float[Settings.b2_maxManifoldPoints];
+	public float[] tangentImpulses = new float[Settings.b2_maxManifoldPoints];
 	public int count;
 }
 

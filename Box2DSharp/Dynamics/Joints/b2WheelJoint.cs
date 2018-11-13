@@ -212,7 +212,7 @@ public class b2WheelJoint : b2Joint
 		b2Vec2 d = pB - pA;
 		b2Vec2 axis = bA.GetWorldVector(m_localXAxisA);
 
-		float translation = GlobalMembers.b2Dot(d, axis);
+		float translation = Utils.b2Dot(d, axis);
 		return translation;
 	}
 
@@ -224,12 +224,12 @@ public class b2WheelJoint : b2Joint
 		b2Body bA = m_bodyA;
 		b2Body bB = m_bodyB;
 
-		b2Vec2 rA = GlobalMembers.b2Mul(bA.m_xf.q, m_localAnchorA - bA.m_sweep.localCenter);
-		b2Vec2 rB = GlobalMembers.b2Mul(bB.m_xf.q, m_localAnchorB - bB.m_sweep.localCenter);
+		b2Vec2 rA = Utils.b2Mul(bA.m_xf.q, m_localAnchorA - bA.m_sweep.localCenter);
+		b2Vec2 rB = Utils.b2Mul(bB.m_xf.q, m_localAnchorB - bB.m_sweep.localCenter);
 		b2Vec2 p1 = bA.m_sweep.c + rA;
 		b2Vec2 p2 = bB.m_sweep.c + rB;
 		b2Vec2 d = p2 - p1;
-		b2Vec2 axis = GlobalMembers.b2Mul(bA.m_xf.q, m_localXAxisA);
+		b2Vec2 axis = Utils.b2Mul(bA.m_xf.q, m_localXAxisA);
 
 
 
@@ -240,7 +240,7 @@ public class b2WheelJoint : b2Joint
 		float wA = bA.m_angularVelocity;
 		float wB = bB.m_angularVelocity;
 
-		float speed = GlobalMembers.b2Dot(d, GlobalMembers.b2Cross(wA, axis)) + GlobalMembers.b2Dot(axis, vB + GlobalMembers.b2Cross(wB, rB) - vA - GlobalMembers.b2Cross(wA, rA));
+		float speed = Utils.b2Dot(d, Utils.b2Cross(wA, axis)) + Utils.b2Dot(axis, vB + Utils.b2Cross(wB, rB) - vA - Utils.b2Cross(wA, rA));
 		return speed;
 	}
 
@@ -357,19 +357,19 @@ public class b2WheelJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2WheelJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		GlobalMembers.b2Log("  jd.localAxisA.Set(%.15lef, %.15lef);\n", m_localXAxisA.x, m_localXAxisA.y);
-		GlobalMembers.b2Log("  jd.enableMotor = bool(%d);\n", m_enableMotor);
-		GlobalMembers.b2Log("  jd.motorSpeed = %.15lef;\n", m_motorSpeed);
-		GlobalMembers.b2Log("  jd.maxMotorTorque = %.15lef;\n", m_maxMotorTorque);
-		GlobalMembers.b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
-		GlobalMembers.b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2WheelJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		Utils.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		Utils.b2Log("  jd.localAxisA.Set(%.15lef, %.15lef);\n", m_localXAxisA.x, m_localXAxisA.y);
+		Utils.b2Log("  jd.enableMotor = bool(%d);\n", m_enableMotor);
+		Utils.b2Log("  jd.motorSpeed = %.15lef;\n", m_motorSpeed);
+		Utils.b2Log("  jd.maxMotorTorque = %.15lef;\n", m_maxMotorTorque);
+		Utils.b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
+		Utils.b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -386,7 +386,7 @@ public class b2WheelJoint : b2Joint
 
 
 		m_localXAxisA = def.localAxisA;
-		m_localYAxisA = GlobalMembers.b2Cross(1.0f, m_localXAxisA);
+		m_localYAxisA = Utils.b2Cross(1.0f, m_localXAxisA);
 
 		m_mass = 0.0f;
 		m_impulse = 0.0f;
@@ -443,17 +443,17 @@ public class b2WheelJoint : b2Joint
 		b2Rot qB = new b2Rot(aB);
 
 		// Compute the effective masses.
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 		b2Vec2 d = cB + rB - cA - rA;
 
 		{
 		// Point to line constraint
 
 
-			m_ay = GlobalMembers.b2Mul(qA, m_localYAxisA);
-			m_sAy = GlobalMembers.b2Cross(d + rA, m_ay);
-			m_sBy = GlobalMembers.b2Cross(rB, m_ay);
+			m_ay = Utils.b2Mul(qA, m_localYAxisA);
+			m_sAy = Utils.b2Cross(d + rA, m_ay);
+			m_sBy = Utils.b2Cross(rB, m_ay);
 
 			m_mass = mA + mB + iA * m_sAy * m_sAy + iB * m_sBy * m_sBy;
 
@@ -471,9 +471,9 @@ public class b2WheelJoint : b2Joint
 		{
 
 
-			m_ax = GlobalMembers.b2Mul(qA, m_localXAxisA);
-			m_sAx = GlobalMembers.b2Cross(d + rA, m_ax);
-			m_sBx = GlobalMembers.b2Cross(rB, m_ax);
+			m_ax = Utils.b2Mul(qA, m_localXAxisA);
+			m_sAx = Utils.b2Cross(d + rA, m_ax);
+			m_sBx = Utils.b2Cross(rB, m_ax);
 
 			float invMass = mA + mB + iA * m_sAx * m_sAx + iB * m_sBx * m_sBx;
 
@@ -481,10 +481,10 @@ public class b2WheelJoint : b2Joint
 			{
 				m_springMass = 1.0f / invMass;
 
-				float C = GlobalMembers.b2Dot(d, m_ax);
+				float C = Utils.b2Dot(d, m_ax);
 
 				// Frequency
-				float omega = 2.0f * DefineConstants.b2_pi * m_frequencyHz;
+				float omega = 2.0f * Settings.b2_pi * m_frequencyHz;
 
 				// Damping coefficient
 				float damp = 2.0f * m_springMass * m_dampingRatio * omega;
@@ -576,7 +576,7 @@ public class b2WheelJoint : b2Joint
 
 		{
 		// Solve spring constraint
-			float Cdot = GlobalMembers.b2Dot(m_ax, vB - vA) + m_sBx * wB - m_sAx * wA;
+			float Cdot = Utils.b2Dot(m_ax, vB - vA) + m_sBx * wB - m_sAx * wA;
 			float impulse = -m_springMass * (Cdot + m_bias + m_gamma * m_springImpulse);
 			m_springImpulse += impulse;
 
@@ -598,7 +598,7 @@ public class b2WheelJoint : b2Joint
 
 			float oldImpulse = m_motorImpulse;
 			float maxImpulse = data.step.dt * m_maxMotorTorque;
-			m_motorImpulse = GlobalMembers.b2Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
+			m_motorImpulse = Utils.b2Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
 			impulse = m_motorImpulse - oldImpulse;
 
 			wA -= iA * impulse;
@@ -607,7 +607,7 @@ public class b2WheelJoint : b2Joint
 
 		{
 		// Solve point to line constraint
-			float Cdot = GlobalMembers.b2Dot(m_ay, vB - vA) + m_sBy * wB - m_sAy * wA;
+			float Cdot = Utils.b2Dot(m_ay, vB - vA) + m_sBy * wB - m_sAy * wA;
 			float impulse = -m_mass * Cdot;
 			m_impulse += impulse;
 
@@ -641,16 +641,16 @@ public class b2WheelJoint : b2Joint
 		b2Rot qA = new b2Rot(aA);
 		b2Rot qB = new b2Rot(aB);
 
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 		b2Vec2 d = (cB - cA) + rB - rA;
 
-		b2Vec2 ay = GlobalMembers.b2Mul(qA, m_localYAxisA);
+		b2Vec2 ay = Utils.b2Mul(qA, m_localYAxisA);
 
-		float sAy = GlobalMembers.b2Cross(d + rA, ay);
-		float sBy = GlobalMembers.b2Cross(rB, ay);
+		float sAy = Utils.b2Cross(d + rA, ay);
+		float sBy = Utils.b2Cross(rB, ay);
 
-		float C = GlobalMembers.b2Dot(d, ay);
+		float C = Utils.b2Dot(d, ay);
 
 		float k = m_invMassA + m_invMassB + m_invIA * m_sAy * m_sAy + m_invIB * m_sBy * m_sBy;
 
@@ -682,7 +682,7 @@ public class b2WheelJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return GlobalMembers.b2Abs(C) <= DefineConstants.b2_linearSlop;
+		return Utils.b2Abs(C) <= Settings.b2_linearSlop;
 	}
 
 	protected float m_frequencyHz;

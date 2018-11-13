@@ -182,18 +182,18 @@ public class b2PulleyJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2PulleyJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.groundAnchorA.Set(%.15lef, %.15lef);\n", m_groundAnchorA.x, m_groundAnchorA.y);
-		GlobalMembers.b2Log("  jd.groundAnchorB.Set(%.15lef, %.15lef);\n", m_groundAnchorB.x, m_groundAnchorB.y);
-		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		GlobalMembers.b2Log("  jd.lengthA = %.15lef;\n", m_lengthA);
-		GlobalMembers.b2Log("  jd.lengthB = %.15lef;\n", m_lengthB);
-		GlobalMembers.b2Log("  jd.ratio = %.15lef;\n", m_ratio);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2PulleyJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.groundAnchorA.Set(%.15lef, %.15lef);\n", m_groundAnchorA.x, m_groundAnchorA.y);
+		Utils.b2Log("  jd.groundAnchorB.Set(%.15lef, %.15lef);\n", m_groundAnchorB.x, m_groundAnchorB.y);
+		Utils.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		Utils.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		Utils.b2Log("  jd.lengthA = %.15lef;\n", m_lengthA);
+		Utils.b2Log("  jd.lengthB = %.15lef;\n", m_lengthB);
+		Utils.b2Log("  jd.ratio = %.15lef;\n", m_ratio);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 	/// Implement b2Joint::ShiftOrigin
@@ -259,10 +259,10 @@ public class b2PulleyJoint : b2Joint
 
 
 
-		m_rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		m_rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
 
 
-		m_rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		m_rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 		// Get the pulley axes.
 
@@ -275,7 +275,7 @@ public class b2PulleyJoint : b2Joint
 		float lengthA = m_uA.Length();
 		float lengthB = m_uB.Length();
 
-		if (lengthA > 10.0f * DefineConstants.b2_linearSlop)
+		if (lengthA > 10.0f * Settings.b2_linearSlop)
 		{
 			m_uA *= 1.0f / lengthA;
 		}
@@ -284,7 +284,7 @@ public class b2PulleyJoint : b2Joint
 			m_uA.SetZero();
 		}
 
-		if (lengthB > 10.0f * DefineConstants.b2_linearSlop)
+		if (lengthB > 10.0f * Settings.b2_linearSlop)
 		{
 			m_uB *= 1.0f / lengthB;
 		}
@@ -294,8 +294,8 @@ public class b2PulleyJoint : b2Joint
 		}
 
 		// Compute effective mass.
-		float ruA = GlobalMembers.b2Cross(m_rA, m_uA);
-		float ruB = GlobalMembers.b2Cross(m_rB, m_uB);
+		float ruA = Utils.b2Cross(m_rA, m_uA);
+		float ruB = Utils.b2Cross(m_rB, m_uB);
 
 		float mA = m_invMassA + m_invIA * ruA * ruA;
 		float mB = m_invMassB + m_invIB * ruB * ruB;
@@ -317,9 +317,9 @@ public class b2PulleyJoint : b2Joint
 			b2Vec2 PB = (-m_ratio * m_impulse) * m_uB;
 
 			vA += m_invMassA * PA;
-			wA += m_invIA * GlobalMembers.b2Cross(m_rA, PA);
+			wA += m_invIA * Utils.b2Cross(m_rA, PA);
 			vB += m_invMassB * PB;
-			wB += m_invIB * GlobalMembers.b2Cross(m_rB, PB);
+			wB += m_invIB * Utils.b2Cross(m_rB, PB);
 		}
 		else
 		{
@@ -342,19 +342,19 @@ public class b2PulleyJoint : b2Joint
 		b2Vec2 vB = data.velocities[m_indexB].v;
 		float wB = data.velocities[m_indexB].w;
 
-		b2Vec2 vpA = vA + GlobalMembers.b2Cross(wA, m_rA);
-		b2Vec2 vpB = vB + GlobalMembers.b2Cross(wB, m_rB);
+		b2Vec2 vpA = vA + Utils.b2Cross(wA, m_rA);
+		b2Vec2 vpB = vB + Utils.b2Cross(wB, m_rB);
 
-		float Cdot = -GlobalMembers.b2Dot(m_uA, vpA) - m_ratio * GlobalMembers.b2Dot(m_uB, vpB);
+		float Cdot = -Utils.b2Dot(m_uA, vpA) - m_ratio * Utils.b2Dot(m_uB, vpB);
 		float impulse = -m_mass * Cdot;
 		m_impulse += impulse;
 
 		b2Vec2 PA = -impulse * m_uA;
 		b2Vec2 PB = -m_ratio * impulse * m_uB;
 		vA += m_invMassA * PA;
-		wA += m_invIA * GlobalMembers.b2Cross(m_rA, PA);
+		wA += m_invIA * Utils.b2Cross(m_rA, PA);
 		vB += m_invMassB * PB;
-		wB += m_invIB * GlobalMembers.b2Cross(m_rB, PB);
+		wB += m_invIB * Utils.b2Cross(m_rB, PB);
 
 
 
@@ -375,8 +375,8 @@ public class b2PulleyJoint : b2Joint
 		b2Rot qA = new b2Rot(aA);
 		b2Rot qB = new b2Rot(aB);
 
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 		// Get the pulley axes.
 		b2Vec2 uA = cA + rA - m_groundAnchorA;
@@ -385,7 +385,7 @@ public class b2PulleyJoint : b2Joint
 		float lengthA = uA.Length();
 		float lengthB = uB.Length();
 
-		if (lengthA > 10.0f * DefineConstants.b2_linearSlop)
+		if (lengthA > 10.0f * Settings.b2_linearSlop)
 		{
 			uA *= 1.0f / lengthA;
 		}
@@ -394,7 +394,7 @@ public class b2PulleyJoint : b2Joint
 			uA.SetZero();
 		}
 
-		if (lengthB > 10.0f * DefineConstants.b2_linearSlop)
+		if (lengthB > 10.0f * Settings.b2_linearSlop)
 		{
 			uB *= 1.0f / lengthB;
 		}
@@ -404,8 +404,8 @@ public class b2PulleyJoint : b2Joint
 		}
 
 		// Compute effective mass.
-		float ruA = GlobalMembers.b2Cross(rA, uA);
-		float ruB = GlobalMembers.b2Cross(rB, uB);
+		float ruA = Utils.b2Cross(rA, uA);
+		float ruB = Utils.b2Cross(rB, uB);
 
 		float mA = m_invMassA + m_invIA * ruA * ruA;
 		float mB = m_invMassB + m_invIB * ruB * ruB;
@@ -418,7 +418,7 @@ public class b2PulleyJoint : b2Joint
 		}
 
 		float C = m_constant - lengthA - m_ratio * lengthB;
-		float linearError = GlobalMembers.b2Abs(C);
+		float linearError = Utils.b2Abs(C);
 
 		float impulse = -mass * C;
 
@@ -426,9 +426,9 @@ public class b2PulleyJoint : b2Joint
 		b2Vec2 PB = -m_ratio * impulse * uB;
 
 		cA += m_invMassA * PA;
-		aA += m_invIA * GlobalMembers.b2Cross(rA, PA);
+		aA += m_invIA * Utils.b2Cross(rA, PA);
 		cB += m_invMassB * PB;
-		aB += m_invIB * GlobalMembers.b2Cross(rB, PB);
+		aB += m_invIB * Utils.b2Cross(rB, PB);
 
 
 
@@ -439,7 +439,7 @@ public class b2PulleyJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return linearError < DefineConstants.b2_linearSlop;
+		return linearError < Settings.b2_linearSlop;
 	}
 
 	protected b2Vec2 m_groundAnchorA = new b2Vec2();

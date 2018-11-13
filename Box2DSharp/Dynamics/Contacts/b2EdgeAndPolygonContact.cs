@@ -41,6 +41,6 @@ public class b2EdgeAndPolygonContact : b2Contact
 
 	public override void Evaluate(b2Manifold manifold, b2Transform xfA, b2Transform xfB)
 	{
-		GlobalMembers.b2CollideEdgeAndPolygon(manifold, (b2EdgeShape)m_fixtureA.GetShape(), xfA, (b2PolygonShape)m_fixtureB.GetShape(), xfB);
+		Utils.b2CollideEdgeAndPolygon(manifold, (b2EdgeShape)m_fixtureA.GetShape(), xfA, (b2PolygonShape)m_fixtureB.GetShape(), xfB);
 	}
 }

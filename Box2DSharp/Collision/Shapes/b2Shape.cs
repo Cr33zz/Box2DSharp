@@ -85,6 +85,8 @@ public abstract class b2Shape : System.IDisposable
 	/// @param density the density in kilograms per meter squared.
 	public abstract void ComputeMass(b2MassData massData, float density);
 
+    public abstract b2Vec2[] GetVertices();
+
 	public Type m_type;
 
 	/// Radius of a shape. For polygonal shapes this must be b2_polygonRadius. There is no support for

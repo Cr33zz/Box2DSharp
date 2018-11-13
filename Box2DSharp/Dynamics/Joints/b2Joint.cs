@@ -162,7 +162,7 @@ public abstract class b2Joint : System.IDisposable
 	/// Dump this joint to the log file.
 	public virtual void Dump()
 	{
-		GlobalMembers.b2Log("// Dump is not supported for this joint type.\n");
+		Utils.b2Log("// Dump is not supported for this joint type.\n");
 	}
 
 	/// Shift the origin for any points stored in world coordinates.

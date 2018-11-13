@@ -27,13 +27,13 @@ public class b2PolygonShape : b2Shape
 	public b2PolygonShape()
 	{
 		m_type = Type.e_polygon;
-		m_radius = (2.0f * DefineConstants.b2_linearSlop);
+		m_radius = (2.0f * Settings.b2_linearSlop);
 		m_count = 0;
 		m_centroid.SetZero();
 	}
 
-	/// Implement b2Shape.
-	public override b2Shape Clone()
+    /// Implement b2Shape.
+    public override b2Shape Clone()
 	{
 		b2PolygonShape clone = new b2PolygonShape();
 	    clone.m_centroid = m_centroid;
@@ -56,17 +56,17 @@ public class b2PolygonShape : b2Shape
 	/// may lead to poor stacking behavior.
 	public void Set(b2Vec2[] vertices)
 	{
-		Debug.Assert(3 <= vertices.Length && vertices.Length <= DefineConstants.b2_maxPolygonVertices);
+		Debug.Assert(3 <= vertices.Length && vertices.Length <= Settings.b2_maxPolygonVertices);
 		if (vertices.Length < 3)
 		{
 			SetAsBox(1.0f, 1.0f);
 			return;
 		}
 
-		int n = GlobalMembers.b2Min(vertices.Length, DefineConstants.b2_maxPolygonVertices);
+		int n = Utils.b2Min(vertices.Length, Settings.b2_maxPolygonVertices);
 
 		// Perform welding and copy vertices into local buffer.
-		b2Vec2[] ps = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+		b2Vec2[] ps = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxPolygonVertices);
 		int tempCount = 0;
 		for (int i = 0; i < n; ++i)
 		{
@@ -75,7 +75,7 @@ public class b2PolygonShape : b2Shape
 			bool unique = true;
 			for (int j = 0; j < tempCount; ++j)
 			{
-				if (GlobalMembers.b2DistanceSquared(v, ps[j]) < ((0.5f * DefineConstants.b2_linearSlop) * (0.5f * DefineConstants.b2_linearSlop)))
+				if (Utils.b2DistanceSquared(v, ps[j]) < ((0.5f * Settings.b2_linearSlop) * (0.5f * Settings.b2_linearSlop)))
                 {
 					unique = false;
 					break;
@@ -113,13 +113,13 @@ public class b2PolygonShape : b2Shape
 			}
 		}
 
-		int[] hull = new int[DefineConstants.b2_maxPolygonVertices];
+		int[] hull = new int[Settings.b2_maxPolygonVertices];
 		int m = 0;
 		int ih = i0;
 
 		for (;;)
 		{
-			Debug.Assert(m < DefineConstants.b2_maxPolygonVertices);
+			Debug.Assert(m < Settings.b2_maxPolygonVertices);
 			hull[m] = ih;
 
 			int ie = 0;
@@ -133,7 +133,7 @@ public class b2PolygonShape : b2Shape
 
 				b2Vec2 r = ps[ie] - ps[hull[m]];
 				b2Vec2 v = ps[j] - ps[hull[m]];
-				float c = GlobalMembers.b2Cross(r, v);
+				float c = Utils.b2Cross(r, v);
 				if (c < 0.0f)
 				{
 					ie = j;
@@ -178,12 +178,12 @@ public class b2PolygonShape : b2Shape
 			int i2 = i + 1 < m ? i + 1 : 0;
 			b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
 			Debug.Assert(edge.LengthSquared() > float.Epsilon * float.Epsilon);
-			m_normals[i] = GlobalMembers.b2Cross(edge, 1.0f);
+			m_normals[i] = Utils.b2Cross(edge, 1.0f);
 			m_normals[i].Normalize();
 		}
 
 		// Compute the polygon centroid.
-		m_centroid = GlobalMembers.ComputeCentroid(m_vertices, m);
+		m_centroid = Utils.ComputeCentroid(m_vertices, m);
 	}
 
 	/// Build vertices to represent an axis-aligned box centered on the local origin.
@@ -228,19 +228,19 @@ public class b2PolygonShape : b2Shape
 		// Transform vertices and normals.
 		for (int i = 0; i < m_count; ++i)
 		{
-			m_vertices[i] = GlobalMembers.b2Mul(xf, m_vertices[i]);
-			m_normals[i] = GlobalMembers.b2Mul(xf.q, m_normals[i]);
+			m_vertices[i] = Utils.b2Mul(xf, m_vertices[i]);
+			m_normals[i] = Utils.b2Mul(xf.q, m_normals[i]);
 		}
 	}
 
 	/// @see b2Shape::TestPoint
 	public override bool TestPoint(b2Transform xf, b2Vec2 p)
 	{
-		b2Vec2 pLocal = GlobalMembers.b2MulT(xf.q, p - xf.p);
+		b2Vec2 pLocal = Utils.b2MulT(xf.q, p - xf.p);
 
 		for (int i = 0; i < m_count; ++i)
 		{
-			float dot = GlobalMembers.b2Dot(m_normals[i], pLocal - m_vertices[i]);
+			float dot = Utils.b2Dot(m_normals[i], pLocal - m_vertices[i]);
 			if (dot > 0.0f)
 			{
 				return false;
@@ -254,8 +254,8 @@ public class b2PolygonShape : b2Shape
 	public override bool RayCast(b2RayCastOutput output, b2RayCastInput input, b2Transform xf, int childIndex)
 	{
 		// Put the ray into the polygon's frame of reference.
-		b2Vec2 p1 = GlobalMembers.b2MulT(xf.q, input.p1 - xf.p);
-		b2Vec2 p2 = GlobalMembers.b2MulT(xf.q, input.p2 - xf.p);
+		b2Vec2 p1 = Utils.b2MulT(xf.q, input.p1 - xf.p);
+		b2Vec2 p2 = Utils.b2MulT(xf.q, input.p2 - xf.p);
 		b2Vec2 d = p2 - p1;
 
 		float lower = 0.0f;
@@ -268,8 +268,8 @@ public class b2PolygonShape : b2Shape
 			// p = p1 + a * d
 			// dot(normal, p - v) = 0
 			// dot(normal, p1 - v) + a * dot(normal, d) = 0
-			float numerator = GlobalMembers.b2Dot(m_normals[i], m_vertices[i] - p1);
-			float denominator = GlobalMembers.b2Dot(m_normals[i], d);
+			float numerator = Utils.b2Dot(m_normals[i], m_vertices[i] - p1);
+			float denominator = Utils.b2Dot(m_normals[i], d);
 
 			if (denominator == 0.0f)
 			{
@@ -314,7 +314,7 @@ public class b2PolygonShape : b2Shape
 		if (index >= 0)
 		{
 			output.fraction = lower;
-			output.normal = GlobalMembers.b2Mul(xf.q, m_normals[index]);
+			output.normal = Utils.b2Mul(xf.q, m_normals[index]);
 			return true;
 		}
 
@@ -324,14 +324,14 @@ public class b2PolygonShape : b2Shape
 	/// @see b2Shape::ComputeAABB
 	public override void ComputeAABB(b2AABB aabb, b2Transform xf, int childIndex)
 	{
-		b2Vec2 lower = GlobalMembers.b2Mul(xf, m_vertices[0]);
+		b2Vec2 lower = Utils.b2Mul(xf, m_vertices[0]);
 		b2Vec2 upper = new b2Vec2(lower);
 
 		for (int i = 1; i < m_count; ++i)
 		{
-			b2Vec2 v = GlobalMembers.b2Mul(xf, m_vertices[i]);
-			lower = GlobalMembers.b2Min(lower, v);
-			upper = GlobalMembers.b2Max(upper, v);
+			b2Vec2 v = Utils.b2Mul(xf, m_vertices[i]);
+			lower = Utils.b2Min(lower, v);
+			upper = Utils.b2Max(upper, v);
 		}
 
 		b2Vec2 r = new b2Vec2(m_radius, m_radius);
@@ -392,7 +392,7 @@ public class b2PolygonShape : b2Shape
 			b2Vec2 e1 = m_vertices[i] - s;
 			b2Vec2 e2 = i + 1 < m_count ? m_vertices[i + 1] - s : m_vertices[0] - s;
 
-			float D = GlobalMembers.b2Cross(e1, e2);
+			float D = Utils.b2Cross(e1, e2);
 
 			float triangleArea = 0.5f * D;
 			area += triangleArea;
@@ -423,12 +423,17 @@ public class b2PolygonShape : b2Shape
 		massData.I = density * I;
 
 		// Shift to center of mass then to original body origin.
-		massData.I += massData.mass * (GlobalMembers.b2Dot(massData.center, massData.center) - GlobalMembers.b2Dot(center, center));
+		massData.I += massData.mass * (Utils.b2Dot(massData.center, massData.center) - Utils.b2Dot(center, center));
 	}
 
-	/// Validate convexity. This is a very time consuming operation.
-	/// @returns true if valid
-	public bool Validate()
+    public override b2Vec2[] GetVertices()
+    {
+        return m_vertices;
+    }
+
+    /// Validate convexity. This is a very time consuming operation.
+    /// @returns true if valid
+    public bool Validate()
 	{
 		for (int i = 0; i < m_count; ++i)
 		{
@@ -445,7 +450,7 @@ public class b2PolygonShape : b2Shape
 				}
 
 				b2Vec2 v = m_vertices[j] - p;
-				float c = GlobalMembers.b2Cross(e, v);
+				float c = Utils.b2Cross(e, v);
 				if (c < 0.0f)
 				{
 					return false;
@@ -457,7 +462,7 @@ public class b2PolygonShape : b2Shape
 	}
 
 	public b2Vec2 m_centroid;
-	public b2Vec2[] m_vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
-	public b2Vec2[] m_normals = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+	public b2Vec2[] m_vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxPolygonVertices);
+	public b2Vec2[] m_normals = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxPolygonVertices);
 	public int m_count;
 }

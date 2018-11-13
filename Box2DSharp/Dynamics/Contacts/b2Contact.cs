@@ -138,7 +138,7 @@ public abstract class b2Contact : System.IDisposable
 	/// Reset the friction mixture to the default value.
 	public void ResetFriction()
 	{
-		m_friction = GlobalMembers.b2MixFriction(m_fixtureA.m_friction, m_fixtureB.m_friction);
+		m_friction = Utils.b2MixFriction(m_fixtureA.m_friction, m_fixtureB.m_friction);
 	}
 
 	/// Override the default restitution mixture. You can call this in b2ContactListener::PreSolve.
@@ -157,7 +157,7 @@ public abstract class b2Contact : System.IDisposable
 	/// Reset the restitution to the default value.
 	public void ResetRestitution()
 	{
-		m_restitution = GlobalMembers.b2MixRestitution(m_fixtureA.m_restitution, m_fixtureB.m_restitution);
+		m_restitution = Utils.b2MixRestitution(m_fixtureA.m_restitution, m_fixtureB.m_restitution);
 	}
 
 	/// Set the desired tangent speed for a conveyor belt behavior. In meters per second.
@@ -318,8 +318,8 @@ public abstract class b2Contact : System.IDisposable
 
 		m_toiCount = 0;
 
-		m_friction = GlobalMembers.b2MixFriction(m_fixtureA.m_friction, m_fixtureB.m_friction);
-		m_restitution = GlobalMembers.b2MixRestitution(m_fixtureA.m_restitution, m_fixtureB.m_restitution);
+		m_friction = Utils.b2MixFriction(m_fixtureA.m_friction, m_fixtureB.m_friction);
+		m_restitution = Utils.b2MixRestitution(m_fixtureA.m_restitution, m_fixtureB.m_restitution);
 
 		m_tangentSpeed = 0.0f;
 	}
@@ -354,7 +354,7 @@ public abstract class b2Contact : System.IDisposable
 		{
 			b2Shape shapeA = m_fixtureA.GetShape();
 			b2Shape shapeB = m_fixtureB.GetShape();
-			touching = GlobalMembers.b2TestOverlap(shapeA, m_indexA, shapeB, m_indexB, xfA, xfB);
+			touching = Utils.b2TestOverlap(shapeA, m_indexA, shapeB, m_indexB, xfA, xfB);
 
 			// Sensors don't generate manifolds.
 			m_manifold.pointCount = 0;

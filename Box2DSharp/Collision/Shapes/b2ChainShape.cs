@@ -30,7 +30,7 @@ public class b2ChainShape : b2Shape
 	public b2ChainShape()
 	{
 		m_type = Type.e_chain;
-		m_radius = (2.0f * DefineConstants.b2_linearSlop);
+		m_radius = (2.0f * Settings.b2_linearSlop);
 		m_vertices = null;
 		m_count = 0;
 		m_hasPrevVertex = false;
@@ -68,7 +68,7 @@ public class b2ChainShape : b2Shape
 			b2Vec2 v1 = vertices[i - 1];
 			b2Vec2 v2 = vertices[i];
 			// If the code crashes here, it means your vertices are too close together.
-			Debug.Assert(GlobalMembers.b2DistanceSquared(v1, v2) > DefineConstants.b2_linearSlop * DefineConstants.b2_linearSlop);
+			Debug.Assert(Utils.b2DistanceSquared(v1, v2) > Settings.b2_linearSlop * Settings.b2_linearSlop);
 		}
 
 		m_count = count + 1;
@@ -91,7 +91,7 @@ public class b2ChainShape : b2Shape
 		for (int i = 1; i < count; ++i)
 		{
 			// If the code crashes here, it means your vertices are too close together.
-			Debug.Assert(GlobalMembers.b2DistanceSquared(vertices[i - 1], vertices[i]) > DefineConstants.b2_linearSlop * DefineConstants.b2_linearSlop);
+			Debug.Assert(Utils.b2DistanceSquared(vertices[i - 1], vertices[i]) > Settings.b2_linearSlop * Settings.b2_linearSlop);
 		}
 
 		m_count = count;
@@ -212,11 +212,11 @@ public class b2ChainShape : b2Shape
 			i2 = 0;
 		}
 
-		b2Vec2 v1 = GlobalMembers.b2Mul(xf, m_vertices[i1]);
-		b2Vec2 v2 = GlobalMembers.b2Mul(xf, m_vertices[i2]);
+		b2Vec2 v1 = Utils.b2Mul(xf, m_vertices[i1]);
+		b2Vec2 v2 = Utils.b2Mul(xf, m_vertices[i2]);
 
-		aabb.lowerBound = GlobalMembers.b2Min(v1, v2);
-		aabb.upperBound = GlobalMembers.b2Max(v1, v2);
+		aabb.lowerBound = Utils.b2Min(v1, v2);
+		aabb.upperBound = Utils.b2Max(v1, v2);
 	}
 
 	/// Chains have zero mass.
@@ -228,8 +228,13 @@ public class b2ChainShape : b2Shape
 		massData.I = 0.0f;
 	}
 
-	/// The vertices. Owned by this class.
-	public b2Vec2[] m_vertices;
+    public override b2Vec2[] GetVertices()
+    {
+        return m_vertices;
+    }
+
+    /// The vertices. Owned by this class.
+    public b2Vec2[] m_vertices;
 
 	/// The vertex count.
 	public int m_count;

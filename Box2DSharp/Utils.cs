@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics;
 
-public static class GlobalMembers
+public static class Utils
 {
 	internal static b2Vec2 ComputeCentroid(b2Vec2[] vs, int count)
 	{
@@ -475,7 +475,7 @@ public static class GlobalMembers
 		b2Transform xf2 = new b2Transform();
 		int edge1; // reference edge
 		byte flip;
-		float k_tol = 0.1f * DefineConstants.b2_linearSlop;
+		float k_tol = 0.1f * Settings.b2_linearSlop;
 
 		if (separationB > separationA + k_tol)
 		{
@@ -559,7 +559,7 @@ public static class GlobalMembers
 		manifold.localPoint = planePoint;
 
 		int pointCount = 0;
-		for (int i = 0; i < DefineConstants.b2_maxManifoldPoints; ++i)
+		for (int i = 0; i < Settings.b2_maxManifoldPoints; ++i)
 		{
 			float separation = b2Dot(normal, clipPoints2[i].v) - frontOffset;
 
@@ -591,7 +591,7 @@ public static class GlobalMembers
 	/// to manifold2. So state1 is either persist or remove while state2 is either add or persist.
 	public static void b2GetPointStates(PointState[] state1, PointState[] state2, b2Manifold manifold1, b2Manifold manifold2)
 	{
-		for (int i = 0; i < DefineConstants.b2_maxManifoldPoints; ++i)
+		for (int i = 0; i < Settings.b2_maxManifoldPoints; ++i)
 		{
 			state1[i] = PointState.nullState;
 			state2[i] = PointState.nullState;
@@ -908,8 +908,8 @@ public static class GlobalMembers
 		b2DistanceProxy proxyA = input.proxyA;
 		b2DistanceProxy proxyB = input.proxyB;
 
-		float radiusA = b2Max(proxyA.m_radius, (2.0f * DefineConstants.b2_linearSlop));
-		float radiusB = b2Max(proxyB.m_radius, (2.0f * DefineConstants.b2_linearSlop));
+		float radiusA = b2Max(proxyA.m_radius, (2.0f * Settings.b2_linearSlop));
+		float radiusB = b2Max(proxyB.m_radius, (2.0f * Settings.b2_linearSlop));
 		float radius = radiusA + radiusB;
 
 		b2Transform xfA = new b2Transform(input.transformA);
@@ -934,8 +934,8 @@ public static class GlobalMembers
 		b2Vec2 v = wA - wB;
 
         // Sigma is the target distance between polygons
-        float sigma = GlobalMembers.b2Max(DefineConstants.b2_polygonRadius, radius - DefineConstants.b2_polygonRadius);
-		float tolerance = 0.5f * DefineConstants.b2_linearSlop;
+        float sigma = Utils.b2Max(Settings.b2_polygonRadius, radius - Settings.b2_polygonRadius);
+		float tolerance = 0.5f * Settings.b2_linearSlop;
 
 		// Main iteration loop.
 		const int k_maxIters = 20;
@@ -1097,8 +1097,8 @@ public static class GlobalMembers
 		float tMax = input.tMax;
 
 		float totalRadius = proxyA.m_radius + proxyB.m_radius;
-		float target = b2Max(DefineConstants.b2_linearSlop, totalRadius - 3.0f * DefineConstants.b2_linearSlop);
-		float tolerance = 0.25f * DefineConstants.b2_linearSlop;
+		float target = b2Max(Settings.b2_linearSlop, totalRadius - 3.0f * Settings.b2_linearSlop);
+		float tolerance = 0.25f * Settings.b2_linearSlop;
 		Debug.Assert(target > tolerance);
 
 		float t1 = 0.0f;
@@ -1289,7 +1289,7 @@ public static class GlobalMembers
 
 				++pushBackIter;
 
-				if (pushBackIter == DefineConstants.b2_maxPolygonVertices)
+				if (pushBackIter == Settings.b2_maxPolygonVertices)
 				{
 					break;
 				}

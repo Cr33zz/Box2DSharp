@@ -24,7 +24,7 @@ public class b2EdgeShape : b2Shape
 	public b2EdgeShape()
 	{
 		m_type = Type.e_edge;
-		m_radius = (2.0f * DefineConstants.b2_linearSlop);
+		m_radius = (2.0f * Settings.b2_linearSlop);
 		m_vertex0.x = 0.0f;
 		m_vertex0.y = 0.0f;
 		m_vertex3.x = 0.0f;
@@ -76,8 +76,8 @@ public class b2EdgeShape : b2Shape
 	public override bool RayCast(b2RayCastOutput output, b2RayCastInput input, b2Transform xf, int childIndex)
 	{
 		// Put the ray into the edge's frame of reference.
-		b2Vec2 p1 = GlobalMembers.b2MulT(xf.q, input.p1 - xf.p);
-		b2Vec2 p2 = GlobalMembers.b2MulT(xf.q, input.p2 - xf.p);
+		b2Vec2 p1 = Utils.b2MulT(xf.q, input.p1 - xf.p);
+		b2Vec2 p2 = Utils.b2MulT(xf.q, input.p2 - xf.p);
 		b2Vec2 d = p2 - p1;
 
 		b2Vec2 v1 = new b2Vec2(m_vertex1);
@@ -89,8 +89,8 @@ public class b2EdgeShape : b2Shape
 		// q = p1 + t * d
 		// dot(normal, q - v1) = 0
 		// dot(normal, p1 - v1) + t * dot(normal, d) = 0
-		float numerator = GlobalMembers.b2Dot(normal, v1 - p1);
-		float denominator = GlobalMembers.b2Dot(normal, d);
+		float numerator = Utils.b2Dot(normal, v1 - p1);
+		float denominator = Utils.b2Dot(normal, d);
 
 		if (denominator == 0.0f)
 		{
@@ -108,13 +108,13 @@ public class b2EdgeShape : b2Shape
 		// q = v1 + s * r
 		// s = dot(q - v1, r) / dot(r, r)
 		b2Vec2 r = v2 - v1;
-		float rr = GlobalMembers.b2Dot(r, r);
+		float rr = Utils.b2Dot(r, r);
 		if (rr == 0.0f)
 		{
 			return false;
 		}
 
-		float s = GlobalMembers.b2Dot(q - v1, r) / rr;
+		float s = Utils.b2Dot(q - v1, r) / rr;
 		if (s < 0.0f || 1.0f < s)
 		{
 			return false;
@@ -123,11 +123,11 @@ public class b2EdgeShape : b2Shape
 		output.fraction = t;
 		if (numerator > 0.0f)
 		{
-			output.normal = -GlobalMembers.b2Mul(xf.q, normal);
+			output.normal = -Utils.b2Mul(xf.q, normal);
 		}
 		else
 		{
-			output.normal = GlobalMembers.b2Mul(xf.q, normal);
+			output.normal = Utils.b2Mul(xf.q, normal);
 		}
 		return true;
 	}
@@ -135,11 +135,11 @@ public class b2EdgeShape : b2Shape
 	/// @see b2Shape::ComputeAABB
 	public override void ComputeAABB(b2AABB aabb, b2Transform xf, int childIndex)
 	{
-		b2Vec2 v1 = GlobalMembers.b2Mul(xf, m_vertex1);
-		b2Vec2 v2 = GlobalMembers.b2Mul(xf, m_vertex2);
+		b2Vec2 v1 = Utils.b2Mul(xf, m_vertex1);
+		b2Vec2 v2 = Utils.b2Mul(xf, m_vertex2);
 
-		b2Vec2 lower = GlobalMembers.b2Min(v1, v2);
-		b2Vec2 upper = GlobalMembers.b2Max(v1, v2);
+		b2Vec2 lower = Utils.b2Min(v1, v2);
+		b2Vec2 upper = Utils.b2Max(v1, v2);
 
 		b2Vec2 r = new b2Vec2(m_radius, m_radius);
 		aabb.lowerBound = lower - r;
@@ -154,8 +154,13 @@ public class b2EdgeShape : b2Shape
 		massData.I = 0.0f;
 	}
 
-	/// These are the edge vertices
-	public b2Vec2 m_vertex1 = new b2Vec2();
+    public override b2Vec2[] GetVertices()
+    {
+        return new[] { m_vertex1, m_vertex2 };
+    }
+
+    /// These are the edge vertices
+    public b2Vec2 m_vertex1 = new b2Vec2();
 	public b2Vec2 m_vertex2 = new b2Vec2();
 
 	/// Optional adjacent vertices. These are used for smooth collision.

@@ -131,11 +131,30 @@ public class b2World : System.IDisposable
 		return b;
 	}
 
-	/// Destroy a rigid body given a definition. No reference to the definition
-	/// is retained. This function is locked during callbacks.
-	/// @warning This automatically deletes all associated shapes and joints.
-	/// @warning This function is locked during callbacks.
-	public void DestroyBody(b2Body b)
+    public b2Body CreateStaticBody(b2FixtureDef b2FixtureDef)
+    {
+        b2BodyDef bd = new b2BodyDef();
+        bd.type = BodyType.b2_staticBody;
+        var b = CreateBody(bd);
+        b.CreateFixture(b2FixtureDef);
+        return b;
+    }
+
+    public b2Body CreateDynamicBody(b2Vec2 position, float angle, b2FixtureDef b2FixtureDef)
+    {
+        b2BodyDef bd = new b2BodyDef();
+        bd.type = BodyType.b2_dynamicBody;
+        var b = CreateBody(bd);
+        b.CreateFixture(b2FixtureDef);
+        b.SetTransform(position, angle);
+        return b;
+    }
+
+    /// Destroy a rigid body given a definition. No reference to the definition
+    /// is retained. This function is locked during callbacks.
+    /// @warning This automatically deletes all associated shapes and joints.
+    /// @warning This function is locked during callbacks.
+    public void DestroyBody(b2Body b)
 	{
 		Debug.Assert(m_bodyCount > 0);
 		Debug.Assert(IsLocked() == false);
@@ -855,11 +874,11 @@ public class b2World : System.IDisposable
 			return;
 		}
 
-		GlobalMembers.b2Log("b2Vec2 g(%.15lef, %.15lef);\n", m_gravity.x, m_gravity.y);
-		GlobalMembers.b2Log("m_world->SetGravity(g);\n");
+		Utils.b2Log("b2Vec2 g(%.15lef, %.15lef);\n", m_gravity.x, m_gravity.y);
+		Utils.b2Log("m_world->SetGravity(g);\n");
 
-		GlobalMembers.b2Log("b2Body** bodies = (b2Body**)b2Alloc(%d * sizeof(b2Body*));\n", m_bodyCount);
-		GlobalMembers.b2Log("b2Joint** joints = (b2Joint**)b2Alloc(%d * sizeof(b2Joint*));\n", m_jointCount);
+		Utils.b2Log("b2Body** bodies = (b2Body**)b2Alloc(%d * sizeof(b2Body*));\n", m_bodyCount);
+		Utils.b2Log("b2Joint** joints = (b2Joint**)b2Alloc(%d * sizeof(b2Joint*));\n", m_jointCount);
 		int i = 0;
 		for (b2Body b = m_bodyList; b != null; b = b.m_next)
 		{
@@ -883,9 +902,9 @@ public class b2World : System.IDisposable
 				continue;
 			}
 
-			GlobalMembers.b2Log("{\n");
+			Utils.b2Log("{\n");
 			j.Dump();
-			GlobalMembers.b2Log("}\n");
+			Utils.b2Log("}\n");
 		}
 
 		// Second pass on joints, only gear joints.
@@ -896,15 +915,15 @@ public class b2World : System.IDisposable
 				continue;
 			}
 
-			GlobalMembers.b2Log("{\n");
+			Utils.b2Log("{\n");
 			j.Dump();
-			GlobalMembers.b2Log("}\n");
+			Utils.b2Log("}\n");
 		}
 
-		GlobalMembers.b2Log("b2Free(joints);\n");
-		GlobalMembers.b2Log("b2Free(bodies);\n");
-		GlobalMembers.b2Log("joints = nullptr;\n");
-		GlobalMembers.b2Log("bodies = nullptr;\n");
+		Utils.b2Log("b2Free(joints);\n");
+		Utils.b2Log("b2Free(bodies);\n");
+		Utils.b2Log("joints = nullptr;\n");
+		Utils.b2Log("bodies = nullptr;\n");
 	}
 
 
@@ -1113,7 +1132,7 @@ public class b2World : System.IDisposable
 	// Find TOI contacts and solve them.
 	private void SolveTOI(b2TimeStep step)
 	{
-		b2Island island = new b2Island(2 * DefineConstants.b2_maxTOIContacts, DefineConstants.b2_maxTOIContacts, 0,m_contactManager.m_contactListener);
+		b2Island island = new b2Island(2 * Settings.b2_maxTOIContacts, Settings.b2_maxTOIContacts, 0,m_contactManager.m_contactListener);
 
 		if (m_stepComplete)
 		{
@@ -1151,7 +1170,7 @@ public class b2World : System.IDisposable
 				}
 
 				// Prevent excessive sub-stepping.
-				if (c.m_toiCount > DefineConstants.b2_maxSubSteps)
+				if (c.m_toiCount > Settings.b2_maxSubSteps)
 				{
 					continue;
 				}
@@ -1231,13 +1250,13 @@ public class b2World : System.IDisposable
 					input.tMax = 1.0f;
 
 					b2TOIOutput output = new b2TOIOutput();
-				    GlobalMembers.b2TimeOfImpact(output, input);
+				    Utils.b2TimeOfImpact(output, input);
 
 					// Beta is the fraction of the remaining portion of the .
 					float beta = output.t;
 					if (output.state == b2TOIOutput.State.e_touching)
 					{
-						alpha = GlobalMembers.b2Min(alpha0 + (1.0f - alpha0) * beta, 1.0f);
+						alpha = Utils.b2Min(alpha0 + (1.0f - alpha0) * beta, 1.0f);
 					}
 					else
 					{
@@ -1497,9 +1516,9 @@ public class b2World : System.IDisposable
 		{
 				b2CircleShape circle = (b2CircleShape)fixture.GetShape();
 
-				b2Vec2 center = GlobalMembers.b2Mul(xf, circle.m_p);
+				b2Vec2 center = Utils.b2Mul(xf, circle.m_p);
 				float radius = circle.m_radius;
-				b2Vec2 axis = GlobalMembers.b2Mul(xf.q, new b2Vec2(1.0f, 0.0f));
+				b2Vec2 axis = Utils.b2Mul(xf.q, new b2Vec2(1.0f, 0.0f));
 
 				m_debugDraw.DrawSolidCircle(center, radius, axis, color);
 		}
@@ -1508,8 +1527,8 @@ public class b2World : System.IDisposable
 		case b2Shape.Type.e_edge:
 		{
 				b2EdgeShape edge = (b2EdgeShape)fixture.GetShape();
-				b2Vec2 v1 = GlobalMembers.b2Mul(xf, edge.m_vertex1);
-				b2Vec2 v2 = GlobalMembers.b2Mul(xf, edge.m_vertex2);
+				b2Vec2 v1 = Utils.b2Mul(xf, edge.m_vertex1);
+				b2Vec2 v2 = Utils.b2Mul(xf, edge.m_vertex2);
 				m_debugDraw.DrawSegment(v1, v2, color);
 		}
 			break;
@@ -1522,19 +1541,19 @@ public class b2World : System.IDisposable
 
 				b2Color ghostColor = new b2Color(0.75f * color.r, 0.75f * color.g, 0.75f * color.b, color.a);
 
-				b2Vec2 v1 = GlobalMembers.b2Mul(xf, vertices[0]);
+				b2Vec2 v1 = Utils.b2Mul(xf, vertices[0]);
 				m_debugDraw.DrawPoint(v1, 4.0f, color);
 
 				if (chain.m_hasPrevVertex)
 				{
-					b2Vec2 vp = GlobalMembers.b2Mul(xf, chain.m_prevVertex);
+					b2Vec2 vp = Utils.b2Mul(xf, chain.m_prevVertex);
 					m_debugDraw.DrawSegment(vp, v1, ghostColor);
 					m_debugDraw.DrawCircle(vp, 0.1f, ghostColor);
 				}
 
 				for (int i = 1; i < count; ++i)
 				{
-					b2Vec2 v2 = GlobalMembers.b2Mul(xf, vertices[i]);
+					b2Vec2 v2 = Utils.b2Mul(xf, vertices[i]);
 					m_debugDraw.DrawSegment(v1, v2, color);
 					m_debugDraw.DrawPoint(v2, 4.0f, color);
 					v1 = v2;
@@ -1542,7 +1561,7 @@ public class b2World : System.IDisposable
 
 				if (chain.m_hasNextVertex)
 				{
-					b2Vec2 vn = GlobalMembers.b2Mul(xf, chain.m_nextVertex);
+					b2Vec2 vn = Utils.b2Mul(xf, chain.m_nextVertex);
 					m_debugDraw.DrawSegment(v1, vn, ghostColor);
 					m_debugDraw.DrawCircle(vn, 0.1f, ghostColor);
 				}
@@ -1553,12 +1572,12 @@ public class b2World : System.IDisposable
 		{
 				b2PolygonShape poly = (b2PolygonShape)fixture.GetShape();
 				int vertexCount = poly.m_count;
-				Debug.Assert(vertexCount <= DefineConstants.b2_maxPolygonVertices);
-				b2Vec2[] vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+				Debug.Assert(vertexCount <= Settings.b2_maxPolygonVertices);
+				b2Vec2[] vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxPolygonVertices);
 
 				for (int i = 0; i < vertexCount; ++i)
 				{
-					vertices[i] = GlobalMembers.b2Mul(xf, poly.m_vertices[i]);
+					vertices[i] = Utils.b2Mul(xf, poly.m_vertices[i]);
 				}
 
 				m_debugDraw.DrawSolidPolygon(vertices, vertexCount, color);

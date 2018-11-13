@@ -33,7 +33,7 @@ public class b2VelocityConstraintPoint
 
 public class b2ContactVelocityConstraint
 {
-	public b2VelocityConstraintPoint[] points = Arrays.InitializeWithDefaultInstances<b2VelocityConstraintPoint>(DefineConstants.b2_maxManifoldPoints);
+	public b2VelocityConstraintPoint[] points = Arrays.InitializeWithDefaultInstances<b2VelocityConstraintPoint>(Settings.b2_maxManifoldPoints);
 	public b2Vec2 normal = new b2Vec2();
 	public b2Mat22 normalMass = new b2Mat22();
 	public b2Mat22 K = new b2Mat22();
@@ -191,8 +191,8 @@ public class b2ContactSolver : System.IDisposable
 			b2Transform xfB = new b2Transform();
 			xfA.q.Set(aA);
 			xfB.q.Set(aB);
-			xfA.p = cA - GlobalMembers.b2Mul(xfA.q, localCenterA);
-			xfB.p = cB - GlobalMembers.b2Mul(xfB.q, localCenterB);
+			xfA.p = cA - Utils.b2Mul(xfA.q, localCenterA);
+			xfB.p = cB - Utils.b2Mul(xfB.q, localCenterB);
 
 			b2WorldManifold worldManifold = new b2WorldManifold();
 			worldManifold.Initialize(manifold, xfA, radiusA, xfB, radiusB);
@@ -207,17 +207,17 @@ public class b2ContactSolver : System.IDisposable
 				vcp.rA = worldManifold.points[j] - cA;
 				vcp.rB = worldManifold.points[j] - cB;
 
-				float rnA = GlobalMembers.b2Cross(vcp.rA, vc.normal);
-				float rnB = GlobalMembers.b2Cross(vcp.rB, vc.normal);
+				float rnA = Utils.b2Cross(vcp.rA, vc.normal);
+				float rnB = Utils.b2Cross(vcp.rB, vc.normal);
 
 				float kNormal = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
 				vcp.normalMass = kNormal > 0.0f ? 1.0f / kNormal : 0.0f;
 
-				b2Vec2 tangent = GlobalMembers.b2Cross(vc.normal, 1.0f);
+				b2Vec2 tangent = Utils.b2Cross(vc.normal, 1.0f);
 
-				float rtA = GlobalMembers.b2Cross(vcp.rA, tangent);
-				float rtB = GlobalMembers.b2Cross(vcp.rB, tangent);
+				float rtA = Utils.b2Cross(vcp.rA, tangent);
+				float rtB = Utils.b2Cross(vcp.rB, tangent);
 
 				float kTangent = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
 
@@ -225,23 +225,23 @@ public class b2ContactSolver : System.IDisposable
 
 				// Setup a velocity bias for restitution.
 				vcp.velocityBias = 0.0f;
-				float vRel = GlobalMembers.b2Dot(vc.normal, vB + GlobalMembers.b2Cross(wB, vcp.rB) - vA - GlobalMembers.b2Cross(wA, vcp.rA));
-				if (vRel < -DefineConstants.b2_velocityThreshold)
+				float vRel = Utils.b2Dot(vc.normal, vB + Utils.b2Cross(wB, vcp.rB) - vA - Utils.b2Cross(wA, vcp.rA));
+				if (vRel < -Settings.b2_velocityThreshold)
 				{
 					vcp.velocityBias = -vc.restitution * vRel;
 				}
 			}
 
 			// If we have two points, then prepare the block solver.
-			if (vc.pointCount == 2 && GlobalMembers.g_blockSolve)
+			if (vc.pointCount == 2 && Utils.g_blockSolve)
 			{
 				b2VelocityConstraintPoint vcp1 = vc.points[0];
 				b2VelocityConstraintPoint vcp2 = vc.points[1];
 
-				float rn1A = GlobalMembers.b2Cross(vcp1.rA, vc.normal);
-				float rn1B = GlobalMembers.b2Cross(vcp1.rB, vc.normal);
-				float rn2A = GlobalMembers.b2Cross(vcp2.rA, vc.normal);
-				float rn2B = GlobalMembers.b2Cross(vcp2.rB, vc.normal);
+				float rn1A = Utils.b2Cross(vcp1.rA, vc.normal);
+				float rn1B = Utils.b2Cross(vcp1.rB, vc.normal);
+				float rn2A = Utils.b2Cross(vcp2.rA, vc.normal);
+				float rn2B = Utils.b2Cross(vcp2.rB, vc.normal);
 
 				float k11 = mA + mB + iA * rn1A * rn1A + iB * rn1B * rn1B;
 				float k22 = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
@@ -289,15 +289,15 @@ public class b2ContactSolver : System.IDisposable
 
 
 			b2Vec2 normal = new b2Vec2(vc.normal);
-			b2Vec2 tangent = GlobalMembers.b2Cross(normal, 1.0f);
+			b2Vec2 tangent = Utils.b2Cross(normal, 1.0f);
 
 			for (int j = 0; j < pointCount; ++j)
 			{
 				b2VelocityConstraintPoint vcp = vc.points[j];
 				b2Vec2 P = vcp.normalImpulse * normal + vcp.tangentImpulse * tangent;
-				wA -= iA * GlobalMembers.b2Cross(vcp.rA, P);
+				wA -= iA * Utils.b2Cross(vcp.rA, P);
 				vA -= mA * P;
-				wB += iB * GlobalMembers.b2Cross(vcp.rB, P);
+				wB += iB * Utils.b2Cross(vcp.rB, P);
 				vB += mB * P;
 			}
 
@@ -333,7 +333,7 @@ public class b2ContactSolver : System.IDisposable
 
 
 			b2Vec2 normal = new b2Vec2(vc.normal);
-			b2Vec2 tangent = GlobalMembers.b2Cross(normal, 1.0f);
+			b2Vec2 tangent = Utils.b2Cross(normal, 1.0f);
 			float friction = vc.friction;
 
 			Debug.Assert(pointCount == 1 || pointCount == 2);
@@ -345,15 +345,15 @@ public class b2ContactSolver : System.IDisposable
 				b2VelocityConstraintPoint vcp = vc.points[j];
 
 				// Relative velocity at contact
-				b2Vec2 dv = vB + GlobalMembers.b2Cross(wB, vcp.rB) - vA - GlobalMembers.b2Cross(wA, vcp.rA);
+				b2Vec2 dv = vB + Utils.b2Cross(wB, vcp.rB) - vA - Utils.b2Cross(wA, vcp.rA);
 
 				// Compute tangent force
-				float vt = GlobalMembers.b2Dot(dv, tangent) - vc.tangentSpeed;
+				float vt = Utils.b2Dot(dv, tangent) - vc.tangentSpeed;
 				float lambda = vcp.tangentMass * (-vt);
 
 				// b2Clamp the accumulated force
 				float maxFriction = friction * vcp.normalImpulse;
-				float newImpulse = GlobalMembers.b2Clamp(vcp.tangentImpulse + lambda, -maxFriction, maxFriction);
+				float newImpulse = Utils.b2Clamp(vcp.tangentImpulse + lambda, -maxFriction, maxFriction);
 				lambda = newImpulse - vcp.tangentImpulse;
 				vcp.tangentImpulse = newImpulse;
 
@@ -361,38 +361,38 @@ public class b2ContactSolver : System.IDisposable
 				b2Vec2 P = lambda * tangent;
 
 				vA -= mA * P;
-				wA -= iA * GlobalMembers.b2Cross(vcp.rA, P);
+				wA -= iA * Utils.b2Cross(vcp.rA, P);
 
 				vB += mB * P;
-				wB += iB * GlobalMembers.b2Cross(vcp.rB, P);
+				wB += iB * Utils.b2Cross(vcp.rB, P);
 			}
 
 			// Solve normal constraints
-			if (pointCount == 1 || GlobalMembers.g_blockSolve == false)
+			if (pointCount == 1 || Utils.g_blockSolve == false)
 			{
 				for (int j = 0; j < pointCount; ++j)
 				{
 					b2VelocityConstraintPoint vcp = vc.points[j];
 
 					// Relative velocity at contact
-					b2Vec2 dv = vB + GlobalMembers.b2Cross(wB, vcp.rB) - vA - GlobalMembers.b2Cross(wA, vcp.rA);
+					b2Vec2 dv = vB + Utils.b2Cross(wB, vcp.rB) - vA - Utils.b2Cross(wA, vcp.rA);
 
 					// Compute normal impulse
-					float vn = GlobalMembers.b2Dot(dv, normal);
+					float vn = Utils.b2Dot(dv, normal);
 					float lambda = -vcp.normalMass * (vn - vcp.velocityBias);
 
 					// b2Clamp the accumulated impulse
-					float newImpulse = GlobalMembers.b2Max(vcp.normalImpulse + lambda, 0.0f);
+					float newImpulse = Utils.b2Max(vcp.normalImpulse + lambda, 0.0f);
 					lambda = newImpulse - vcp.normalImpulse;
 					vcp.normalImpulse = newImpulse;
 
 					// Apply contact impulse
 					b2Vec2 P = lambda * normal;
 					vA -= mA * P;
-					wA -= iA * GlobalMembers.b2Cross(vcp.rA, P);
+					wA -= iA * Utils.b2Cross(vcp.rA, P);
 
 					vB += mB * P;
-					wB += iB * GlobalMembers.b2Cross(vcp.rB, P);
+					wB += iB * Utils.b2Cross(vcp.rB, P);
 				}
 			}
 			else
@@ -437,19 +437,19 @@ public class b2ContactSolver : System.IDisposable
 				Debug.Assert(a.x >= 0.0f && a.y >= 0.0f);
 
 				// Relative velocity at contact
-				b2Vec2 dv1 = vB + GlobalMembers.b2Cross(wB, cp1.rB) - vA - GlobalMembers.b2Cross(wA, cp1.rA);
-				b2Vec2 dv2 = vB + GlobalMembers.b2Cross(wB, cp2.rB) - vA - GlobalMembers.b2Cross(wA, cp2.rA);
+				b2Vec2 dv1 = vB + Utils.b2Cross(wB, cp1.rB) - vA - Utils.b2Cross(wA, cp1.rA);
+				b2Vec2 dv2 = vB + Utils.b2Cross(wB, cp2.rB) - vA - Utils.b2Cross(wA, cp2.rA);
 
 				// Compute normal velocity
-				float vn1 = GlobalMembers.b2Dot(dv1, normal);
-				float vn2 = GlobalMembers.b2Dot(dv2, normal);
+				float vn1 = Utils.b2Dot(dv1, normal);
+				float vn2 = Utils.b2Dot(dv2, normal);
 
 				b2Vec2 b = new b2Vec2();
 				b.x = vn1 - cp1.velocityBias;
 				b.y = vn2 - cp2.velocityBias;
 
 				// Compute b'
-				b -= GlobalMembers.b2Mul(vc.K, a);
+				b -= Utils.b2Mul(vc.K, a);
 
 				//const float k_errorTol = 1e-3f;
 
@@ -464,7 +464,7 @@ public class b2ContactSolver : System.IDisposable
 					//
 					// x = - inv(A) * b'
 					//
-					b2Vec2 x = - GlobalMembers.b2Mul(vc.normalMass, b);
+					b2Vec2 x = - Utils.b2Mul(vc.normalMass, b);
 
 					if (x.x >= 0.0f && x.y >= 0.0f)
 					{
@@ -475,10 +475,10 @@ public class b2ContactSolver : System.IDisposable
 						b2Vec2 P1 = d.x * normal;
 						b2Vec2 P2 = d.y * normal;
 						vA -= mA * (P1 + P2);
-						wA -= iA * (GlobalMembers.b2Cross(cp1.rA, P1) + GlobalMembers.b2Cross(cp2.rA, P2));
+						wA -= iA * (Utils.b2Cross(cp1.rA, P1) + Utils.b2Cross(cp2.rA, P2));
 
 						vB += mB * (P1 + P2);
-						wB += iB * (GlobalMembers.b2Cross(cp1.rB, P1) + GlobalMembers.b2Cross(cp2.rB, P2));
+						wB += iB * (Utils.b2Cross(cp1.rB, P1) + Utils.b2Cross(cp2.rB, P2));
 
 						// Accumulate
 						cp1.normalImpulse = x.x;
@@ -487,15 +487,15 @@ public class b2ContactSolver : System.IDisposable
 	
 #if B2_DEBUG_SOLVER
 						// Postconditions
-						dv1 = vB + GlobalMembers.b2Cross(wB, cp1.rB) - vA - GlobalMembers.b2Cross(wA, cp1.rA);
-						dv2 = vB + GlobalMembers.b2Cross(wB, cp2.rB) - vA - GlobalMembers.b2Cross(wA, cp2.rA);
+						dv1 = vB + Utils.b2Cross(wB, cp1.rB) - vA - Utils.b2Cross(wA, cp1.rA);
+						dv2 = vB + Utils.b2Cross(wB, cp2.rB) - vA - Utils.b2Cross(wA, cp2.rA);
 
 						// Compute normal velocity
-						vn1 = GlobalMembers.b2Dot(dv1, normal);
-						vn2 = GlobalMembers.b2Dot(dv2, normal);
+						vn1 = Utils.b2Dot(dv1, normal);
+						vn2 = Utils.b2Dot(dv2, normal);
 
-						Debug.Assert(GlobalMembers.b2Abs(vn1 - cp1.velocityBias) < k_errorTol);
-						Debug.Assert(GlobalMembers.b2Abs(vn2 - cp2.velocityBias) < k_errorTol);
+						Debug.Assert(Utils.b2Abs(vn1 - cp1.velocityBias) < k_errorTol);
+						Debug.Assert(Utils.b2Abs(vn2 - cp2.velocityBias) < k_errorTol);
 #endif
 						break;
 					}
@@ -519,10 +519,10 @@ public class b2ContactSolver : System.IDisposable
 						b2Vec2 P1 = d.x * normal;
 						b2Vec2 P2 = d.y * normal;
 						vA -= mA * (P1 + P2);
-						wA -= iA * (GlobalMembers.b2Cross(cp1.rA, P1) + GlobalMembers.b2Cross(cp2.rA, P2));
+						wA -= iA * (Utils.b2Cross(cp1.rA, P1) + Utils.b2Cross(cp2.rA, P2));
 
 						vB += mB * (P1 + P2);
-						wB += iB * (GlobalMembers.b2Cross(cp1.rB, P1) + GlobalMembers.b2Cross(cp2.rB, P2));
+						wB += iB * (Utils.b2Cross(cp1.rB, P1) + Utils.b2Cross(cp2.rB, P2));
 
 						// Accumulate
 						cp1.normalImpulse = x.x;
@@ -530,12 +530,12 @@ public class b2ContactSolver : System.IDisposable
 
 #if B2_DEBUG_SOLVER
 						// Postconditions
-						dv1 = vB + GlobalMembers.b2Cross(wB, cp1.rB) - vA - GlobalMembers.b2Cross(wA, cp1.rA);
+						dv1 = vB + Utils.b2Cross(wB, cp1.rB) - vA - Utils.b2Cross(wA, cp1.rA);
 
 						// Compute normal velocity
-						vn1 = GlobalMembers.b2Dot(dv1, normal);
+						vn1 = Utils.b2Dot(dv1, normal);
 
-						Debug.Assert(GlobalMembers.b2Abs(vn1 - cp1.velocityBias) < k_errorTol);
+						Debug.Assert(Utils.b2Abs(vn1 - cp1.velocityBias) < k_errorTol);
 #endif
 						break;
 					}
@@ -561,10 +561,10 @@ public class b2ContactSolver : System.IDisposable
 						b2Vec2 P1 = d.x * normal;
 						b2Vec2 P2 = d.y * normal;
 						vA -= mA * (P1 + P2);
-						wA -= iA * (GlobalMembers.b2Cross(cp1.rA, P1) + GlobalMembers.b2Cross(cp2.rA, P2));
+						wA -= iA * (Utils.b2Cross(cp1.rA, P1) + Utils.b2Cross(cp2.rA, P2));
 
 						vB += mB * (P1 + P2);
-						wB += iB * (GlobalMembers.b2Cross(cp1.rB, P1) + GlobalMembers.b2Cross(cp2.rB, P2));
+						wB += iB * (Utils.b2Cross(cp1.rB, P1) + Utils.b2Cross(cp2.rB, P2));
 
 						// Accumulate
 						cp1.normalImpulse = x.x;
@@ -572,12 +572,12 @@ public class b2ContactSolver : System.IDisposable
 
 #if B2_DEBUG_SOLVER
 						// Postconditions
-						dv2 = vB + GlobalMembers.b2Cross(wB, cp2.rB) - vA - GlobalMembers.b2Cross(wA, cp2.rA);
+						dv2 = vB + Utils.b2Cross(wB, cp2.rB) - vA - Utils.b2Cross(wA, cp2.rA);
 
 						// Compute normal velocity
-						vn2 = GlobalMembers.b2Dot(dv2, normal);
+						vn2 = Utils.b2Dot(dv2, normal);
 
-						Debug.Assert(GlobalMembers.b2Abs(vn2 - cp2.velocityBias) < k_errorTol);
+						Debug.Assert(Utils.b2Abs(vn2 - cp2.velocityBias) < k_errorTol);
 #endif
 						break;
 					}
@@ -601,10 +601,10 @@ public class b2ContactSolver : System.IDisposable
 						b2Vec2 P1 = d.x * normal;
 						b2Vec2 P2 = d.y * normal;
 						vA -= mA * (P1 + P2);
-						wA -= iA * (GlobalMembers.b2Cross(cp1.rA, P1) + GlobalMembers.b2Cross(cp2.rA, P2));
+						wA -= iA * (Utils.b2Cross(cp1.rA, P1) + Utils.b2Cross(cp2.rA, P2));
 
 						vB += mB * (P1 + P2);
-						wB += iB * (GlobalMembers.b2Cross(cp1.rB, P1) + GlobalMembers.b2Cross(cp2.rB, P2));
+						wB += iB * (Utils.b2Cross(cp1.rB, P1) + Utils.b2Cross(cp2.rB, P2));
 
 						// Accumulate
 						cp1.normalImpulse = x.x;
@@ -672,8 +672,8 @@ public class b2ContactSolver : System.IDisposable
 				b2Transform xfB = new b2Transform();
 				xfA.q.Set(aA);
 				xfB.q.Set(aB);
-				xfA.p = cA - GlobalMembers.b2Mul(xfA.q, localCenterA);
-				xfB.p = cB - GlobalMembers.b2Mul(xfB.q, localCenterB);
+				xfA.p = cA - Utils.b2Mul(xfA.q, localCenterA);
+				xfB.p = cB - Utils.b2Mul(xfB.q, localCenterB);
 
 				b2PositionSolverManifold psm = new b2PositionSolverManifold();
 				psm.Initialize(pc, xfA, xfB, j);
@@ -686,14 +686,14 @@ public class b2ContactSolver : System.IDisposable
 				b2Vec2 rB = point - cB;
 
 				// Track max constraint error.
-				minSeparation = GlobalMembers.b2Min(minSeparation, separation);
+				minSeparation = Utils.b2Min(minSeparation, separation);
 
 				// Prevent large corrections and allow slop.
-				float C = GlobalMembers.b2Clamp(DefineConstants.b2_baumgarte * (separation + DefineConstants.b2_linearSlop), -DefineConstants.b2_maxLinearCorrection, 0.0f);
+				float C = Utils.b2Clamp(Settings.b2_baumgarte * (separation + Settings.b2_linearSlop), -Settings.b2_maxLinearCorrection, 0.0f);
 
 				// Compute the effective mass.
-				float rnA = GlobalMembers.b2Cross(rA, normal);
-				float rnB = GlobalMembers.b2Cross(rB, normal);
+				float rnA = Utils.b2Cross(rA, normal);
+				float rnB = Utils.b2Cross(rB, normal);
 				float K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
 				// Compute normal impulse
@@ -702,10 +702,10 @@ public class b2ContactSolver : System.IDisposable
 				b2Vec2 P = impulse * normal;
 
 				cA -= mA * P;
-				aA -= iA * GlobalMembers.b2Cross(rA, P);
+				aA -= iA * Utils.b2Cross(rA, P);
 
 				cB += mB * P;
-				aB += iB * GlobalMembers.b2Cross(rB, P);
+				aB += iB * Utils.b2Cross(rB, P);
 			}
 
 			m_positions[indexA].c = cA;
@@ -717,7 +717,7 @@ public class b2ContactSolver : System.IDisposable
 
 		// We can't expect minSpeparation >= -b2_linearSlop because we don't
 		// push the separation above -b2_linearSlop.
-		return minSeparation >= -3.0f * DefineConstants.b2_linearSlop;
+		return minSeparation >= -3.0f * Settings.b2_linearSlop;
 	}
 
 	// Sequential position solver for position constraints.
@@ -764,8 +764,8 @@ public class b2ContactSolver : System.IDisposable
 				b2Transform xfB = new b2Transform();
 				xfA.q.Set(aA);
 				xfB.q.Set(aB);
-				xfA.p = cA - GlobalMembers.b2Mul(xfA.q, localCenterA);
-				xfB.p = cB - GlobalMembers.b2Mul(xfB.q, localCenterB);
+				xfA.p = cA - Utils.b2Mul(xfA.q, localCenterA);
+				xfB.p = cB - Utils.b2Mul(xfB.q, localCenterB);
 
 				b2PositionSolverManifold psm = new b2PositionSolverManifold();
 				psm.Initialize(pc, xfA, xfB, j);
@@ -778,14 +778,14 @@ public class b2ContactSolver : System.IDisposable
 				b2Vec2 rB = point - cB;
 
 				// Track max constraint error.
-				minSeparation = GlobalMembers.b2Min(minSeparation, separation);
+				minSeparation = Utils.b2Min(minSeparation, separation);
 
 				// Prevent large corrections and allow slop.
-				float C = GlobalMembers.b2Clamp(DefineConstants.b2_toiBaugarte * (separation + DefineConstants.b2_linearSlop), -DefineConstants.b2_maxLinearCorrection, 0.0f);
+				float C = Utils.b2Clamp(Settings.b2_toiBaugarte * (separation + Settings.b2_linearSlop), -Settings.b2_maxLinearCorrection, 0.0f);
 
 				// Compute the effective mass.
-				float rnA = GlobalMembers.b2Cross(rA, normal);
-				float rnB = GlobalMembers.b2Cross(rB, normal);
+				float rnA = Utils.b2Cross(rA, normal);
+				float rnB = Utils.b2Cross(rB, normal);
 				float K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
 				// Compute normal impulse
@@ -794,10 +794,10 @@ public class b2ContactSolver : System.IDisposable
 				b2Vec2 P = impulse * normal;
 
 				cA -= mA * P;
-				aA -= iA * GlobalMembers.b2Cross(rA, P);
+				aA -= iA * Utils.b2Cross(rA, P);
 
 				cB += mB * P;
-				aB += iB * GlobalMembers.b2Cross(rB, P);
+				aB += iB * Utils.b2Cross(rB, P);
 			}
 
 			m_positions[indexA].c = cA;
@@ -809,7 +809,7 @@ public class b2ContactSolver : System.IDisposable
 
 		// We can't expect minSpeparation >= -b2_linearSlop because we don't
 		// push the separation above -b2_linearSlop.
-		return minSeparation >= -1.5f * DefineConstants.b2_linearSlop;
+		return minSeparation >= -1.5f * Settings.b2_linearSlop;
 	}
 
 	public b2TimeStep m_step = new b2TimeStep();
@@ -823,7 +823,7 @@ public class b2ContactSolver : System.IDisposable
 
 public class b2ContactPositionConstraint
 {
-	public b2Vec2[] localPoints = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxManifoldPoints);
+	public b2Vec2[] localPoints = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxManifoldPoints);
 	public b2Vec2 localNormal = new b2Vec2();
 	public b2Vec2 localPoint = new b2Vec2();
 	public int indexA;
@@ -850,33 +850,33 @@ public class b2PositionSolverManifold
 		{
 		case b2Manifold.Type.e_circles:
 		{
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, pc.localPoint);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, pc.localPoints[0]);
+				b2Vec2 pointA = Utils.b2Mul(xfA, pc.localPoint);
+				b2Vec2 pointB = Utils.b2Mul(xfB, pc.localPoints[0]);
 				normal = pointB - pointA;
 				normal.Normalize();
 				point = 0.5f * (pointA + pointB);
-				separation = GlobalMembers.b2Dot(pointB - pointA, normal) - pc.radiusA - pc.radiusB;
+				separation = Utils.b2Dot(pointB - pointA, normal) - pc.radiusA - pc.radiusB;
 		}
 			break;
 
 		case b2Manifold.Type.e_faceA:
 		{
-				normal = GlobalMembers.b2Mul(xfA.q, pc.localNormal);
-				b2Vec2 planePoint = GlobalMembers.b2Mul(xfA, pc.localPoint);
+				normal = Utils.b2Mul(xfA.q, pc.localNormal);
+				b2Vec2 planePoint = Utils.b2Mul(xfA, pc.localPoint);
 
-				b2Vec2 clipPoint = GlobalMembers.b2Mul(xfB, pc.localPoints[index]);
-				separation = GlobalMembers.b2Dot(clipPoint - planePoint, normal) - pc.radiusA - pc.radiusB;
+				b2Vec2 clipPoint = Utils.b2Mul(xfB, pc.localPoints[index]);
+				separation = Utils.b2Dot(clipPoint - planePoint, normal) - pc.radiusA - pc.radiusB;
 				point = clipPoint;
 		}
 			break;
 
 		case b2Manifold.Type.e_faceB:
 		{
-				normal = GlobalMembers.b2Mul(xfB.q, pc.localNormal);
-				b2Vec2 planePoint = GlobalMembers.b2Mul(xfB, pc.localPoint);
+				normal = Utils.b2Mul(xfB.q, pc.localNormal);
+				b2Vec2 planePoint = Utils.b2Mul(xfB, pc.localPoint);
 
-				b2Vec2 clipPoint = GlobalMembers.b2Mul(xfA, pc.localPoints[index]);
-				separation = GlobalMembers.b2Dot(clipPoint - planePoint, normal) - pc.radiusA - pc.radiusB;
+				b2Vec2 clipPoint = Utils.b2Mul(xfA, pc.localPoints[index]);
+				separation = Utils.b2Dot(clipPoint - planePoint, normal) - pc.radiusA - pc.radiusB;
 				point = clipPoint;
 
 				// Ensure normal points from A to B

@@ -28,7 +28,7 @@ public class b2TreeNode
 {
 	public bool IsLeaf()
 	{
-		return child1 == DefineConstants.b2_nullNode;
+		return child1 == Settings.b2_nullNode;
 	}
 
 	/// Enlarged AABB
@@ -58,7 +58,7 @@ public class b2DynamicTree : System.IDisposable
 	/// Constructing the tree initializes the node pool.
 	public b2DynamicTree()
 	{
-		m_root = DefineConstants.b2_nullNode;
+		m_root = Settings.b2_nullNode;
 
 		m_nodeCapacity = 16;
 		m_nodeCount = 0;
@@ -73,11 +73,11 @@ public class b2DynamicTree : System.IDisposable
 		}
 
 	    m_nodes[m_nodeCapacity - 1] = new b2TreeNode();
-        m_nodes[m_nodeCapacity - 1].parentOrNext = DefineConstants.b2_nullNode;
+        m_nodes[m_nodeCapacity - 1].parentOrNext = Settings.b2_nullNode;
 		m_nodes[m_nodeCapacity - 1].height = -1;
 		m_freeList = 0;
 
-		m_path = 0;
+		//m_path = 0;
 
 		m_insertionCount = 0;
 	}
@@ -99,7 +99,7 @@ public class b2DynamicTree : System.IDisposable
 		int proxyId = AllocateNode();
 
 		// Fatten the aabb.
-		b2Vec2 r = new b2Vec2(DefineConstants.b2_aabbExtension, DefineConstants.b2_aabbExtension);
+		b2Vec2 r = new b2Vec2(Settings.b2_aabbExtension, Settings.b2_aabbExtension);
 		m_nodes[proxyId].aabb.lowerBound = aabb.lowerBound - r;
 		m_nodes[proxyId].aabb.upperBound = aabb.upperBound + r;
 		m_nodes[proxyId].userData = userData;
@@ -139,12 +139,12 @@ public class b2DynamicTree : System.IDisposable
 
 		// Extend AABB.
 		b2AABB b = aabb;
-		b2Vec2 r = new b2Vec2(DefineConstants.b2_aabbExtension, DefineConstants.b2_aabbExtension);
+		b2Vec2 r = new b2Vec2(Settings.b2_aabbExtension, Settings.b2_aabbExtension);
 		b.lowerBound = b.lowerBound - r;
 		b.upperBound = b.upperBound + r;
 
 		// Predict AABB displacement.
-		b2Vec2 d = DefineConstants.b2_aabbMultiplier * displacement;
+		b2Vec2 d = Settings.b2_aabbMultiplier * displacement;
 
 		if (d.x < 0.0f)
 		{
@@ -195,14 +195,14 @@ public class b2DynamicTree : System.IDisposable
 		while (stack.Count > 0)
 		{
 			int nodeId = stack.Pop();
-			if (nodeId == DefineConstants.b2_nullNode)
+			if (nodeId == Settings.b2_nullNode)
 			{
 				continue;
 			}
 
 			b2TreeNode node = m_nodes[nodeId];
 
-			if (GlobalMembers.b2TestOverlap(node.aabb, aabb))
+			if (Utils.b2TestOverlap(node.aabb, aabb))
 			{
 				if (node.IsLeaf())
 				{
@@ -237,8 +237,8 @@ public class b2DynamicTree : System.IDisposable
 		r.Normalize();
 
 		// v is perpendicular to the segment.
-		b2Vec2 v = GlobalMembers.b2Cross(1.0f, r);
-		b2Vec2 abs_v = GlobalMembers.b2Abs(v);
+		b2Vec2 v = Utils.b2Cross(1.0f, r);
+		b2Vec2 abs_v = Utils.b2Abs(v);
 
 		// Separating axis for segment (Gino, p80).
 		// |dot(v, p1 - c)| > dot(|v|, h)
@@ -249,8 +249,8 @@ public class b2DynamicTree : System.IDisposable
 		b2AABB segmentAABB = new b2AABB();
 		{
 			b2Vec2 t = p1 + maxFraction * (p2 - p1);
-			segmentAABB.lowerBound = GlobalMembers.b2Min(p1, t);
-			segmentAABB.upperBound = GlobalMembers.b2Max(p1, t);
+			segmentAABB.lowerBound = Utils.b2Min(p1, t);
+			segmentAABB.upperBound = Utils.b2Max(p1, t);
 		}
 
 		Stack<int> stack = new Stack<int>(256);
@@ -259,14 +259,14 @@ public class b2DynamicTree : System.IDisposable
 		while (stack.Count > 0)
 		{
 			int nodeId = stack.Pop();
-			if (nodeId == DefineConstants.b2_nullNode)
+			if (nodeId == Settings.b2_nullNode)
 			{
 				continue;
 			}
 
 			b2TreeNode node = m_nodes[nodeId];
 
-			if (GlobalMembers.b2TestOverlap(node.aabb, segmentAABB) == false)
+			if (Utils.b2TestOverlap(node.aabb, segmentAABB) == false)
 			{
 				continue;
 			}
@@ -275,7 +275,7 @@ public class b2DynamicTree : System.IDisposable
 			// |dot(v, p1 - c)| > dot(|v|, h)
 			b2Vec2 c = node.aabb.GetCenter();
 			b2Vec2 h = node.aabb.GetExtents();
-			float separation = GlobalMembers.b2Abs(GlobalMembers.b2Dot(v, p1 - c)) - GlobalMembers.b2Dot(abs_v, h);
+			float separation = Utils.b2Abs(Utils.b2Dot(v, p1 - c)) - Utils.b2Dot(abs_v, h);
 			if (separation > 0.0f)
 			{
 				continue;
@@ -301,8 +301,8 @@ public class b2DynamicTree : System.IDisposable
 					// Update segment bounding box.
 					maxFraction = value;
 					b2Vec2 t = p1 + maxFraction * (p2 - p1);
-					segmentAABB.lowerBound = GlobalMembers.b2Min(p1, t);
-					segmentAABB.upperBound = GlobalMembers.b2Max(p1, t);
+					segmentAABB.lowerBound = Utils.b2Min(p1, t);
+					segmentAABB.upperBound = Utils.b2Max(p1, t);
 				}
 			}
 			else
@@ -322,7 +322,7 @@ public class b2DynamicTree : System.IDisposable
 
 		int freeCount = 0;
 		int freeIndex = m_freeList;
-		while (freeIndex != DefineConstants.b2_nullNode)
+		while (freeIndex != Settings.b2_nullNode)
 		{
 			Debug.Assert(0 <= freeIndex && freeIndex < m_nodeCapacity);
 			freeIndex = m_nodes[freeIndex].parentOrNext;
@@ -339,7 +339,7 @@ public class b2DynamicTree : System.IDisposable
 	/// called often.
 	public int GetHeight()
 	{
-		if (m_root == DefineConstants.b2_nullNode)
+		if (m_root == Settings.b2_nullNode)
 		{
 			return 0;
 		}
@@ -364,8 +364,8 @@ public class b2DynamicTree : System.IDisposable
 
 			int child1 = node.child1;
 			int child2 = node.child2;
-			int balance = GlobalMembers.b2Abs(m_nodes[child2].height - m_nodes[child1].height);
-			maxBalance = GlobalMembers.b2Max(maxBalance, balance);
+			int balance = Utils.b2Abs(m_nodes[child2].height - m_nodes[child1].height);
+			maxBalance = Utils.b2Max(maxBalance, balance);
 		}
 
 		return maxBalance;
@@ -376,7 +376,7 @@ public class b2DynamicTree : System.IDisposable
 	//
 	public float GetAreaRatio()
 	{
-		if (m_root == DefineConstants.b2_nullNode)
+		if (m_root == Settings.b2_nullNode)
 		{
 			return 0.0f;
 		}
@@ -417,7 +417,7 @@ public class b2DynamicTree : System.IDisposable
 
 			if (m_nodes[i].IsLeaf())
 			{
-				m_nodes[i].parentOrNext = DefineConstants.b2_nullNode;
+				m_nodes[i].parentOrNext = Settings.b2_nullNode;
 				nodes[count] = i;
 				++count;
 			}
@@ -460,9 +460,9 @@ public class b2DynamicTree : System.IDisposable
 			b2TreeNode parentOrNext = m_nodes[parentIndex];
 			parentOrNext.child1 = index1;
 			parentOrNext.child2 = index2;
-			parentOrNext.height = 1 + GlobalMembers.b2Max(child1.height, child2.height);
+			parentOrNext.height = 1 + Utils.b2Max(child1.height, child2.height);
 			parentOrNext.aabb.Combine(child1.aabb, child2.aabb);
-			parentOrNext.parentOrNext = DefineConstants.b2_nullNode;
+			parentOrNext.parentOrNext = Settings.b2_nullNode;
 
 			child1.parentOrNext = parentIndex;
 			child2.parentOrNext = parentIndex;
@@ -497,7 +497,7 @@ public class b2DynamicTree : System.IDisposable
 	private int AllocateNode()
 	{
 		// Expand the node pool as needed.
-		if (m_freeList == DefineConstants.b2_nullNode)
+		if (m_freeList == Settings.b2_nullNode)
 		{
 			Debug.Assert(m_nodeCount == m_nodeCapacity);
 
@@ -516,7 +516,7 @@ public class b2DynamicTree : System.IDisposable
 				m_nodes[i].height = -1;
 			}
             m_nodes[m_nodeCapacity - 1] = new b2TreeNode();
-			m_nodes[m_nodeCapacity - 1].parentOrNext = DefineConstants.b2_nullNode;
+			m_nodes[m_nodeCapacity - 1].parentOrNext = Settings.b2_nullNode;
 			m_nodes[m_nodeCapacity - 1].height = -1;
 			m_freeList = m_nodeCount;
 		}
@@ -524,9 +524,9 @@ public class b2DynamicTree : System.IDisposable
 		// Peel a node off the free list.
 		int nodeId = m_freeList;
 		m_freeList = m_nodes[nodeId].parentOrNext;
-		m_nodes[nodeId].parentOrNext = DefineConstants.b2_nullNode;
-		m_nodes[nodeId].child1 = DefineConstants.b2_nullNode;
-		m_nodes[nodeId].child2 = DefineConstants.b2_nullNode;
+		m_nodes[nodeId].parentOrNext = Settings.b2_nullNode;
+		m_nodes[nodeId].child1 = Settings.b2_nullNode;
+		m_nodes[nodeId].child2 = Settings.b2_nullNode;
 		m_nodes[nodeId].height = 0;
 		m_nodes[nodeId].userData = null;
 		++m_nodeCount;
@@ -548,10 +548,10 @@ public class b2DynamicTree : System.IDisposable
 	{
 		++m_insertionCount;
 
-		if (m_root == DefineConstants.b2_nullNode)
+		if (m_root == Settings.b2_nullNode)
 		{
 			m_root = leaf;
-			m_nodes[m_root].parentOrNext = DefineConstants.b2_nullNode;
+			m_nodes[m_root].parentOrNext = Settings.b2_nullNode;
 			return;
 		}
 
@@ -636,7 +636,7 @@ public class b2DynamicTree : System.IDisposable
 		m_nodes[newParent].aabb.Combine(leafAABB, m_nodes[sibling].aabb);
 		m_nodes[newParent].height = m_nodes[sibling].height + 1;
 
-		if (oldParent != DefineConstants.b2_nullNode)
+		if (oldParent != Settings.b2_nullNode)
 		{
 			// The sibling was not the root.
 			if (m_nodes[oldParent].child1 == sibling)
@@ -665,17 +665,17 @@ public class b2DynamicTree : System.IDisposable
 
 		// Walk back up the tree fixing heights and AABBs
 		index = m_nodes[leaf].parentOrNext;
-		while (index != DefineConstants.b2_nullNode)
+		while (index != Settings.b2_nullNode)
 		{
 			index = Balance(index);
 
 			int child1 = m_nodes[index].child1;
 			int child2 = m_nodes[index].child2;
 
-			Debug.Assert(child1 != DefineConstants.b2_nullNode);
-			Debug.Assert(child2 != DefineConstants.b2_nullNode);
+			Debug.Assert(child1 != Settings.b2_nullNode);
+			Debug.Assert(child2 != Settings.b2_nullNode);
 
-			m_nodes[index].height = 1 + GlobalMembers.b2Max(m_nodes[child1].height, m_nodes[child2].height);
+			m_nodes[index].height = 1 + Utils.b2Max(m_nodes[child1].height, m_nodes[child2].height);
 			m_nodes[index].aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
 
 			index = m_nodes[index].parentOrNext;
@@ -687,7 +687,7 @@ public class b2DynamicTree : System.IDisposable
 	{
 		if (leaf == m_root)
 		{
-			m_root = DefineConstants.b2_nullNode;
+			m_root = Settings.b2_nullNode;
 			return;
 		}
 
@@ -703,7 +703,7 @@ public class b2DynamicTree : System.IDisposable
 			sibling = m_nodes[parentOrNext].child1;
 		}
 
-		if (grandParent != DefineConstants.b2_nullNode)
+		if (grandParent != Settings.b2_nullNode)
 		{
 			// Destroy parentOrNext and connect sibling to grandParent.
 			if (m_nodes[grandParent].child1 == parentOrNext)
@@ -719,7 +719,7 @@ public class b2DynamicTree : System.IDisposable
 
 			// Adjust ancestor bounds.
 			int index = grandParent;
-			while (index != DefineConstants.b2_nullNode)
+			while (index != Settings.b2_nullNode)
 			{
 				index = Balance(index);
 
@@ -727,7 +727,7 @@ public class b2DynamicTree : System.IDisposable
 				int child2 = m_nodes[index].child2;
 
 				m_nodes[index].aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
-				m_nodes[index].height = 1 + GlobalMembers.b2Max(m_nodes[child1].height, m_nodes[child2].height);
+				m_nodes[index].height = 1 + Utils.b2Max(m_nodes[child1].height, m_nodes[child2].height);
 
 				index = m_nodes[index].parentOrNext;
 			}
@@ -735,7 +735,7 @@ public class b2DynamicTree : System.IDisposable
 		else
 		{
 			m_root = sibling;
-			m_nodes[sibling].parentOrNext = DefineConstants.b2_nullNode;
+			m_nodes[sibling].parentOrNext = Settings.b2_nullNode;
 			FreeNode(parentOrNext);
 		}
 
@@ -747,7 +747,7 @@ public class b2DynamicTree : System.IDisposable
 	// Returns the new root index.
 	private int Balance(int iA)
 	{
-		Debug.Assert(iA != DefineConstants.b2_nullNode);
+		Debug.Assert(iA != Settings.b2_nullNode);
 
 		b2TreeNode A = m_nodes[iA];
 		if (A.IsLeaf() || A.height < 2)
@@ -781,7 +781,7 @@ public class b2DynamicTree : System.IDisposable
 			A.parentOrNext = iC;
 
 			// A's old parentOrNext should point to C
-			if (C.parentOrNext != DefineConstants.b2_nullNode)
+			if (C.parentOrNext != Settings.b2_nullNode)
 			{
 				if (m_nodes[C.parentOrNext].child1 == iA)
 				{
@@ -807,8 +807,8 @@ public class b2DynamicTree : System.IDisposable
 				A.aabb.Combine(B.aabb, G.aabb);
 				C.aabb.Combine(A.aabb, F.aabb);
 
-				A.height = 1 + GlobalMembers.b2Max(B.height, G.height);
-				C.height = 1 + GlobalMembers.b2Max(A.height, F.height);
+				A.height = 1 + Utils.b2Max(B.height, G.height);
+				C.height = 1 + Utils.b2Max(A.height, F.height);
 			}
 			else
 			{
@@ -818,8 +818,8 @@ public class b2DynamicTree : System.IDisposable
 				A.aabb.Combine(B.aabb, F.aabb);
 				C.aabb.Combine(A.aabb, G.aabb);
 
-				A.height = 1 + GlobalMembers.b2Max(B.height, F.height);
-				C.height = 1 + GlobalMembers.b2Max(A.height, G.height);
+				A.height = 1 + Utils.b2Max(B.height, F.height);
+				C.height = 1 + Utils.b2Max(A.height, G.height);
 			}
 
 			return iC;
@@ -841,7 +841,7 @@ public class b2DynamicTree : System.IDisposable
 			A.parentOrNext = iB;
 
 			// A's old parentOrNext should point to B
-			if (B.parentOrNext != DefineConstants.b2_nullNode)
+			if (B.parentOrNext != Settings.b2_nullNode)
 			{
 				if (m_nodes[B.parentOrNext].child1 == iA)
 				{
@@ -867,8 +867,8 @@ public class b2DynamicTree : System.IDisposable
 				A.aabb.Combine(C.aabb, E.aabb);
 				B.aabb.Combine(A.aabb, D.aabb);
 
-				A.height = 1 + GlobalMembers.b2Max(C.height, E.height);
-				B.height = 1 + GlobalMembers.b2Max(A.height, D.height);
+				A.height = 1 + Utils.b2Max(C.height, E.height);
+				B.height = 1 + Utils.b2Max(A.height, D.height);
 			}
 			else
 			{
@@ -878,8 +878,8 @@ public class b2DynamicTree : System.IDisposable
 				A.aabb.Combine(C.aabb, D.aabb);
 				B.aabb.Combine(A.aabb, E.aabb);
 
-				A.height = 1 + GlobalMembers.b2Max(C.height, D.height);
-				B.height = 1 + GlobalMembers.b2Max(A.height, E.height);
+				A.height = 1 + Utils.b2Max(C.height, D.height);
+				B.height = 1 + Utils.b2Max(A.height, E.height);
 			}
 
 			return iB;
@@ -907,19 +907,19 @@ public class b2DynamicTree : System.IDisposable
 
 		int height1 = ComputeHeight(node.child1);
 		int height2 = ComputeHeight(node.child2);
-		return 1 + GlobalMembers.b2Max(height1, height2);
+		return 1 + Utils.b2Max(height1, height2);
 	}
 
 	private void ValidateStructure(int index)
 	{
-		if (index == DefineConstants.b2_nullNode)
+		if (index == Settings.b2_nullNode)
 		{
 			return;
 		}
 
 		if (index == m_root)
 		{
-			Debug.Assert(m_nodes[index].parentOrNext == DefineConstants.b2_nullNode);
+			Debug.Assert(m_nodes[index].parentOrNext == Settings.b2_nullNode);
 		}
 
 		b2TreeNode node = m_nodes[index];
@@ -929,8 +929,8 @@ public class b2DynamicTree : System.IDisposable
 
 		if (node.IsLeaf())
 		{
-			Debug.Assert(child1 == DefineConstants.b2_nullNode);
-			Debug.Assert(child2 == DefineConstants.b2_nullNode);
+			Debug.Assert(child1 == Settings.b2_nullNode);
+			Debug.Assert(child2 == Settings.b2_nullNode);
 			Debug.Assert(node.height == 0);
 			return;
 		}
@@ -947,7 +947,7 @@ public class b2DynamicTree : System.IDisposable
 
     private void ValidateMetrics(int index)
 	{
-		if (index == DefineConstants.b2_nullNode)
+		if (index == Settings.b2_nullNode)
 		{
 			return;
 		}
@@ -959,8 +959,8 @@ public class b2DynamicTree : System.IDisposable
 
 		if (node.IsLeaf())
 		{
-			Debug.Assert(child1 == DefineConstants.b2_nullNode);
-			Debug.Assert(child2 == DefineConstants.b2_nullNode);
+			Debug.Assert(child1 == Settings.b2_nullNode);
+			Debug.Assert(child2 == Settings.b2_nullNode);
 			Debug.Assert(node.height == 0);
 			return;
 		}
@@ -971,7 +971,7 @@ public class b2DynamicTree : System.IDisposable
 		int height1 = m_nodes[child1].height;
 		int height2 = m_nodes[child2].height;
 		int height;
-		height = 1 + GlobalMembers.b2Max(height1, height2);
+		height = 1 + Utils.b2Max(height1, height2);
 		Debug.Assert(node.height == height);
 
 		b2AABB aabb = new b2AABB();
@@ -993,7 +993,7 @@ public class b2DynamicTree : System.IDisposable
 	private int m_freeList;
 
 	/// This is used to incrementally traverse the tree for re-balancing.
-	private uint m_path;
+	//private uint m_path;
 
 	private int m_insertionCount;
 }

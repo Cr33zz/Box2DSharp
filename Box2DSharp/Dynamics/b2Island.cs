@@ -273,16 +273,16 @@ public class b2Island : System.IDisposable
 
 			// Check for large velocities
 			b2Vec2 translation = h * v;
-			if (GlobalMembers.b2Dot(translation, translation) > (DefineConstants.b2_maxTranslation * DefineConstants.b2_maxTranslation))
+			if (Utils.b2Dot(translation, translation) > (Settings.b2_maxTranslation * Settings.b2_maxTranslation))
 			{
-				float ratio = DefineConstants.b2_maxTranslation / translation.Length();
+				float ratio = Settings.b2_maxTranslation / translation.Length();
 				v *= ratio;
 			}
 
 			float rotation = h * w;
-			if (rotation * rotation > DefineConstants.b2_maxRotationSquared)
+			if (rotation * rotation > Settings.b2_maxRotationSquared)
 			{
-				float ratio = (0.5f * DefineConstants.b2_pi) / GlobalMembers.b2Abs(rotation);
+				float ratio = (0.5f * Settings.b2_pi) / Utils.b2Abs(rotation);
 				w *= ratio;
 			}
 
@@ -337,8 +337,8 @@ public class b2Island : System.IDisposable
 		{
 			float minSleepTime = float.MaxValue;
 
-			const float linTolSqr = DefineConstants.b2_linearSleepTolerance * DefineConstants.b2_linearSleepTolerance;
-			float angTolSqr = (2.0f / 180.0f * DefineConstants.b2_pi) * (2.0f / 180.0f * DefineConstants.b2_pi);
+			const float linTolSqr = Settings.b2_linearSleepTolerance * Settings.b2_linearSleepTolerance;
+			float angTolSqr = (2.0f / 180.0f * Settings.b2_pi) * (2.0f / 180.0f * Settings.b2_pi);
 
 			for (int i = 0; i < m_bodyCount; ++i)
 			{
@@ -348,7 +348,7 @@ public class b2Island : System.IDisposable
 					continue;
 				}
 
-				if ((b.m_flags & b2Body.BodyFlags.e_autoSleepFlag) == 0 || b.m_angularVelocity * b.m_angularVelocity > angTolSqr || GlobalMembers.b2Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr)
+				if ((b.m_flags & b2Body.BodyFlags.e_autoSleepFlag) == 0 || b.m_angularVelocity * b.m_angularVelocity > angTolSqr || Utils.b2Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr)
 				{
 					b.m_sleepTime = 0.0f;
 					minSleepTime = 0.0f;
@@ -356,11 +356,11 @@ public class b2Island : System.IDisposable
 				else
 				{
 					b.m_sleepTime += h;
-					minSleepTime = GlobalMembers.b2Min(minSleepTime, b.m_sleepTime);
+					minSleepTime = Utils.b2Min(minSleepTime, b.m_sleepTime);
 				}
 			}
 
-			if (minSleepTime >= DefineConstants.b2_timeToSleep && positionSolved)
+			if (minSleepTime >= Settings.b2_timeToSleep && positionSolved)
 			{
 				for (int i = 0; i < m_bodyCount; ++i)
 				{
@@ -478,16 +478,16 @@ public class b2Island : System.IDisposable
 
 			// Check for large velocities
 			b2Vec2 translation = h * v;
-			if (GlobalMembers.b2Dot(translation, translation) > (DefineConstants.b2_maxTranslationSquared))
+			if (Utils.b2Dot(translation, translation) > (Settings.b2_maxTranslationSquared))
 			{
-				float ratio = DefineConstants.b2_maxTranslation / translation.Length();
+				float ratio = Settings.b2_maxTranslation / translation.Length();
 				v *= ratio;
 			}
 
 			float rotation = h * w;
-			if (rotation * rotation > DefineConstants.b2_maxRotationSquared)
+			if (rotation * rotation > Settings.b2_maxRotationSquared)
             {
-				float ratio = (0.5f * DefineConstants.b2_pi) / GlobalMembers.b2Abs(rotation);
+				float ratio = (0.5f * Settings.b2_pi) / Utils.b2Abs(rotation);
 				w *= ratio;
 			}
 

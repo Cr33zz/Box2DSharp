@@ -124,7 +124,7 @@ public struct b2Vec2
     /// </summary>
     public bool IsValid()
     {
-        return GlobalMembers.b2IsValid(x) && GlobalMembers.b2IsValid(y);
+        return Utils.b2IsValid(x) && Utils.b2IsValid(y);
     }
 
     /// Get the skew vector such that dot(skew_vec, other) == cross(vec, other)
@@ -447,16 +447,16 @@ public class b2Mat33
     /// than computing the inverse in one-shot cases.
     public b2Vec3 Solve33(b2Vec3 b)
     {
-        float det = GlobalMembers.b2Dot(ex, GlobalMembers.b2Cross(ey, ez));
+        float det = Utils.b2Dot(ex, Utils.b2Cross(ey, ez));
         if (det != 0.0f)
         {
             det = 1.0f / det;
         }
 
         b2Vec3 x = new b2Vec3();
-        x.x = det * GlobalMembers.b2Dot(b, GlobalMembers.b2Cross(ey, ez));
-        x.y = det * GlobalMembers.b2Dot(ex, GlobalMembers.b2Cross(b, ez));
-        x.z = det * GlobalMembers.b2Dot(ex, GlobalMembers.b2Cross(ey, b));
+        x.x = det * Utils.b2Dot(b, Utils.b2Cross(ey, ez));
+        x.y = det * Utils.b2Dot(ex, Utils.b2Cross(b, ez));
+        x.z = det * Utils.b2Dot(ex, Utils.b2Cross(ey, b));
         return x;
     }
 
@@ -517,7 +517,7 @@ public class b2Mat33
     /// Returns the zero matrix if singular.
     public void GetSymInverse33(b2Mat33 M)
     {
-        float det = GlobalMembers.b2Dot(ex, GlobalMembers.b2Cross(ey, ez));
+        float det = Utils.b2Dot(ex, Utils.b2Cross(ey, ez));
         if (det != 0.0f)
         {
             det = 1.0f / det;
@@ -651,7 +651,7 @@ public struct b2Sweep
         xf.q.Set(angle);
 
         // Shift to origin
-        xf.p -= GlobalMembers.b2Mul(xf.q, localCenter);
+        xf.p -= Utils.b2Mul(xf.q, localCenter);
     }
 
     /// Advance the sweep forward, yielding a new initial state.
@@ -670,7 +670,7 @@ public struct b2Sweep
     /// Normalize an angle in radians to be between -pi and pi
     public void Normalize()
     {
-        float twoPi = 2.0f * DefineConstants.b2_pi;
+        float twoPi = 2.0f * Settings.b2_pi;
         float d = twoPi * (float)Math.Floor(a0 / twoPi);
         a0 -= d;
         a -= d;

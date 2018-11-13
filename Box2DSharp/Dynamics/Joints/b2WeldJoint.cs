@@ -210,16 +210,16 @@ public class b2WeldJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2WeldJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		GlobalMembers.b2Log("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
-		GlobalMembers.b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
-		GlobalMembers.b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2WeldJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		Utils.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		Utils.b2Log("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
+		Utils.b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
+		Utils.b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -269,10 +269,10 @@ public class b2WeldJoint : b2Joint
 
 
 
-		m_rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		m_rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
 
 
-		m_rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		m_rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 		// J = [-I -r1_skew I r2_skew]
 		//     [ 0       -1 0       1]
@@ -309,7 +309,7 @@ public class b2WeldJoint : b2Joint
 			float C = aB - aA - m_referenceAngle;
 
 			// Frequency
-			float omega = 2.0f * DefineConstants.b2_pi * m_frequencyHz;
+			float omega = 2.0f * Settings.b2_pi * m_frequencyHz;
 
 			// Damping coefficient
 			float d = 2.0f * m * m_dampingRatio * omega;
@@ -347,10 +347,10 @@ public class b2WeldJoint : b2Joint
 			b2Vec2 P = new b2Vec2(m_impulse.x, m_impulse.y);
 
 			vA -= mA * P;
-			wA -= iA * (GlobalMembers.b2Cross(m_rA, P) + m_impulse.z);
+			wA -= iA * (Utils.b2Cross(m_rA, P) + m_impulse.z);
 
 			vB += mB * P;
-			wB += iB * (GlobalMembers.b2Cross(m_rB, P) + m_impulse.z);
+			wB += iB * (Utils.b2Cross(m_rB, P) + m_impulse.z);
 		}
 		else
 		{
@@ -388,9 +388,9 @@ public class b2WeldJoint : b2Joint
 			wA -= iA * impulse2;
 			wB += iB * impulse2;
 
-			b2Vec2 Cdot1 = vB + GlobalMembers.b2Cross(wB, m_rB) - vA - GlobalMembers.b2Cross(wA, m_rA);
+			b2Vec2 Cdot1 = vB + Utils.b2Cross(wB, m_rB) - vA - Utils.b2Cross(wA, m_rA);
 
-			b2Vec2 impulse1 = -GlobalMembers.b2Mul22(m_mass, Cdot1);
+			b2Vec2 impulse1 = -Utils.b2Mul22(m_mass, Cdot1);
 			m_impulse.x += impulse1.x;
 			m_impulse.y += impulse1.y;
 
@@ -399,27 +399,27 @@ public class b2WeldJoint : b2Joint
 			b2Vec2 P = new b2Vec2(impulse1);
 
 			vA -= mA * P;
-			wA -= iA * GlobalMembers.b2Cross(m_rA, P);
+			wA -= iA * Utils.b2Cross(m_rA, P);
 
 			vB += mB * P;
-			wB += iB * GlobalMembers.b2Cross(m_rB, P);
+			wB += iB * Utils.b2Cross(m_rB, P);
 		}
 		else
 		{
-			b2Vec2 Cdot1 = vB + GlobalMembers.b2Cross(wB, m_rB) - vA - GlobalMembers.b2Cross(wA, m_rA);
+			b2Vec2 Cdot1 = vB + Utils.b2Cross(wB, m_rB) - vA - Utils.b2Cross(wA, m_rA);
 			float Cdot2 = wB - wA;
 			b2Vec3 Cdot = new b2Vec3(Cdot1.x, Cdot1.y, Cdot2);
 
-			b2Vec3 impulse = -GlobalMembers.b2Mul(m_mass, Cdot);
+			b2Vec3 impulse = -Utils.b2Mul(m_mass, Cdot);
 			m_impulse += impulse;
 
 			b2Vec2 P = new b2Vec2(impulse.x, impulse.y);
 
 			vA -= mA * P;
-			wA -= iA * (GlobalMembers.b2Cross(m_rA, P) + impulse.z);
+			wA -= iA * (Utils.b2Cross(m_rA, P) + impulse.z);
 
 			vB += mB * P;
-			wB += iB * (GlobalMembers.b2Cross(m_rB, P) + impulse.z);
+			wB += iB * (Utils.b2Cross(m_rB, P) + impulse.z);
 		}
 
 
@@ -446,8 +446,8 @@ public class b2WeldJoint : b2Joint
 		float iA = m_invIA;
 		float iB = m_invIB;
 
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 		float positionError;
 		float angularError;
@@ -473,10 +473,10 @@ public class b2WeldJoint : b2Joint
 			b2Vec2 P = -K.Solve22(C1);
 
 			cA -= mA * P;
-			aA -= iA * GlobalMembers.b2Cross(rA, P);
+			aA -= iA * Utils.b2Cross(rA, P);
 
 			cB += mB * P;
-			aB += iB * GlobalMembers.b2Cross(rB, P);
+			aB += iB * Utils.b2Cross(rB, P);
 		}
 		else
 		{
@@ -484,7 +484,7 @@ public class b2WeldJoint : b2Joint
 			float C2 = aB - aA - m_referenceAngle;
 
 			positionError = C1.Length();
-			angularError = GlobalMembers.b2Abs(C2);
+			angularError = Utils.b2Abs(C2);
 
 			b2Vec3 C = new b2Vec3(C1.x, C1.y, C2);
 
@@ -504,10 +504,10 @@ public class b2WeldJoint : b2Joint
 			b2Vec2 P = new b2Vec2(impulse.x, impulse.y);
 
 			cA -= mA * P;
-			aA -= iA * (GlobalMembers.b2Cross(rA, P) + impulse.z);
+			aA -= iA * (Utils.b2Cross(rA, P) + impulse.z);
 
 			cB += mB * P;
-			aB += iB * (GlobalMembers.b2Cross(rB, P) + impulse.z);
+			aB += iB * (Utils.b2Cross(rB, P) + impulse.z);
 		}
 
 
@@ -519,7 +519,7 @@ public class b2WeldJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return positionError <= DefineConstants.b2_linearSlop && angularError <= (2.0f / 180.0f * DefineConstants.b2_pi);
+		return positionError <= Settings.b2_linearSlop && angularError <= (2.0f / 180.0f * Settings.b2_pi);
 	}
 
 	protected float m_frequencyHz;

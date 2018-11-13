@@ -41,6 +41,6 @@ public class b2CircleContact : b2Contact
 
 	public override void Evaluate(b2Manifold manifold, b2Transform xfA, b2Transform xfB)
 	{
-		GlobalMembers.b2CollideCircles(manifold, (b2CircleShape)m_fixtureA.GetShape(), xfA, (b2CircleShape)m_fixtureB.GetShape(), xfB);
+		Utils.b2CollideCircles(manifold, (b2CircleShape)m_fixtureA.GetShape(), xfA, (b2CircleShape)m_fixtureB.GetShape(), xfB);
 	}
 }

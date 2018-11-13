@@ -195,7 +195,7 @@ public class b2MotorJoint : b2Joint
 	/// Set the maximum friction force in N.
 	public void SetMaxForce(float force)
 	{
-		Debug.Assert(GlobalMembers.b2IsValid(force) && force >= 0.0f);
+		Debug.Assert(Utils.b2IsValid(force) && force >= 0.0f);
 		m_maxForce = force;
 	}
 
@@ -210,7 +210,7 @@ public class b2MotorJoint : b2Joint
 	/// Set the maximum friction torque in N*m.
 	public void SetMaxTorque(float torque)
 	{
-		Debug.Assert(GlobalMembers.b2IsValid(torque) && torque >= 0.0f);
+		Debug.Assert(Utils.b2IsValid(torque) && torque >= 0.0f);
 		m_maxTorque = torque;
 	}
 
@@ -225,7 +225,7 @@ public class b2MotorJoint : b2Joint
 	/// Set the position correction factor in the range [0,1].
 	public void SetCorrectionFactor(float factor)
 	{
-		Debug.Assert(GlobalMembers.b2IsValid(factor) && 0.0f <= factor && factor <= 1.0f);
+		Debug.Assert(Utils.b2IsValid(factor) && 0.0f <= factor && factor <= 1.0f);
 		m_correctionFactor = factor;
 	}
 
@@ -243,16 +243,16 @@ public class b2MotorJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2MotorJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.linearOffset.Set(%.15lef, %.15lef);\n", m_linearOffset.x, m_linearOffset.y);
-		GlobalMembers.b2Log("  jd.angularOffset = %.15lef;\n", m_angularOffset);
-		GlobalMembers.b2Log("  jd.maxForce = %.15lef;\n", m_maxForce);
-		GlobalMembers.b2Log("  jd.maxTorque = %.15lef;\n", m_maxTorque);
-		GlobalMembers.b2Log("  jd.correctionFactor = %.15lef;\n", m_correctionFactor);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2MotorJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.linearOffset.Set(%.15lef, %.15lef);\n", m_linearOffset.x, m_linearOffset.y);
+		Utils.b2Log("  jd.angularOffset = %.15lef;\n", m_angularOffset);
+		Utils.b2Log("  jd.maxForce = %.15lef;\n", m_maxForce);
+		Utils.b2Log("  jd.maxTorque = %.15lef;\n", m_maxTorque);
+		Utils.b2Log("  jd.correctionFactor = %.15lef;\n", m_correctionFactor);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -305,10 +305,10 @@ public class b2MotorJoint : b2Joint
 		// Compute the effective mass matrix.
 
 
-		m_rA = GlobalMembers.b2Mul(qA, m_linearOffset - m_localCenterA);
+		m_rA = Utils.b2Mul(qA, m_linearOffset - m_localCenterA);
 
 
-		m_rB = GlobalMembers.b2Mul(qB, -m_localCenterB);
+		m_rB = Utils.b2Mul(qB, -m_localCenterB);
 
 		// J = [-I -r1_skew I r2_skew]
 		// r_skew = [-ry; rx]
@@ -355,9 +355,9 @@ public class b2MotorJoint : b2Joint
 
 			b2Vec2 P = new b2Vec2(m_linearImpulse.x, m_linearImpulse.y);
 			vA -= mA * P;
-			wA -= iA * (GlobalMembers.b2Cross(m_rA, P) + m_angularImpulse);
+			wA -= iA * (Utils.b2Cross(m_rA, P) + m_angularImpulse);
 			vB += mB * P;
-			wB += iB * (GlobalMembers.b2Cross(m_rB, P) + m_angularImpulse);
+			wB += iB * (Utils.b2Cross(m_rB, P) + m_angularImpulse);
 		}
 		else
 		{
@@ -396,7 +396,7 @@ public class b2MotorJoint : b2Joint
 
 			float oldImpulse = m_angularImpulse;
 			float maxImpulse = h * m_maxTorque;
-			m_angularImpulse = GlobalMembers.b2Clamp(m_angularImpulse + impulse, -maxImpulse, maxImpulse);
+			m_angularImpulse = Utils.b2Clamp(m_angularImpulse + impulse, -maxImpulse, maxImpulse);
 			impulse = m_angularImpulse - oldImpulse;
 
 			wA -= iA * impulse;
@@ -405,9 +405,9 @@ public class b2MotorJoint : b2Joint
 
 		{
 		// Solve linear friction
-			b2Vec2 Cdot = vB + GlobalMembers.b2Cross(wB, m_rB) - vA - GlobalMembers.b2Cross(wA, m_rA) + inv_h * m_correctionFactor * m_linearError;
+			b2Vec2 Cdot = vB + Utils.b2Cross(wB, m_rB) - vA - Utils.b2Cross(wA, m_rA) + inv_h * m_correctionFactor * m_linearError;
 
-			b2Vec2 impulse = -GlobalMembers.b2Mul(m_linearMass, Cdot);
+			b2Vec2 impulse = -Utils.b2Mul(m_linearMass, Cdot);
 
 
 			b2Vec2 oldImpulse = new b2Vec2(m_linearImpulse);
@@ -424,10 +424,10 @@ public class b2MotorJoint : b2Joint
 			impulse = m_linearImpulse - oldImpulse;
 
 			vA -= mA * impulse;
-			wA -= iA * GlobalMembers.b2Cross(m_rA, impulse);
+			wA -= iA * Utils.b2Cross(m_rA, impulse);
 
 			vB += mB * impulse;
-			wB += iB * GlobalMembers.b2Cross(m_rB, impulse);
+			wB += iB * Utils.b2Cross(m_rB, impulse);
 		}
 
 

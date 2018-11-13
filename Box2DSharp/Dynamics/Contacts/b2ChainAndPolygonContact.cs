@@ -44,6 +44,6 @@ public class b2ChainAndPolygonContact : b2Contact
 		b2ChainShape chain = (b2ChainShape)m_fixtureA.GetShape();
 		b2EdgeShape edge = new b2EdgeShape();
 		chain.GetChildEdge(edge, m_indexA);
-		GlobalMembers.b2CollideEdgeAndPolygon(manifold, edge, xfA, (b2PolygonShape)m_fixtureB.GetShape(), xfB);
+		Utils.b2CollideEdgeAndPolygon(manifold, edge, xfA, (b2PolygonShape)m_fixtureB.GetShape(), xfB);
 	}
 }

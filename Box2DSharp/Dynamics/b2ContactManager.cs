@@ -78,8 +78,8 @@ public class b2ContactManager
 	{
 		m_contactList = null;
 		m_contactCount = 0;
-		m_contactFilter = GlobalMembers.b2_defaultFilter;
-		m_contactListener = GlobalMembers.b2_defaultListener;
+		m_contactFilter = Utils.b2_defaultFilter;
+		m_contactListener = Utils.b2_defaultListener;
 	    m_broadphaseCollision = AddPair;
 	}
 

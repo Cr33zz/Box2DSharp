@@ -88,7 +88,7 @@ public class b2GearJoint : b2Joint
 	/// Set/Get the gear ratio.
 	public void SetRatio(float ratio)
 	{
-		Debug.Assert(GlobalMembers.b2IsValid(ratio));
+		Debug.Assert(Utils.b2IsValid(ratio));
 		m_ratio = ratio;
 	}
 	public float GetRatio()
@@ -105,14 +105,14 @@ public class b2GearJoint : b2Joint
 		int index1 = m_joint1.m_index;
 		int index2 = m_joint2.m_index;
 
-		GlobalMembers.b2Log("  b2GearJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.joint1 = joints[%d];\n", index1);
-		GlobalMembers.b2Log("  jd.joint2 = joints[%d];\n", index2);
-		GlobalMembers.b2Log("  jd.ratio = %.15lef;\n", m_ratio);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2GearJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.joint1 = joints[%d];\n", index1);
+		Utils.b2Log("  jd.joint2 = joints[%d];\n", index2);
+		Utils.b2Log("  jd.ratio = %.15lef;\n", m_ratio);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -190,8 +190,8 @@ public class b2GearJoint : b2Joint
 
 
 			b2Vec2 pC = new b2Vec2(m_localAnchorC);
-			b2Vec2 pA = GlobalMembers.b2MulT(xfC.q, GlobalMembers.b2Mul(xfA.q, m_localAnchorA) + (xfA.p - xfC.p));
-			coordinateA = GlobalMembers.b2Dot(pA - pC, m_localAxisC);
+			b2Vec2 pA = Utils.b2MulT(xfC.q, Utils.b2Mul(xfA.q, m_localAnchorA) + (xfA.p - xfC.p));
+			coordinateA = Utils.b2Dot(pA - pC, m_localAxisC);
 		}
 
 		m_bodyD = m_joint2.GetBodyA();
@@ -238,8 +238,8 @@ public class b2GearJoint : b2Joint
 
 
 			b2Vec2 pD = new b2Vec2(m_localAnchorD);
-			b2Vec2 pB = GlobalMembers.b2MulT(xfD.q, GlobalMembers.b2Mul(xfB.q, m_localAnchorB) + (xfB.p - xfD.p));
-			coordinateB = GlobalMembers.b2Dot(pB - pD, m_localAxisD);
+			b2Vec2 pB = Utils.b2MulT(xfD.q, Utils.b2Mul(xfB.q, m_localAnchorB) + (xfB.p - xfD.p));
+			coordinateB = Utils.b2Dot(pB - pD, m_localAxisD);
 		}
 
 		m_ratio = def.ratio;
@@ -308,14 +308,14 @@ public class b2GearJoint : b2Joint
 		}
 		else
 		{
-			b2Vec2 u = GlobalMembers.b2Mul(qC, m_localAxisC);
-			b2Vec2 rC = GlobalMembers.b2Mul(qC, m_localAnchorC - m_lcC);
-			b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_lcA);
+			b2Vec2 u = Utils.b2Mul(qC, m_localAxisC);
+			b2Vec2 rC = Utils.b2Mul(qC, m_localAnchorC - m_lcC);
+			b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_lcA);
 
 
 			m_JvAC = u;
-			m_JwC = GlobalMembers.b2Cross(rC, u);
-			m_JwA = GlobalMembers.b2Cross(rA, u);
+			m_JwC = Utils.b2Cross(rC, u);
+			m_JwA = Utils.b2Cross(rA, u);
 			m_mass += m_mC + m_mA + m_iC * m_JwC * m_JwC + m_iA * m_JwA * m_JwA;
 		}
 
@@ -328,12 +328,12 @@ public class b2GearJoint : b2Joint
 		}
 		else
 		{
-			b2Vec2 u = GlobalMembers.b2Mul(qD, m_localAxisD);
-			b2Vec2 rD = GlobalMembers.b2Mul(qD, m_localAnchorD - m_lcD);
-			b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_lcB);
+			b2Vec2 u = Utils.b2Mul(qD, m_localAxisD);
+			b2Vec2 rD = Utils.b2Mul(qD, m_localAnchorD - m_lcD);
+			b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_lcB);
 			m_JvBD = m_ratio * u;
-			m_JwD = m_ratio * GlobalMembers.b2Cross(rD, u);
-			m_JwB = m_ratio * GlobalMembers.b2Cross(rB, u);
+			m_JwD = m_ratio * Utils.b2Cross(rD, u);
+			m_JwB = m_ratio * Utils.b2Cross(rB, u);
 			m_mass += m_ratio * m_ratio * (m_mD + m_mB) + m_iD * m_JwD * m_JwD + m_iB * m_JwB * m_JwB;
 		}
 
@@ -384,7 +384,7 @@ public class b2GearJoint : b2Joint
 		b2Vec2 vD = data.velocities[m_indexD].v;
 		float wD = data.velocities[m_indexD].w;
 
-		float Cdot = GlobalMembers.b2Dot(m_JvAC, vA - vC) + GlobalMembers.b2Dot(m_JvBD, vB - vD);
+		float Cdot = Utils.b2Dot(m_JvAC, vA - vC) + Utils.b2Dot(m_JvBD, vB - vD);
 		Cdot += (m_JwA * wA - m_JwC * wC) + (m_JwB * wB - m_JwD * wD);
 
 		float impulse = -m_mass * Cdot;
@@ -456,19 +456,19 @@ public class b2GearJoint : b2Joint
 		}
 		else
 		{
-			b2Vec2 u = GlobalMembers.b2Mul(qC, m_localAxisC);
-			b2Vec2 rC = GlobalMembers.b2Mul(qC, m_localAnchorC - m_lcC);
-			b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_lcA);
+			b2Vec2 u = Utils.b2Mul(qC, m_localAxisC);
+			b2Vec2 rC = Utils.b2Mul(qC, m_localAnchorC - m_lcC);
+			b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_lcA);
 
 
 			JvAC = u;
-			JwC = GlobalMembers.b2Cross(rC, u);
-			JwA = GlobalMembers.b2Cross(rA, u);
+			JwC = Utils.b2Cross(rC, u);
+			JwA = Utils.b2Cross(rA, u);
 			mass += m_mC + m_mA + m_iC * JwC * JwC + m_iA * JwA * JwA;
 
 			b2Vec2 pC = m_localAnchorC - m_lcC;
-			b2Vec2 pA = GlobalMembers.b2MulT(qC, rA + (cA - cC));
-			coordinateA = GlobalMembers.b2Dot(pA - pC, m_localAxisC);
+			b2Vec2 pA = Utils.b2MulT(qC, rA + (cA - cC));
+			coordinateA = Utils.b2Dot(pA - pC, m_localAxisC);
 		}
 
 		if (m_typeB == b2JointType.e_revoluteJoint)
@@ -482,17 +482,17 @@ public class b2GearJoint : b2Joint
 		}
 		else
 		{
-			b2Vec2 u = GlobalMembers.b2Mul(qD, m_localAxisD);
-			b2Vec2 rD = GlobalMembers.b2Mul(qD, m_localAnchorD - m_lcD);
-			b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_lcB);
+			b2Vec2 u = Utils.b2Mul(qD, m_localAxisD);
+			b2Vec2 rD = Utils.b2Mul(qD, m_localAnchorD - m_lcD);
+			b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_lcB);
 			JvBD = m_ratio * u;
-			JwD = m_ratio * GlobalMembers.b2Cross(rD, u);
-			JwB = m_ratio * GlobalMembers.b2Cross(rB, u);
+			JwD = m_ratio * Utils.b2Cross(rD, u);
+			JwB = m_ratio * Utils.b2Cross(rB, u);
 			mass += m_ratio * m_ratio * (m_mD + m_mB) + m_iD * JwD * JwD + m_iB * JwB * JwB;
 
 			b2Vec2 pD = m_localAnchorD - m_lcD;
-			b2Vec2 pB = GlobalMembers.b2MulT(qD, rB + (cB - cD));
-			coordinateB = GlobalMembers.b2Dot(pB - pD, m_localAxisD);
+			b2Vec2 pB = Utils.b2MulT(qD, rB + (cB - cD));
+			coordinateB = Utils.b2Dot(pB - pD, m_localAxisD);
 		}
 
 		float C = (coordinateA + m_ratio * coordinateB) - m_constant;
@@ -530,7 +530,7 @@ public class b2GearJoint : b2Joint
 		data.positions[m_indexD].a = aD;
 
 		// TODO_ERIN not implemented
-		return linearError < DefineConstants.b2_linearSlop;
+		return linearError < Settings.b2_linearSlop;
 	}
 
 	protected b2Joint m_joint1;

@@ -103,10 +103,10 @@ public class b2DistanceProxy
 	public int GetSupport(b2Vec2 d)
 	{
 		int bestIndex = 0;
-		float bestValue = GlobalMembers.b2Dot(m_vertices[0], d);
+		float bestValue = Utils.b2Dot(m_vertices[0], d);
 		for (int i = 1; i < m_count; ++i)
 		{
-			float value = GlobalMembers.b2Dot(m_vertices[i], d);
+			float value = Utils.b2Dot(m_vertices[i], d);
 			if (value > bestValue)
 			{
 				bestIndex = i;
@@ -121,10 +121,10 @@ public class b2DistanceProxy
 	public b2Vec2 GetSupportVertex(b2Vec2 d)
 	{
 		int bestIndex = 0;
-		float bestValue = GlobalMembers.b2Dot(m_vertices[0], d);
+		float bestValue = Utils.b2Dot(m_vertices[0], d);
 		for (int i = 1; i < m_count; ++i)
 		{
-			float value = GlobalMembers.b2Dot(m_vertices[i], d);
+			float value = Utils.b2Dot(m_vertices[i], d);
 			if (value > bestValue)
 			{
 				bestIndex = i;
@@ -233,8 +233,8 @@ public class b2Simplex
 			v.indexB = cache.indexB[i];
 			b2Vec2 wALocal = proxyA.GetVertex(v.indexA);
 			b2Vec2 wBLocal = proxyB.GetVertex(v.indexB);
-			v.wA = GlobalMembers.b2Mul(transformA, wALocal);
-			v.wB = GlobalMembers.b2Mul(transformB, wBLocal);
+			v.wA = Utils.b2Mul(transformA, wALocal);
+			v.wB = Utils.b2Mul(transformB, wBLocal);
 			v.w = v.wB - v.wA;
 			v.a = 0.0f;
 		}
@@ -260,8 +260,8 @@ public class b2Simplex
 			v.indexB = 0;
 			b2Vec2 wALocal = proxyA.GetVertex(0);
 			b2Vec2 wBLocal = proxyB.GetVertex(0);
-			v.wA = GlobalMembers.b2Mul(transformA, wALocal);
-			v.wB = GlobalMembers.b2Mul(transformB, wBLocal);
+			v.wA = Utils.b2Mul(transformA, wALocal);
+			v.wB = Utils.b2Mul(transformB, wBLocal);
 			v.w = v.wB - v.wA;
 			v.a = 1.0f;
 			m_count = 1;
@@ -290,16 +290,16 @@ public class b2Simplex
 		case 2:
 		{
 				b2Vec2 e12 = m_v2.w - m_v1.w;
-				float sgn = GlobalMembers.b2Cross(e12, -m_v1.w);
+				float sgn = Utils.b2Cross(e12, -m_v1.w);
 				if (sgn > 0.0f)
 				{
 					// Origin is left of e12.
-					return GlobalMembers.b2Cross(1.0f, e12);
+					return Utils.b2Cross(1.0f, e12);
 				}
 				else
 				{
 					// Origin is right of e12.
-					return GlobalMembers.b2Cross(e12, 1.0f);
+					return Utils.b2Cross(e12, 1.0f);
 				}
 		}
 
@@ -373,10 +373,10 @@ public class b2Simplex
 			return 0.0f;
 
 		case 2:
-			return GlobalMembers.b2Distance(m_v1.w, m_v2.w);
+			return Utils.b2Distance(m_v1.w, m_v2.w);
 
 		case 3:
-			return GlobalMembers.b2Cross(m_v2.w - m_v1.w, m_v3.w - m_v1.w);
+			return Utils.b2Cross(m_v2.w - m_v1.w, m_v3.w - m_v1.w);
 
 		default:
 			Debug.Assert(false);
@@ -415,7 +415,7 @@ public class b2Simplex
 		b2Vec2 e12 = w2 - w1;
 
 		// w1 region
-		float d12_2 = -GlobalMembers.b2Dot(w1, e12);
+		float d12_2 = -Utils.b2Dot(w1, e12);
 		if (d12_2 <= 0.0f)
 		{
 			// a2 <= 0, so we clamp it to 0
@@ -425,7 +425,7 @@ public class b2Simplex
 		}
 
 		// w2 region
-		float d12_1 = GlobalMembers.b2Dot(w2, e12);
+		float d12_1 = Utils.b2Dot(w2, e12);
 		if (d12_1 <= 0.0f)
 		{
 			// a1 <= 0, so we clamp it to 0
@@ -458,8 +458,8 @@ public class b2Simplex
 		// [w1.e12 w2.e12][a2] = [0]
 		// a3 = 0
 		b2Vec2 e12 = w2 - w1;
-		float w1e12 = GlobalMembers.b2Dot(w1, e12);
-		float w2e12 = GlobalMembers.b2Dot(w2, e12);
+		float w1e12 = Utils.b2Dot(w1, e12);
+		float w2e12 = Utils.b2Dot(w2, e12);
 		float d12_1 = w2e12;
 		float d12_2 = -w1e12;
 
@@ -468,8 +468,8 @@ public class b2Simplex
 		// [w1.e13 w3.e13][a3] = [0]
 		// a2 = 0
 		b2Vec2 e13 = w3 - w1;
-		float w1e13 = GlobalMembers.b2Dot(w1, e13);
-		float w3e13 = GlobalMembers.b2Dot(w3, e13);
+		float w1e13 = Utils.b2Dot(w1, e13);
+		float w3e13 = Utils.b2Dot(w3, e13);
 		float d13_1 = w3e13;
 		float d13_2 = -w1e13;
 
@@ -478,17 +478,17 @@ public class b2Simplex
 		// [w2.e23 w3.e23][a3] = [0]
 		// a1 = 0
 		b2Vec2 e23 = w3 - w2;
-		float w2e23 = GlobalMembers.b2Dot(w2, e23);
-		float w3e23 = GlobalMembers.b2Dot(w3, e23);
+		float w2e23 = Utils.b2Dot(w2, e23);
+		float w3e23 = Utils.b2Dot(w3, e23);
 		float d23_1 = w3e23;
 		float d23_2 = -w2e23;
 
 		// Triangle123
-		float n123 = GlobalMembers.b2Cross(e12, e13);
+		float n123 = Utils.b2Cross(e12, e13);
 
-		float d123_1 = n123 * GlobalMembers.b2Cross(w2, w3);
-		float d123_2 = n123 * GlobalMembers.b2Cross(w3, w1);
-		float d123_3 = n123 * GlobalMembers.b2Cross(w1, w2);
+		float d123_1 = n123 * Utils.b2Cross(w2, w3);
+		float d123_2 = n123 * Utils.b2Cross(w3, w1);
+		float d123_3 = n123 * Utils.b2Cross(w1, w2);
 
 		// w1 region
 		if (d12_2 <= 0.0f && d13_2 <= 0.0f)

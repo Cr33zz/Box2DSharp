@@ -100,7 +100,7 @@ public class b2Manifold
 		e_faceB
 	}
 
-	public b2ManifoldPoint[] points = Arrays.InitializeWithDefaultInstances<b2ManifoldPoint>(DefineConstants.b2_maxManifoldPoints); ///< the points of contact
+	public b2ManifoldPoint[] points = Arrays.InitializeWithDefaultInstances<b2ManifoldPoint>(Settings.b2_maxManifoldPoints); ///< the points of contact
 	public b2Vec2 localNormal = new b2Vec2(); ///< not use for Type::e_points
 	public b2Vec2 localPoint = new b2Vec2(); ///< usage depends on manifold type
 	public Type type;
@@ -126,9 +126,9 @@ public class b2WorldManifold
 		case b2Manifold.Type.e_circles:
 		{
 				normal.Set(1.0f, 0.0f);
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, manifold.localPoint);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, manifold.points[0].localPoint);
-				if (GlobalMembers.b2DistanceSquared(pointA, pointB) > float.Epsilon * float.Epsilon)
+				b2Vec2 pointA = Utils.b2Mul(xfA, manifold.localPoint);
+				b2Vec2 pointB = Utils.b2Mul(xfB, manifold.points[0].localPoint);
+				if (Utils.b2DistanceSquared(pointA, pointB) > float.Epsilon * float.Epsilon)
 				{
 					normal = pointB - pointA;
 					normal.Normalize();
@@ -137,38 +137,38 @@ public class b2WorldManifold
 				b2Vec2 cA = pointA + radiusA * normal;
 				b2Vec2 cB = pointB - radiusB * normal;
 				points[0] = 0.5f * (cA + cB);
-				separations[0] = GlobalMembers.b2Dot(cB - cA, normal);
+				separations[0] = Utils.b2Dot(cB - cA, normal);
 		}
 			break;
 
 		case b2Manifold.Type.e_faceA:
 		{
-				normal = GlobalMembers.b2Mul(xfA.q, manifold.localNormal);
-				b2Vec2 planePoint = GlobalMembers.b2Mul(xfA, manifold.localPoint);
+				normal = Utils.b2Mul(xfA.q, manifold.localNormal);
+				b2Vec2 planePoint = Utils.b2Mul(xfA, manifold.localPoint);
 
 				for (int i = 0; i < manifold.pointCount; ++i)
 				{
-					b2Vec2 clipPoint = GlobalMembers.b2Mul(xfB, manifold.points[i].localPoint);
-					b2Vec2 cA = clipPoint + (radiusA - GlobalMembers.b2Dot(clipPoint - planePoint, normal)) * normal;
+					b2Vec2 clipPoint = Utils.b2Mul(xfB, manifold.points[i].localPoint);
+					b2Vec2 cA = clipPoint + (radiusA - Utils.b2Dot(clipPoint - planePoint, normal)) * normal;
 					b2Vec2 cB = clipPoint - radiusB * normal;
 					points[i] = 0.5f * (cA + cB);
-					separations[i] = GlobalMembers.b2Dot(cB - cA, normal);
+					separations[i] = Utils.b2Dot(cB - cA, normal);
 				}
 		}
 			break;
 
 		case b2Manifold.Type.e_faceB:
 		{
-			normal = GlobalMembers.b2Mul(xfB.q, manifold.localNormal);
-			b2Vec2 planePoint = GlobalMembers.b2Mul(xfB, manifold.localPoint);
+			normal = Utils.b2Mul(xfB.q, manifold.localNormal);
+			b2Vec2 planePoint = Utils.b2Mul(xfB, manifold.localPoint);
 
 			for (int i = 0; i < manifold.pointCount; ++i)
 			{
-				b2Vec2 clipPoint = GlobalMembers.b2Mul(xfA, manifold.points[i].localPoint);
-				b2Vec2 cB = clipPoint + (radiusB - GlobalMembers.b2Dot(clipPoint - planePoint, normal)) * normal;
+				b2Vec2 clipPoint = Utils.b2Mul(xfA, manifold.points[i].localPoint);
+				b2Vec2 cB = clipPoint + (radiusB - Utils.b2Dot(clipPoint - planePoint, normal)) * normal;
 				b2Vec2 cA = clipPoint - radiusA * normal;
 				points[i] = 0.5f * (cA + cB);
-				separations[i] = GlobalMembers.b2Dot(cA - cB, normal);
+				separations[i] = Utils.b2Dot(cA - cB, normal);
 			}
 
 			// Ensure normal points from A to B.
@@ -179,8 +179,8 @@ public class b2WorldManifold
 	}
 
 	public b2Vec2 normal = new b2Vec2(); ///< world vector pointing from A to B
-	public b2Vec2[] points = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxManifoldPoints); ///< world contact point (point of intersection)
-	public float[] separations = Arrays.InitializeWithDefaultInstances<float>(DefineConstants.b2_maxManifoldPoints); ///< a negative value indicates overlap, in meters
+	public b2Vec2[] points = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxManifoldPoints); ///< world contact point (point of intersection)
+	public float[] separations = Arrays.InitializeWithDefaultInstances<float>(Settings.b2_maxManifoldPoints); ///< a negative value indicates overlap, in meters
 }
 
 /// This is used for determining the state of contact points.
@@ -250,15 +250,15 @@ public struct b2AABB
 	/// Combine an AABB into this one.
 	public void Combine(b2AABB aabb)
 	{
-		lowerBound = GlobalMembers.b2Min(lowerBound, aabb.lowerBound);
-		upperBound = GlobalMembers.b2Max(upperBound, aabb.upperBound);
+		lowerBound = Utils.b2Min(lowerBound, aabb.lowerBound);
+		upperBound = Utils.b2Max(upperBound, aabb.upperBound);
 	}
 
 	/// Combine two AABBs into this one.
 	public void Combine(b2AABB aabb1, b2AABB aabb2)
 	{
-		lowerBound = GlobalMembers.b2Min(aabb1.lowerBound, aabb2.lowerBound);
-		upperBound = GlobalMembers.b2Max(aabb1.upperBound, aabb2.upperBound);
+		lowerBound = Utils.b2Min(aabb1.lowerBound, aabb2.lowerBound);
+		upperBound = Utils.b2Max(aabb1.upperBound, aabb2.upperBound);
 	}
 
 	/// Does this aabb contain the provided AABB.
@@ -281,7 +281,7 @@ public struct b2AABB
 
 		b2Vec2 p = new b2Vec2(input.p1);
 		b2Vec2 d = input.p2 - input.p1;
-		b2Vec2 absD = GlobalMembers.b2Abs(d);
+		b2Vec2 absD = Utils.b2Abs(d);
 
 		b2Vec2 normal = new b2Vec2();
 
@@ -306,7 +306,7 @@ public struct b2AABB
 
 				if (t1 > t2)
 				{
-					GlobalMembers.b2Swap(ref t1, ref t2);
+					Utils.b2Swap(ref t1, ref t2);
 					s = 1.0f;
 				}
 
@@ -319,7 +319,7 @@ public struct b2AABB
 				}
 
 				// Pull the max down
-				tmax = GlobalMembers.b2Min(tmax, t2);
+				tmax = Utils.b2Min(tmax, t2);
 
 				if (tmin > tmax)
 				{

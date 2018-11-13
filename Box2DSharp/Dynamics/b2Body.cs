@@ -264,7 +264,7 @@ public class b2Body : System.IDisposable
 		m_xf.q.Set(angle);
 		m_xf.p = position;
 
-		m_sweep.c = GlobalMembers.b2Mul(m_xf, m_sweep.localCenter);
+		m_sweep.c = Utils.b2Mul(m_xf, m_sweep.localCenter);
 		m_sweep.a = angle;
 
 		m_sweep.c0 = m_sweep.c;
@@ -319,7 +319,7 @@ public class b2Body : System.IDisposable
 			return;
 		}
 
-		if (GlobalMembers.b2Dot(v, v) > 0.0f)
+		if (Utils.b2Dot(v, v) > 0.0f)
 		{
 			SetAwake(true);
 		}
@@ -380,7 +380,7 @@ public class b2Body : System.IDisposable
 		if ((m_flags & BodyFlags.e_awakeFlag) != 0)
 		{
 			m_force += force;
-			m_torque += GlobalMembers.b2Cross(point - m_sweep.c, force);
+			m_torque += Utils.b2Cross(point - m_sweep.c, force);
 		}
 	}
 
@@ -451,7 +451,7 @@ public class b2Body : System.IDisposable
 		if ((m_flags & BodyFlags.e_awakeFlag) != 0)
 		{
 			m_linearVelocity += m_invMass * impulse;
-			m_angularVelocity += m_invI * GlobalMembers.b2Cross(point - m_sweep.c, impulse);
+			m_angularVelocity += m_invI * Utils.b2Cross(point - m_sweep.c, impulse);
 		}
 	}
 
@@ -510,7 +510,7 @@ public class b2Body : System.IDisposable
 	/// @return the rotational inertia, usually in kg-m^2.
 	public float GetInertia()
 	{
-		return m_I + m_mass * GlobalMembers.b2Dot(m_sweep.localCenter, m_sweep.localCenter);
+		return m_I + m_mass * Utils.b2Dot(m_sweep.localCenter, m_sweep.localCenter);
 	}
 
 	/// Get the mass data of the body.
@@ -518,7 +518,7 @@ public class b2Body : System.IDisposable
 	public void GetMassData(b2MassData data)
 	{
 		data.mass = m_mass;
-		data.I = m_I + m_mass * GlobalMembers.b2Dot(m_sweep.localCenter, m_sweep.localCenter);
+		data.I = m_I + m_mass * Utils.b2Dot(m_sweep.localCenter, m_sweep.localCenter);
 		data.center = m_sweep.localCenter;
 	}
 
@@ -554,7 +554,7 @@ public class b2Body : System.IDisposable
 
 		if (massData.I > 0.0f && (m_flags & BodyFlags.e_fixedRotationFlag) == 0)
 		{
-			m_I = massData.I - m_mass * GlobalMembers.b2Dot(massData.center, massData.center);
+			m_I = massData.I - m_mass * Utils.b2Dot(massData.center, massData.center);
 			Debug.Assert(m_I > 0.0f);
 			m_invI = 1.0f / m_I;
 		}
@@ -562,10 +562,10 @@ public class b2Body : System.IDisposable
 		// Move center of mass.
 		b2Vec2 oldCenter = new b2Vec2(m_sweep.c);
 		m_sweep.localCenter = massData.center;
-		m_sweep.c0 = m_sweep.c = GlobalMembers.b2Mul(m_xf, m_sweep.localCenter);
+		m_sweep.c0 = m_sweep.c = Utils.b2Mul(m_xf, m_sweep.localCenter);
 
 		// Update center of mass velocity.
-		m_linearVelocity += GlobalMembers.b2Cross(m_angularVelocity, m_sweep.c - oldCenter);
+		m_linearVelocity += Utils.b2Cross(m_angularVelocity, m_sweep.c - oldCenter);
 	}
 
 	/// This resets the mass properties to the sum of the mass properties of the fixtures.
@@ -623,7 +623,7 @@ public class b2Body : System.IDisposable
 		if (m_I > 0.0f && (m_flags & BodyFlags.e_fixedRotationFlag) == 0)
 		{
 			// Center the inertia about the center of mass.
-			m_I -= m_mass * GlobalMembers.b2Dot(localCenter, localCenter);
+			m_I -= m_mass * Utils.b2Dot(localCenter, localCenter);
 			Debug.Assert(m_I > 0.0f);
 			m_invI = 1.0f / m_I;
 
@@ -641,10 +641,10 @@ public class b2Body : System.IDisposable
 
 
 		m_sweep.localCenter = localCenter;
-		m_sweep.c0 = m_sweep.c = GlobalMembers.b2Mul(m_xf, m_sweep.localCenter);
+		m_sweep.c0 = m_sweep.c = Utils.b2Mul(m_xf, m_sweep.localCenter);
 
 		// Update center of mass velocity.
-		m_linearVelocity += GlobalMembers.b2Cross(m_angularVelocity, m_sweep.c - oldCenter);
+		m_linearVelocity += Utils.b2Cross(m_angularVelocity, m_sweep.c - oldCenter);
 	}
 
 	/// Get the world coordinates of a point given the local coordinates.
@@ -654,7 +654,7 @@ public class b2Body : System.IDisposable
 
 	public b2Vec2 GetWorldPoint(b2Vec2 localPoint)
 	{
-		return GlobalMembers.b2Mul(m_xf, localPoint);
+		return Utils.b2Mul(m_xf, localPoint);
 	}
 
 	/// Get the world coordinates of a vector given the local coordinates.
@@ -664,7 +664,7 @@ public class b2Body : System.IDisposable
 
 	public b2Vec2 GetWorldVector(b2Vec2 localVector)
 	{
-		return GlobalMembers.b2Mul(m_xf.q, localVector);
+		return Utils.b2Mul(m_xf.q, localVector);
 	}
 
 	/// Gets a local point relative to the body's origin given a world point.
@@ -674,7 +674,7 @@ public class b2Body : System.IDisposable
 
 	public b2Vec2 GetLocalPoint(b2Vec2 worldPoint)
 	{
-		return GlobalMembers.b2MulT(m_xf, worldPoint);
+		return Utils.b2MulT(m_xf, worldPoint);
 	}
 
 	/// Gets a local vector given a world vector.
@@ -684,7 +684,7 @@ public class b2Body : System.IDisposable
 
 	public b2Vec2 GetLocalVector(b2Vec2 worldVector)
 	{
-		return GlobalMembers.b2MulT(m_xf.q, worldVector);
+		return Utils.b2MulT(m_xf.q, worldVector);
 	}
 
 	/// Get the world linear velocity of a world point attached to this body.
@@ -694,7 +694,7 @@ public class b2Body : System.IDisposable
 
 	public b2Vec2 GetLinearVelocityFromWorldPoint(b2Vec2 worldPoint)
 	{
-		return m_linearVelocity + GlobalMembers.b2Cross(m_angularVelocity, worldPoint - m_sweep.c);
+		return m_linearVelocity + Utils.b2Cross(m_angularVelocity, worldPoint - m_sweep.c);
 	}
 
 	/// Get the world velocity of a local point.
@@ -1028,30 +1028,30 @@ public class b2Body : System.IDisposable
 	{
 		int bodyIndex = m_islandIndex;
 
-		GlobalMembers.b2Log("{\n");
-		GlobalMembers.b2Log("  b2BodyDef bd;\n");
-		GlobalMembers.b2Log("  bd.type = b2BodyType(%d);\n", m_type);
-		GlobalMembers.b2Log("  bd.position.Set(%.15lef, %.15lef);\n", m_xf.p.x, m_xf.p.y);
-		GlobalMembers.b2Log("  bd.angle = %.15lef;\n", m_sweep.a);
-		GlobalMembers.b2Log("  bd.linearVelocity.Set(%.15lef, %.15lef);\n", m_linearVelocity.x, m_linearVelocity.y);
-		GlobalMembers.b2Log("  bd.angularVelocity = %.15lef;\n", m_angularVelocity);
-		GlobalMembers.b2Log("  bd.linearDamping = %.15lef;\n", m_linearDamping);
-		GlobalMembers.b2Log("  bd.angularDamping = %.15lef;\n", m_angularDamping);
-		GlobalMembers.b2Log("  bd.allowSleep = bool(%d);\n", m_flags & BodyFlags.e_autoSleepFlag);
-		GlobalMembers.b2Log("  bd.awake = bool(%d);\n", m_flags & BodyFlags.e_awakeFlag);
-		GlobalMembers.b2Log("  bd.fixedRotation = bool(%d);\n", m_flags & BodyFlags.e_fixedRotationFlag);
-		GlobalMembers.b2Log("  bd.bullet = bool(%d);\n", m_flags & BodyFlags.e_bulletFlag);
-		GlobalMembers.b2Log("  bd.active = bool(%d);\n", m_flags & BodyFlags.e_activeFlag);
-		GlobalMembers.b2Log("  bd.gravityScale = %.15lef;\n", m_gravityScale);
-		GlobalMembers.b2Log("  bodies[%d] = m_world->CreateBody(&bd);\n", m_islandIndex);
-		GlobalMembers.b2Log("\n");
+		Utils.b2Log("{\n");
+		Utils.b2Log("  b2BodyDef bd;\n");
+		Utils.b2Log("  bd.type = b2BodyType(%d);\n", m_type);
+		Utils.b2Log("  bd.position.Set(%.15lef, %.15lef);\n", m_xf.p.x, m_xf.p.y);
+		Utils.b2Log("  bd.angle = %.15lef;\n", m_sweep.a);
+		Utils.b2Log("  bd.linearVelocity.Set(%.15lef, %.15lef);\n", m_linearVelocity.x, m_linearVelocity.y);
+		Utils.b2Log("  bd.angularVelocity = %.15lef;\n", m_angularVelocity);
+		Utils.b2Log("  bd.linearDamping = %.15lef;\n", m_linearDamping);
+		Utils.b2Log("  bd.angularDamping = %.15lef;\n", m_angularDamping);
+		Utils.b2Log("  bd.allowSleep = bool(%d);\n", m_flags & BodyFlags.e_autoSleepFlag);
+		Utils.b2Log("  bd.awake = bool(%d);\n", m_flags & BodyFlags.e_awakeFlag);
+		Utils.b2Log("  bd.fixedRotation = bool(%d);\n", m_flags & BodyFlags.e_fixedRotationFlag);
+		Utils.b2Log("  bd.bullet = bool(%d);\n", m_flags & BodyFlags.e_bulletFlag);
+		Utils.b2Log("  bd.active = bool(%d);\n", m_flags & BodyFlags.e_activeFlag);
+		Utils.b2Log("  bd.gravityScale = %.15lef;\n", m_gravityScale);
+		Utils.b2Log("  bodies[%d] = m_world->CreateBody(&bd);\n", m_islandIndex);
+		Utils.b2Log("\n");
 		for (b2Fixture f = m_fixtureList; f != null; f = f.m_next)
 		{
-			GlobalMembers.b2Log("  {\n");
+			Utils.b2Log("  {\n");
 			f.Dump(bodyIndex);
-			GlobalMembers.b2Log("  }\n");
+			Utils.b2Log("  }\n");
 		}
-		GlobalMembers.b2Log("}\n");
+		Utils.b2Log("}\n");
 	}
 
 
@@ -1106,10 +1106,10 @@ public class b2Body : System.IDisposable
 	{
 		Debug.Assert(bd.position.IsValid());
 		Debug.Assert(bd.linearVelocity.IsValid());
-		Debug.Assert(GlobalMembers.b2IsValid(bd.angle));
-		Debug.Assert(GlobalMembers.b2IsValid(bd.angularVelocity));
-		Debug.Assert(GlobalMembers.b2IsValid(bd.angularDamping) && bd.angularDamping >= 0.0f);
-		Debug.Assert(GlobalMembers.b2IsValid(bd.linearDamping) && bd.linearDamping >= 0.0f);
+		Debug.Assert(Utils.b2IsValid(bd.angle));
+		Debug.Assert(Utils.b2IsValid(bd.angularVelocity));
+		Debug.Assert(Utils.b2IsValid(bd.angularDamping) && bd.angularDamping >= 0.0f);
+		Debug.Assert(Utils.b2IsValid(bd.linearDamping) && bd.linearDamping >= 0.0f);
 
 		m_flags = 0;
 
@@ -1143,10 +1143,7 @@ public class b2Body : System.IDisposable
 
 		m_sweep.localCenter.SetZero();
 
-
 		m_sweep.c0 = m_xf.p;
-
-
 		m_sweep.c = m_xf.p;
 		m_sweep.a0 = bd.angle;
 		m_sweep.a = bd.angle;
@@ -1156,8 +1153,6 @@ public class b2Body : System.IDisposable
 		m_contactList = null;
 		m_prev = null;
 		m_next = null;
-
-
 
 		m_linearVelocity = bd.linearVelocity;
 		m_angularVelocity = bd.angularVelocity;
@@ -1201,7 +1196,7 @@ public class b2Body : System.IDisposable
 	{
 		b2Transform xf1 = new b2Transform();
 		xf1.q.Set(m_sweep.a0);
-		xf1.p = m_sweep.c0 - GlobalMembers.b2Mul(xf1.q, m_sweep.localCenter);
+		xf1.p = m_sweep.c0 - Utils.b2Mul(xf1.q, m_sweep.localCenter);
 
 		b2BroadPhase broadPhase = m_world.m_contactManager.m_broadPhase;
 		for (b2Fixture f = m_fixtureList; f != null; f = f.m_next)
@@ -1212,7 +1207,7 @@ public class b2Body : System.IDisposable
     internal void SynchronizeTransform()
 	{
 		m_xf.q.Set(m_sweep.a);
-		m_xf.p = m_sweep.c - GlobalMembers.b2Mul(m_xf.q, m_sweep.localCenter);
+		m_xf.p = m_sweep.c - Utils.b2Mul(m_xf.q, m_sweep.localCenter);
 	}
 
     // This is used to prevent connected bodies from colliding.
@@ -1247,7 +1242,7 @@ public class b2Body : System.IDisposable
 		m_sweep.c = m_sweep.c0;
 		m_sweep.a = m_sweep.a0;
 		m_xf.q.Set(m_sweep.a);
-		m_xf.p = m_sweep.c - GlobalMembers.b2Mul(m_xf.q, m_sweep.localCenter);
+		m_xf.p = m_sweep.c - Utils.b2Mul(m_xf.q, m_sweep.localCenter);
 	}
 
     internal BodyType m_type;

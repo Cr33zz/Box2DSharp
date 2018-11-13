@@ -279,7 +279,7 @@ public class b2PrismaticJoint : b2Joint
 		b2Vec2 d = pB - pA;
 		b2Vec2 axis = m_bodyA.GetWorldVector(m_localXAxisA);
 
-		float translation = GlobalMembers.b2Dot(d, axis);
+		float translation = Utils.b2Dot(d, axis);
 		return translation;
 	}
 
@@ -291,12 +291,12 @@ public class b2PrismaticJoint : b2Joint
 		b2Body bA = m_bodyA;
 		b2Body bB = m_bodyB;
 
-		b2Vec2 rA = GlobalMembers.b2Mul(bA.m_xf.q, m_localAnchorA - bA.m_sweep.localCenter);
-		b2Vec2 rB = GlobalMembers.b2Mul(bB.m_xf.q, m_localAnchorB - bB.m_sweep.localCenter);
+		b2Vec2 rA = Utils.b2Mul(bA.m_xf.q, m_localAnchorA - bA.m_sweep.localCenter);
+		b2Vec2 rB = Utils.b2Mul(bB.m_xf.q, m_localAnchorB - bB.m_sweep.localCenter);
 		b2Vec2 p1 = bA.m_sweep.c + rA;
 		b2Vec2 p2 = bB.m_sweep.c + rB;
 		b2Vec2 d = p2 - p1;
-		b2Vec2 axis = GlobalMembers.b2Mul(bA.m_xf.q, m_localXAxisA);
+		b2Vec2 axis = Utils.b2Mul(bA.m_xf.q, m_localXAxisA);
 
 
 
@@ -307,7 +307,7 @@ public class b2PrismaticJoint : b2Joint
 		float wA = bA.m_angularVelocity;
 		float wB = bB.m_angularVelocity;
 
-		float speed = GlobalMembers.b2Dot(d, GlobalMembers.b2Cross(wA, axis)) + GlobalMembers.b2Dot(axis, vB + GlobalMembers.b2Cross(wB, rB) - vA - GlobalMembers.b2Cross(wA, rA));
+		float speed = Utils.b2Dot(d, Utils.b2Cross(wA, axis)) + Utils.b2Dot(axis, vB + Utils.b2Cross(wB, rB) - vA - Utils.b2Cross(wA, rA));
 		return speed;
 	}
 
@@ -430,21 +430,21 @@ public class b2PrismaticJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2PrismaticJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		GlobalMembers.b2Log("  jd.localAxisA.Set(%.15lef, %.15lef);\n", m_localXAxisA.x, m_localXAxisA.y);
-		GlobalMembers.b2Log("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
-		GlobalMembers.b2Log("  jd.enableLimit = bool(%d);\n", m_enableLimit);
-		GlobalMembers.b2Log("  jd.lowerTranslation = %.15lef;\n", m_lowerTranslation);
-		GlobalMembers.b2Log("  jd.upperTranslation = %.15lef;\n", m_upperTranslation);
-		GlobalMembers.b2Log("  jd.enableMotor = bool(%d);\n", m_enableMotor);
-		GlobalMembers.b2Log("  jd.motorSpeed = %.15lef;\n", m_motorSpeed);
-		GlobalMembers.b2Log("  jd.maxMotorForce = %.15lef;\n", m_maxMotorForce);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2PrismaticJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		Utils.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		Utils.b2Log("  jd.localAxisA.Set(%.15lef, %.15lef);\n", m_localXAxisA.x, m_localXAxisA.y);
+		Utils.b2Log("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
+		Utils.b2Log("  jd.enableLimit = bool(%d);\n", m_enableLimit);
+		Utils.b2Log("  jd.lowerTranslation = %.15lef;\n", m_lowerTranslation);
+		Utils.b2Log("  jd.upperTranslation = %.15lef;\n", m_upperTranslation);
+		Utils.b2Log("  jd.enableMotor = bool(%d);\n", m_enableMotor);
+		Utils.b2Log("  jd.motorSpeed = %.15lef;\n", m_motorSpeed);
+		Utils.b2Log("  jd.maxMotorForce = %.15lef;\n", m_maxMotorForce);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -460,7 +460,7 @@ public class b2PrismaticJoint : b2Joint
 
 		m_localXAxisA = def.localAxisA;
 		m_localXAxisA.Normalize();
-		m_localYAxisA = GlobalMembers.b2Cross(1.0f, m_localXAxisA);
+		m_localYAxisA = Utils.b2Cross(1.0f, m_localXAxisA);
 		m_referenceAngle = def.referenceAngle;
 
 		m_impulse.SetZero();
@@ -508,8 +508,8 @@ public class b2PrismaticJoint : b2Joint
 		b2Rot qB = new b2Rot(aB);
 
 		// Compute the effective masses.
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 		b2Vec2 d = (cB - cA) + rB - rA;
 
 		float mA = m_invMassA;
@@ -521,9 +521,9 @@ public class b2PrismaticJoint : b2Joint
 		// Compute motor Jacobian and effective mass.
 
 
-			m_axis = GlobalMembers.b2Mul(qA, m_localXAxisA);
-			m_a1 = GlobalMembers.b2Cross(d + rA, m_axis);
-			m_a2 = GlobalMembers.b2Cross(rB, m_axis);
+			m_axis = Utils.b2Mul(qA, m_localXAxisA);
+			m_a1 = Utils.b2Cross(d + rA, m_axis);
+			m_a2 = Utils.b2Cross(rB, m_axis);
 
 			m_motorMass = mA + mB + iA * m_a1 * m_a1 + iB * m_a2 * m_a2;
 			if (m_motorMass > 0.0f)
@@ -536,10 +536,10 @@ public class b2PrismaticJoint : b2Joint
 		// Prismatic constraint.
 
 
-			m_perp = GlobalMembers.b2Mul(qA, m_localYAxisA);
+			m_perp = Utils.b2Mul(qA, m_localYAxisA);
 
-			m_s1 = GlobalMembers.b2Cross(d + rA, m_perp);
-			m_s2 = GlobalMembers.b2Cross(rB, m_perp);
+			m_s1 = Utils.b2Cross(d + rA, m_perp);
+			m_s2 = Utils.b2Cross(rB, m_perp);
 
 			float k11 = mA + mB + iA * m_s1 * m_s1 + iB * m_s2 * m_s2;
 			float k12 = iA * m_s1 + iB * m_s2;
@@ -561,8 +561,8 @@ public class b2PrismaticJoint : b2Joint
 		// Compute motor and limit terms.
 		if (m_enableLimit)
 		{
-			float jointTranslation = GlobalMembers.b2Dot(m_axis, d);
-			if (GlobalMembers.b2Abs(m_upperTranslation - m_lowerTranslation) < 2.0f * DefineConstants.b2_linearSlop)
+			float jointTranslation = Utils.b2Dot(m_axis, d);
+			if (Utils.b2Abs(m_upperTranslation - m_lowerTranslation) < 2.0f * Settings.b2_linearSlop)
 			{
 				m_limitState = b2LimitState.e_equalLimits;
 			}
@@ -645,11 +645,11 @@ public class b2PrismaticJoint : b2Joint
 		// Solve linear motor constraint.
 		if (m_enableMotor && m_limitState != b2LimitState.e_equalLimits)
 		{
-			float Cdot = GlobalMembers.b2Dot(m_axis, vB - vA) + m_a2 * wB - m_a1 * wA;
+			float Cdot = Utils.b2Dot(m_axis, vB - vA) + m_a2 * wB - m_a1 * wA;
 			float impulse = m_motorMass * (m_motorSpeed - Cdot);
 			float oldImpulse = m_motorImpulse;
 			float maxImpulse = data.step.dt * m_maxMotorForce;
-			m_motorImpulse = GlobalMembers.b2Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
+			m_motorImpulse = Utils.b2Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
 			impulse = m_motorImpulse - oldImpulse;
 
 			b2Vec2 P = impulse * m_axis;
@@ -664,14 +664,14 @@ public class b2PrismaticJoint : b2Joint
 		}
 
 		b2Vec2 Cdot1 = new b2Vec2();
-		Cdot1.x = GlobalMembers.b2Dot(m_perp, vB - vA) + m_s2 * wB - m_s1 * wA;
+		Cdot1.x = Utils.b2Dot(m_perp, vB - vA) + m_s2 * wB - m_s1 * wA;
 		Cdot1.y = wB - wA;
 
 		if (m_enableLimit && m_limitState != b2LimitState.e_inactiveLimit)
 		{
 			// Solve prismatic and limit constraint in block form.
 			float Cdot2;
-			Cdot2 = GlobalMembers.b2Dot(m_axis, vB - vA) + m_a2 * wB - m_a1 * wA;
+			Cdot2 = Utils.b2Dot(m_axis, vB - vA) + m_a2 * wB - m_a1 * wA;
 			b2Vec3 Cdot = new b2Vec3(Cdot1.x, Cdot1.y, Cdot2);
 
 
@@ -682,11 +682,11 @@ public class b2PrismaticJoint : b2Joint
 
 			if (m_limitState == b2LimitState.e_atLowerLimit)
 			{
-				m_impulse.z = GlobalMembers.b2Max(m_impulse.z, 0.0f);
+				m_impulse.z = Utils.b2Max(m_impulse.z, 0.0f);
 			}
 			else if (m_limitState == b2LimitState.e_atUpperLimit)
 			{
-				m_impulse.z = GlobalMembers.b2Min(m_impulse.z, 0.0f);
+				m_impulse.z = Utils.b2Min(m_impulse.z, 0.0f);
 			}
 
 			// f2(1:2) = invK(1:2,1:2) * (-Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3))) + f1(1:2)
@@ -760,50 +760,50 @@ public class b2PrismaticJoint : b2Joint
 		float iB = m_invIB;
 
 		// Compute fresh Jacobians
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 		b2Vec2 d = cB + rB - cA - rA;
 
-		b2Vec2 axis = GlobalMembers.b2Mul(qA, m_localXAxisA);
-		float a1 = GlobalMembers.b2Cross(d + rA, axis);
-		float a2 = GlobalMembers.b2Cross(rB, axis);
-		b2Vec2 perp = GlobalMembers.b2Mul(qA, m_localYAxisA);
+		b2Vec2 axis = Utils.b2Mul(qA, m_localXAxisA);
+		float a1 = Utils.b2Cross(d + rA, axis);
+		float a2 = Utils.b2Cross(rB, axis);
+		b2Vec2 perp = Utils.b2Mul(qA, m_localYAxisA);
 
-		float s1 = GlobalMembers.b2Cross(d + rA, perp);
-		float s2 = GlobalMembers.b2Cross(rB, perp);
+		float s1 = Utils.b2Cross(d + rA, perp);
+		float s2 = Utils.b2Cross(rB, perp);
 
 		b2Vec3 impulse = new b2Vec3();
 		b2Vec2 C1 = new b2Vec2();
-		C1.x = GlobalMembers.b2Dot(perp, d);
+		C1.x = Utils.b2Dot(perp, d);
 		C1.y = aB - aA - m_referenceAngle;
 
-		float linearError = GlobalMembers.b2Abs(C1.x);
-		float angularError = GlobalMembers.b2Abs(C1.y);
+		float linearError = Utils.b2Abs(C1.x);
+		float angularError = Utils.b2Abs(C1.y);
 
 		bool active = false;
 		float C2 = 0.0f;
 		if (m_enableLimit)
 		{
-			float translation = GlobalMembers.b2Dot(axis, d);
-			if (GlobalMembers.b2Abs(m_upperTranslation - m_lowerTranslation) < 2.0f * DefineConstants.b2_linearSlop)
+			float translation = Utils.b2Dot(axis, d);
+			if (Utils.b2Abs(m_upperTranslation - m_lowerTranslation) < 2.0f * Settings.b2_linearSlop)
 			{
 				// Prevent large angular corrections
-				C2 = GlobalMembers.b2Clamp(translation, -DefineConstants.b2_maxLinearCorrection, DefineConstants.b2_maxLinearCorrection);
-				linearError = GlobalMembers.b2Max(linearError, GlobalMembers.b2Abs(translation));
+				C2 = Utils.b2Clamp(translation, -Settings.b2_maxLinearCorrection, Settings.b2_maxLinearCorrection);
+				linearError = Utils.b2Max(linearError, Utils.b2Abs(translation));
 				active = true;
 			}
 			else if (translation <= m_lowerTranslation)
 			{
 				// Prevent large linear corrections and allow some slop.
-				C2 = GlobalMembers.b2Clamp(translation - m_lowerTranslation + DefineConstants.b2_linearSlop, -DefineConstants.b2_maxLinearCorrection, 0.0f);
-				linearError = GlobalMembers.b2Max(linearError, m_lowerTranslation - translation);
+				C2 = Utils.b2Clamp(translation - m_lowerTranslation + Settings.b2_linearSlop, -Settings.b2_maxLinearCorrection, 0.0f);
+				linearError = Utils.b2Max(linearError, m_lowerTranslation - translation);
 				active = true;
 			}
 			else if (translation >= m_upperTranslation)
 			{
 				// Prevent large linear corrections and allow some slop.
-				C2 = GlobalMembers.b2Clamp(translation - m_upperTranslation - DefineConstants.b2_linearSlop, 0.0f, DefineConstants.b2_maxLinearCorrection);
-				linearError = GlobalMembers.b2Max(linearError, translation - m_upperTranslation);
+				C2 = Utils.b2Clamp(translation - m_upperTranslation - Settings.b2_linearSlop, 0.0f, Settings.b2_maxLinearCorrection);
+				linearError = Utils.b2Max(linearError, translation - m_upperTranslation);
 				active = true;
 			}
 		}
@@ -874,7 +874,7 @@ public class b2PrismaticJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return linearError <= DefineConstants.b2_linearSlop && angularError <= (2.0f / 180.0f * DefineConstants.b2_pi);
+		return linearError <= Settings.b2_linearSlop && angularError <= (2.0f / 180.0f * Settings.b2_pi);
 	}
 
     // Solver shared

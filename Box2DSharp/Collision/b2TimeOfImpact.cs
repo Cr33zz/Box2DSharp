@@ -76,8 +76,8 @@ public class b2SeparationFunction
 			m_type = Type.e_points;
 			b2Vec2 localPointA = m_proxyA.GetVertex(cache.indexA[0]);
 			b2Vec2 localPointB = m_proxyB.GetVertex(cache.indexB[0]);
-			b2Vec2 pointA = GlobalMembers.b2Mul(xfA, localPointA);
-			b2Vec2 pointB = GlobalMembers.b2Mul(xfB, localPointB);
+			b2Vec2 pointA = Utils.b2Mul(xfA, localPointA);
+			b2Vec2 pointB = Utils.b2Mul(xfB, localPointB);
 			m_axis = pointB - pointA;
 			float s = m_axis.Normalize();
 			return s;
@@ -89,17 +89,17 @@ public class b2SeparationFunction
 			b2Vec2 localPointB1 = proxyB.GetVertex(cache.indexB[0]);
 			b2Vec2 localPointB2 = proxyB.GetVertex(cache.indexB[1]);
 
-			m_axis = GlobalMembers.b2Cross(localPointB2 - localPointB1, 1.0f);
+			m_axis = Utils.b2Cross(localPointB2 - localPointB1, 1.0f);
 			m_axis.Normalize();
-			b2Vec2 normal = GlobalMembers.b2Mul(xfB.q, m_axis);
+			b2Vec2 normal = Utils.b2Mul(xfB.q, m_axis);
 
 			m_localPoint = 0.5f * (localPointB1 + localPointB2);
-			b2Vec2 pointB = GlobalMembers.b2Mul(xfB, m_localPoint);
+			b2Vec2 pointB = Utils.b2Mul(xfB, m_localPoint);
 
 			b2Vec2 localPointA = proxyA.GetVertex(cache.indexA[0]);
-			b2Vec2 pointA = GlobalMembers.b2Mul(xfA, localPointA);
+			b2Vec2 pointA = Utils.b2Mul(xfA, localPointA);
 
-			float s = GlobalMembers.b2Dot(pointA - pointB, normal);
+			float s = Utils.b2Dot(pointA - pointB, normal);
 			if (s < 0.0f)
 			{
 				m_axis = -m_axis;
@@ -114,17 +114,17 @@ public class b2SeparationFunction
 			b2Vec2 localPointA1 = m_proxyA.GetVertex(cache.indexA[0]);
 			b2Vec2 localPointA2 = m_proxyA.GetVertex(cache.indexA[1]);
 
-			m_axis = GlobalMembers.b2Cross(localPointA2 - localPointA1, 1.0f);
+			m_axis = Utils.b2Cross(localPointA2 - localPointA1, 1.0f);
 			m_axis.Normalize();
-			b2Vec2 normal = GlobalMembers.b2Mul(xfA.q, m_axis);
+			b2Vec2 normal = Utils.b2Mul(xfA.q, m_axis);
 
 			m_localPoint = 0.5f * (localPointA1 + localPointA2);
-			b2Vec2 pointA = GlobalMembers.b2Mul(xfA, m_localPoint);
+			b2Vec2 pointA = Utils.b2Mul(xfA, m_localPoint);
 
 			b2Vec2 localPointB = m_proxyB.GetVertex(cache.indexB[0]);
-			b2Vec2 pointB = GlobalMembers.b2Mul(xfB, localPointB);
+			b2Vec2 pointB = Utils.b2Mul(xfB, localPointB);
 
-			float s = GlobalMembers.b2Dot(pointB - pointA, normal);
+			float s = Utils.b2Dot(pointB - pointA, normal);
 			if (s < 0.0f)
 			{
 				m_axis = -m_axis;
@@ -146,8 +146,8 @@ public class b2SeparationFunction
 		{
 		case Type.e_points:
 		{
-				b2Vec2 axisA = GlobalMembers.b2MulT(xfA.q, m_axis);
-				b2Vec2 axisB = GlobalMembers.b2MulT(xfB.q, -m_axis);
+				b2Vec2 axisA = Utils.b2MulT(xfA.q, m_axis);
+				b2Vec2 axisB = Utils.b2MulT(xfB.q, -m_axis);
 
 				indexA = m_proxyA.GetSupport(axisA);
 				indexB = m_proxyB.GetSupport(axisB);
@@ -155,44 +155,44 @@ public class b2SeparationFunction
 				b2Vec2 localPointA = m_proxyA.GetVertex(indexA);
 				b2Vec2 localPointB = m_proxyB.GetVertex(indexB);
 
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, localPointA);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, localPointB);
+				b2Vec2 pointA = Utils.b2Mul(xfA, localPointA);
+				b2Vec2 pointB = Utils.b2Mul(xfB, localPointB);
 
-				float separation = GlobalMembers.b2Dot(pointB - pointA, m_axis);
+				float separation = Utils.b2Dot(pointB - pointA, m_axis);
 				return separation;
 		}
 
 		case Type.e_faceA:
 		{
-				b2Vec2 normal = GlobalMembers.b2Mul(xfA.q, m_axis);
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, m_localPoint);
+				b2Vec2 normal = Utils.b2Mul(xfA.q, m_axis);
+				b2Vec2 pointA = Utils.b2Mul(xfA, m_localPoint);
 
-				b2Vec2 axisB = GlobalMembers.b2MulT(xfB.q, -normal);
+				b2Vec2 axisB = Utils.b2MulT(xfB.q, -normal);
 
 				indexA = -1;
 				indexB = m_proxyB.GetSupport(axisB);
 
 				b2Vec2 localPointB = m_proxyB.GetVertex(indexB);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, localPointB);
+				b2Vec2 pointB = Utils.b2Mul(xfB, localPointB);
 
-				float separation = GlobalMembers.b2Dot(pointB - pointA, normal);
+				float separation = Utils.b2Dot(pointB - pointA, normal);
 				return separation;
 		}
 
 		case Type.e_faceB:
 		{
-				b2Vec2 normal = GlobalMembers.b2Mul(xfB.q, m_axis);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, m_localPoint);
+				b2Vec2 normal = Utils.b2Mul(xfB.q, m_axis);
+				b2Vec2 pointB = Utils.b2Mul(xfB, m_localPoint);
 
-				b2Vec2 axisA = GlobalMembers.b2MulT(xfA.q, -normal);
+				b2Vec2 axisA = Utils.b2MulT(xfA.q, -normal);
 
 				indexB = -1;
 				indexA = m_proxyA.GetSupport(axisA);
 
 				b2Vec2 localPointA = m_proxyA.GetVertex(indexA);
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, localPointA);
+				b2Vec2 pointA = Utils.b2Mul(xfA, localPointA);
 
-				float separation = GlobalMembers.b2Dot(pointA - pointB, normal);
+				float separation = Utils.b2Dot(pointA - pointB, normal);
 				return separation;
 		}
 
@@ -219,34 +219,34 @@ public class b2SeparationFunction
 				b2Vec2 localPointA = m_proxyA.GetVertex(indexA);
 				b2Vec2 localPointB = m_proxyB.GetVertex(indexB);
 
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, localPointA);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, localPointB);
-				float separation = GlobalMembers.b2Dot(pointB - pointA, m_axis);
+				b2Vec2 pointA = Utils.b2Mul(xfA, localPointA);
+				b2Vec2 pointB = Utils.b2Mul(xfB, localPointB);
+				float separation = Utils.b2Dot(pointB - pointA, m_axis);
 
 				return separation;
 		}
 
 		case Type.e_faceA:
 		{
-				b2Vec2 normal = GlobalMembers.b2Mul(xfA.q, m_axis);
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, m_localPoint);
+				b2Vec2 normal = Utils.b2Mul(xfA.q, m_axis);
+				b2Vec2 pointA = Utils.b2Mul(xfA, m_localPoint);
 
 				b2Vec2 localPointB = m_proxyB.GetVertex(indexB);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, localPointB);
+				b2Vec2 pointB = Utils.b2Mul(xfB, localPointB);
 
-				float separation = GlobalMembers.b2Dot(pointB - pointA, normal);
+				float separation = Utils.b2Dot(pointB - pointA, normal);
 				return separation;
 		}
 
 		case Type.e_faceB:
 		{
-				b2Vec2 normal = GlobalMembers.b2Mul(xfB.q, m_axis);
-				b2Vec2 pointB = GlobalMembers.b2Mul(xfB, m_localPoint);
+				b2Vec2 normal = Utils.b2Mul(xfB.q, m_axis);
+				b2Vec2 pointB = Utils.b2Mul(xfB, m_localPoint);
 
 				b2Vec2 localPointA = m_proxyA.GetVertex(indexA);
-				b2Vec2 pointA = GlobalMembers.b2Mul(xfA, localPointA);
+				b2Vec2 pointA = Utils.b2Mul(xfA, localPointA);
 
-				float separation = GlobalMembers.b2Dot(pointA - pointB, normal);
+				float separation = Utils.b2Dot(pointA - pointB, normal);
 				return separation;
 		}
 

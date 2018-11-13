@@ -16,8 +16,8 @@ public class b2EPAxis
 // This holds polygon B expressed in frame A.
 public class b2TempPolygon
 {
-	public b2Vec2[] vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
-	public b2Vec2[] normals = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
+	public b2Vec2[] vertices = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxPolygonVertices);
+	public b2Vec2[] normals = Arrays.InitializeWithDefaultInstances<b2Vec2>(Settings.b2_maxPolygonVertices);
 	public int count;
 }
 
@@ -54,23 +54,13 @@ public class b2EPCollider
 	// 8. Clip
 	public void Collide(b2Manifold manifold, b2EdgeShape edgeA, b2Transform xfA, b2PolygonShape polygonB, b2Transform xfB)
 	{
-		m_xf = GlobalMembers.b2MulT(xfA, xfB);
+		m_xf = Utils.b2MulT(xfA, xfB);
 
-
-
-		m_centroidB = GlobalMembers.b2Mul(m_xf, polygonB.m_centroid);
-
-
+		m_centroidB = Utils.b2Mul(m_xf, polygonB.m_centroid);
 
 		m_v0 = edgeA.m_vertex0;
-
-
 		m_v1 = edgeA.m_vertex1;
-
-
 		m_v2 = edgeA.m_vertex2;
-
-
 		m_v3 = edgeA.m_vertex3;
 
 		bool hasVertex0 = edgeA.m_hasVertex0;
@@ -79,7 +69,7 @@ public class b2EPCollider
 		b2Vec2 edge1 = m_v2 - m_v1;
 		edge1.Normalize();
 		m_normal1.Set(edge1.y, -edge1.x);
-		float offset1 = GlobalMembers.b2Dot(m_normal1, m_centroidB - m_v1);
+		float offset1 = Utils.b2Dot(m_normal1, m_centroidB - m_v1);
 		float offset0 = 0.0f;
 		float offset2 = 0.0f;
 		bool convex1 = false;
@@ -91,8 +81,8 @@ public class b2EPCollider
 			b2Vec2 edge0 = m_v1 - m_v0;
 			edge0.Normalize();
 			m_normal0.Set(edge0.y, -edge0.x);
-			convex1 = GlobalMembers.b2Cross(edge0, edge1) >= 0.0f;
-			offset0 = GlobalMembers.b2Dot(m_normal0, m_centroidB - m_v0);
+			convex1 = Utils.b2Cross(edge0, edge1) >= 0.0f;
+			offset0 = Utils.b2Dot(m_normal0, m_centroidB - m_v0);
 		}
 
 		// Is there a following edge?
@@ -101,8 +91,8 @@ public class b2EPCollider
 			b2Vec2 edge2 = m_v3 - m_v2;
 			edge2.Normalize();
 			m_normal2.Set(edge2.y, -edge2.x);
-			convex2 = GlobalMembers.b2Cross(edge1, edge2) > 0.0f;
-			offset2 = GlobalMembers.b2Dot(m_normal2, m_centroidB - m_v2);
+			convex2 = Utils.b2Cross(edge1, edge2) > 0.0f;
+			offset2 = Utils.b2Dot(m_normal2, m_centroidB - m_v2);
 		}
 
 		// Determine front or back collision. Determine collision normal limits.
@@ -264,8 +254,8 @@ public class b2EPCollider
 		m_polygonB.count = polygonB.m_count;
 		for (int i = 0; i < polygonB.m_count; ++i)
 		{
-			m_polygonB.vertices[i] = GlobalMembers.b2Mul(m_xf, polygonB.m_vertices[i]);
-			m_polygonB.normals[i] = GlobalMembers.b2Mul(m_xf.q, polygonB.m_normals[i]);
+			m_polygonB.vertices[i] = Utils.b2Mul(m_xf, polygonB.m_vertices[i]);
+			m_polygonB.normals[i] = Utils.b2Mul(m_xf.q, polygonB.m_normals[i]);
 		}
 
 		m_radius = polygonB.m_radius + edgeA.m_radius;
@@ -298,20 +288,14 @@ public class b2EPCollider
 		b2EPAxis primaryAxis = new b2EPAxis();
 		if (polygonAxis.type == b2EPAxis.Type.e_unknown)
 		{
-
-
 			primaryAxis = edgeAxis;
 		}
 		else if (polygonAxis.separation > k_relativeTol * edgeAxis.separation + k_absoluteTol)
 		{
-
-
 			primaryAxis = polygonAxis;
 		}
 		else
 		{
-
-
 			primaryAxis = edgeAxis;
 		}
 
@@ -323,10 +307,10 @@ public class b2EPCollider
 
 			// Search for the polygon normal that is most anti-parallel to the edge normal.
 			int bestIndex = 0;
-			float bestValue = GlobalMembers.b2Dot(m_normal, m_polygonB.normals[0]);
+			float bestValue = Utils.b2Dot(m_normal, m_polygonB.normals[0]);
 			for (int i = 1; i < m_polygonB.count; ++i)
 			{
-				float value = GlobalMembers.b2Dot(m_normal, m_polygonB.normals[i]);
+				float value = Utils.b2Dot(m_normal, m_polygonB.normals[i]);
 				if (value < bestValue)
 				{
 					bestValue = value;
@@ -384,23 +368,15 @@ public class b2EPCollider
 
 			rf.i1 = primaryAxis.index;
 			rf.i2 = rf.i1 + 1 < m_polygonB.count ? rf.i1 + 1 : 0;
-
-
 			rf.v1 = m_polygonB.vertices[rf.i1];
-
-
 			rf.v2 = m_polygonB.vertices[rf.i2];
-
-
 			rf.normal = m_polygonB.normals[rf.i1];
 		}
 
 		rf.sideNormal1.Set(rf.normal.y, -rf.normal.x);
-
-
 		rf.sideNormal2 = -rf.sideNormal1;
-		rf.sideOffset1 = GlobalMembers.b2Dot(rf.sideNormal1, rf.v1);
-		rf.sideOffset2 = GlobalMembers.b2Dot(rf.sideNormal2, rf.v2);
+		rf.sideOffset1 = Utils.b2Dot(rf.sideNormal1, rf.v1);
+		rf.sideOffset2 = Utils.b2Dot(rf.sideNormal2, rf.v2);
 
 		// Clip incident edge against extruded edge1 side edges.
 		b2ClipVertex[] clipPoints1 = Arrays.InitializeWithDefaultInstances<b2ClipVertex>(2);
@@ -408,17 +384,17 @@ public class b2EPCollider
 		int np;
 
 		// Clip to box side 1
-		np = GlobalMembers.b2ClipSegmentToLine(clipPoints1, ie, rf.sideNormal1, rf.sideOffset1, rf.i1);
+		np = Utils.b2ClipSegmentToLine(clipPoints1, ie, rf.sideNormal1, rf.sideOffset1, rf.i1);
 
-		if (np < DefineConstants.b2_maxManifoldPoints)
+		if (np < Settings.b2_maxManifoldPoints)
 		{
 			return;
 		}
 
 		// Clip to negative box side 1
-		np = GlobalMembers.b2ClipSegmentToLine(clipPoints2, clipPoints1, rf.sideNormal2, rf.sideOffset2, rf.i2);
+		np = Utils.b2ClipSegmentToLine(clipPoints2, clipPoints1, rf.sideNormal2, rf.sideOffset2, rf.i2);
 
-		if (np < DefineConstants.b2_maxManifoldPoints)
+		if (np < Settings.b2_maxManifoldPoints)
 		{
 			return;
 		}
@@ -426,29 +402,21 @@ public class b2EPCollider
 		// Now clipPoints2 contains the clipped points.
 		if (primaryAxis.type == b2EPAxis.Type.e_edgeA)
 		{
-
-
 			manifold.localNormal = rf.normal;
-
-
 			manifold.localPoint = rf.v1;
 		}
 		else
 		{
-
-
 			manifold.localNormal = polygonB.m_normals[rf.i1];
-
-
 			manifold.localPoint = polygonB.m_vertices[rf.i1];
 		}
 
 		int pointCount = 0;
-		for (int i = 0; i < DefineConstants.b2_maxManifoldPoints; ++i)
+		for (int i = 0; i < Settings.b2_maxManifoldPoints; ++i)
 		{
 			float separation;
 
-			separation = GlobalMembers.b2Dot(rf.normal, clipPoints2[i].v - rf.v1);
+			separation = Utils.b2Dot(rf.normal, clipPoints2[i].v - rf.v1);
 
 			if (separation <= m_radius)
 			{
@@ -456,17 +424,11 @@ public class b2EPCollider
 
 				if (primaryAxis.type == b2EPAxis.Type.e_edgeA)
 				{
-
-
-					cp.localPoint = GlobalMembers.b2MulT(m_xf, clipPoints2[i].v);
-
-
+					cp.localPoint = Utils.b2MulT(m_xf, clipPoints2[i].v);
 					cp.id = clipPoints2[i].id;
 				}
 				else
 				{
-
-
 					cp.localPoint = clipPoints2[i].v;
 					cp.id.cf.typeA = clipPoints2[i].id.cf.typeB;
 					cp.id.cf.typeB = clipPoints2[i].id.cf.typeA;
@@ -489,7 +451,7 @@ public class b2EPCollider
 
 		for (int i = 0; i < m_polygonB.count; ++i)
 		{
-			float s = GlobalMembers.b2Dot(m_normal, m_polygonB.vertices[i] - m_v1);
+			float s = Utils.b2Dot(m_normal, m_polygonB.vertices[i] - m_v1);
 			if (s < axis.separation)
 			{
 				axis.separation = s;
@@ -511,9 +473,9 @@ public class b2EPCollider
 		{
 			b2Vec2 n = -m_polygonB.normals[i];
 
-			float s1 = GlobalMembers.b2Dot(n, m_polygonB.vertices[i] - m_v1);
-			float s2 = GlobalMembers.b2Dot(n, m_polygonB.vertices[i] - m_v2);
-			float s = GlobalMembers.b2Min(s1, s2);
+			float s1 = Utils.b2Dot(n, m_polygonB.vertices[i] - m_v1);
+			float s2 = Utils.b2Dot(n, m_polygonB.vertices[i] - m_v2);
+			float s = Utils.b2Min(s1, s2);
 
 			if (s > m_radius)
 			{
@@ -525,16 +487,16 @@ public class b2EPCollider
 			}
 
 			// Adjacency
-			if (GlobalMembers.b2Dot(n, perp) >= 0.0f)
+			if (Utils.b2Dot(n, perp) >= 0.0f)
 			{
-				if (GlobalMembers.b2Dot(n - m_upperLimit, m_normal) < -(2.0f / 180.0f * DefineConstants.b2_pi))
+				if (Utils.b2Dot(n - m_upperLimit, m_normal) < -(2.0f / 180.0f * Settings.b2_pi))
 				{
 					continue;
 				}
 			}
 			else
 			{
-				if (GlobalMembers.b2Dot(n - m_lowerLimit, m_normal) < -(2.0f / 180.0f * DefineConstants.b2_pi))
+				if (Utils.b2Dot(n - m_lowerLimit, m_normal) < -(2.0f / 180.0f * Settings.b2_pi))
 				{
 					continue;
 				}

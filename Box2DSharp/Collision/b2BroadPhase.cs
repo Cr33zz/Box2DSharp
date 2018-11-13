@@ -105,7 +105,7 @@ public class b2BroadPhase : System.IDisposable
 	{
 		b2AABB aabbA = m_tree.GetFatAABB(proxyIdA);
 		b2AABB aabbB = m_tree.GetFatAABB(proxyIdB);
-		return GlobalMembers.b2TestOverlap(aabbA, aabbB);
+		return Utils.b2TestOverlap(aabbA, aabbB);
 	}
 
 	/// Get the number of proxies.
@@ -142,7 +142,7 @@ public class b2BroadPhase : System.IDisposable
 		m_moveCount = 0;
 
 		// Sort the pair buffer to expose duplicates.
-		Array.Sort(m_pairBuffer, GlobalMembers.b2PairLessThan);
+		Array.Sort(m_pairBuffer, Utils.b2PairLessThan);
 
 		// Send the pairs back to the client.
 		i = 0;
@@ -261,8 +261,8 @@ public class b2BroadPhase : System.IDisposable
 		}
 
         m_pairBuffer[m_pairCount] = new b2Pair();
-        m_pairBuffer[m_pairCount].proxyIdA = GlobalMembers.b2Min(proxyId, m_queryProxyId);
-		m_pairBuffer[m_pairCount].proxyIdB = GlobalMembers.b2Max(proxyId, m_queryProxyId);
+        m_pairBuffer[m_pairCount].proxyIdA = Utils.b2Min(proxyId, m_queryProxyId);
+		m_pairBuffer[m_pairCount].proxyIdB = Utils.b2Max(proxyId, m_queryProxyId);
 		++m_pairCount;
 
 		return true;

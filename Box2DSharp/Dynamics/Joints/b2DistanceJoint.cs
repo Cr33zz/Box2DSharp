@@ -159,16 +159,16 @@ public class b2DistanceJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2DistanceJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		GlobalMembers.b2Log("  jd.length = %.15lef;\n", m_length);
-		GlobalMembers.b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
-		GlobalMembers.b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2DistanceJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		Utils.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		Utils.b2Log("  jd.length = %.15lef;\n", m_length);
+		Utils.b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
+		Utils.b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 	internal b2DistanceJoint(b2DistanceJointDef def) : base(def)
@@ -217,17 +217,17 @@ public class b2DistanceJoint : b2Joint
 
 
 
-		m_rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		m_rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
 
 
-		m_rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		m_rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 
 		m_u = cB + m_rB - cA - m_rA;
 
 		// Handle singularity.
 		float length = m_u.Length();
-		if (length > DefineConstants.b2_linearSlop)
+		if (length > Settings.b2_linearSlop)
 		{
 			m_u *= 1.0f / length;
 		}
@@ -236,8 +236,8 @@ public class b2DistanceJoint : b2Joint
 			m_u.Set(0.0f, 0.0f);
 		}
 
-		float crAu = GlobalMembers.b2Cross(m_rA, m_u);
-		float crBu = GlobalMembers.b2Cross(m_rB, m_u);
+		float crAu = Utils.b2Cross(m_rA, m_u);
+		float crBu = Utils.b2Cross(m_rB, m_u);
 		float invMass = m_invMassA + m_invIA * crAu * crAu + m_invMassB + m_invIB * crBu * crBu;
 
 		// Compute the effective mass matrix.
@@ -248,7 +248,7 @@ public class b2DistanceJoint : b2Joint
 			float C = length - m_length;
 
 			// Frequency
-			float omega = 2.0f * DefineConstants.b2_pi * m_frequencyHz;
+			float omega = 2.0f * Settings.b2_pi * m_frequencyHz;
 
 			// Damping coefficient
 			float d = 2.0f * m_mass * m_dampingRatio * omega;
@@ -278,9 +278,9 @@ public class b2DistanceJoint : b2Joint
 
 			b2Vec2 P = m_impulse * m_u;
 			vA -= m_invMassA * P;
-			wA -= m_invIA * GlobalMembers.b2Cross(m_rA, P);
+			wA -= m_invIA * Utils.b2Cross(m_rA, P);
 			vB += m_invMassB * P;
-			wB += m_invIB * GlobalMembers.b2Cross(m_rB, P);
+			wB += m_invIB * Utils.b2Cross(m_rB, P);
 		}
 		else
 		{
@@ -304,18 +304,18 @@ public class b2DistanceJoint : b2Joint
 		float wB = data.velocities[m_indexB].w;
 
 		// Cdot = dot(u, v + cross(w, r))
-		b2Vec2 vpA = vA + GlobalMembers.b2Cross(wA, m_rA);
-		b2Vec2 vpB = vB + GlobalMembers.b2Cross(wB, m_rB);
-		float Cdot = GlobalMembers.b2Dot(m_u, vpB - vpA);
+		b2Vec2 vpA = vA + Utils.b2Cross(wA, m_rA);
+		b2Vec2 vpB = vB + Utils.b2Cross(wB, m_rB);
+		float Cdot = Utils.b2Dot(m_u, vpB - vpA);
 
 		float impulse = -m_mass * (Cdot + m_bias + m_gamma * m_impulse);
 		m_impulse += impulse;
 
 		b2Vec2 P = impulse * m_u;
 		vA -= m_invMassA * P;
-		wA -= m_invIA * GlobalMembers.b2Cross(m_rA, P);
+		wA -= m_invIA * Utils.b2Cross(m_rA, P);
 		vB += m_invMassB * P;
-		wB += m_invIB * GlobalMembers.b2Cross(m_rB, P);
+		wB += m_invIB * Utils.b2Cross(m_rB, P);
 
 
 
@@ -342,21 +342,21 @@ public class b2DistanceJoint : b2Joint
 		b2Rot qA = new b2Rot(aA);
 		b2Rot qB = new b2Rot(aB);
 
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 		b2Vec2 u = cB + rB - cA - rA;
 
 		float length = u.Normalize();
 		float C = length - m_length;
-		C = GlobalMembers.b2Clamp(C, -DefineConstants.b2_maxLinearCorrection, DefineConstants.b2_maxLinearCorrection);
+		C = Utils.b2Clamp(C, -Settings.b2_maxLinearCorrection, Settings.b2_maxLinearCorrection);
 
 		float impulse = -m_mass * C;
 		b2Vec2 P = impulse * u;
 
 		cA -= m_invMassA * P;
-		aA -= m_invIA * GlobalMembers.b2Cross(rA, P);
+		aA -= m_invIA * Utils.b2Cross(rA, P);
 		cB += m_invMassB * P;
-		aB += m_invIB * GlobalMembers.b2Cross(rB, P);
+		aB += m_invIB * Utils.b2Cross(rB, P);
 
 
 
@@ -367,7 +367,7 @@ public class b2DistanceJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return GlobalMembers.b2Abs(C) < DefineConstants.b2_linearSlop;
+		return Utils.b2Abs(C) < Settings.b2_linearSlop;
 	}
 
 	protected float m_frequencyHz;

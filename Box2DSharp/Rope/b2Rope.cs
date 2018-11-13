@@ -111,7 +111,7 @@ public class b2Rope : System.IDisposable
 		{
 			b2Vec2 p1 = m_ps[i];
 			b2Vec2 p2 = m_ps[i + 1];
-			m_Ls[i] = GlobalMembers.b2Distance(p1, p2);
+			m_Ls[i] = Utils.b2Distance(p1, p2);
 		}
 
 		for (int i = 0; i < count3; ++i)
@@ -123,8 +123,8 @@ public class b2Rope : System.IDisposable
 			b2Vec2 d1 = p2 - p1;
 			b2Vec2 d2 = p3 - p2;
 
-			float a = GlobalMembers.b2Cross(d1, d2);
-			float b = GlobalMembers.b2Dot(d1, d2);
+			float a = Utils.b2Cross(d1, d2);
+			float b = Utils.b2Dot(d1, d2);
 
 			m_as[i] = (float)Math.Atan2(a, b);
 		}
@@ -266,8 +266,8 @@ public class b2Rope : System.IDisposable
 				continue;
 			}
 
-			float a = GlobalMembers.b2Cross(d1, d2);
-			float b = GlobalMembers.b2Dot(d1, d2);
+			float a = Utils.b2Cross(d1, d2);
+			float b = Utils.b2Dot(d1, d2);
 
 			float angle = (float)Math.Atan2(a, b);
 
@@ -280,7 +280,7 @@ public class b2Rope : System.IDisposable
 
 			b2Vec2 J3 = new b2Vec2(Jd2);
 
-			float mass = m1 * GlobalMembers.b2Dot(J1, J1) + m2 * GlobalMembers.b2Dot(J2, J2) + m3 * GlobalMembers.b2Dot(J3, J3);
+			float mass = m1 * Utils.b2Dot(J1, J1) + m2 * Utils.b2Dot(J2, J2) + m3 * Utils.b2Dot(J3, J3);
 			if (mass == 0.0f)
 			{
 				continue;
@@ -290,15 +290,15 @@ public class b2Rope : System.IDisposable
 
 			float C = angle - m_as[i];
 
-			while (C > DefineConstants.b2_pi)
+			while (C > Settings.b2_pi)
 			{
-				angle -= 2 * DefineConstants.b2_pi;
+				angle -= 2 * Settings.b2_pi;
 				C = angle - m_as[i];
 			}
 
-			while (C < -DefineConstants.b2_pi)
+			while (C < -Settings.b2_pi)
 			{
-				angle += 2.0f * DefineConstants.b2_pi;
+				angle += 2.0f * Settings.b2_pi;
 				C = angle - m_as[i];
 			}
 

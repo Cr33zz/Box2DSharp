@@ -44,6 +44,6 @@ public class b2ChainAndCircleContact : b2Contact
 		b2ChainShape chain = (b2ChainShape)m_fixtureA.GetShape();
 		b2EdgeShape edge = new b2EdgeShape();
 		chain.GetChildEdge(edge, m_indexA);
-		GlobalMembers.b2CollideEdgeAndCircle(manifold, edge, xfA, (b2CircleShape)m_fixtureB.GetShape(), xfB);
+		Utils.b2CollideEdgeAndCircle(manifold, edge, xfA, (b2CircleShape)m_fixtureB.GetShape(), xfB);
 	}
 }

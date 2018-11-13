@@ -193,7 +193,7 @@ public class b2MouseJoint : b2Joint
 	/// The mouse joint does not support dumping.
 	public override void Dump()
 	{
-		GlobalMembers.b2Log("Mouse joint dumping is not supported.\n");
+		Utils.b2Log("Mouse joint dumping is not supported.\n");
 	}
 
 	/// Implement b2Joint::ShiftOrigin
@@ -217,16 +217,16 @@ public class b2MouseJoint : b2Joint
     internal b2MouseJoint(b2MouseJointDef def) : base(def)
 	{
 		Debug.Assert(def.target.IsValid());
-		Debug.Assert(GlobalMembers.b2IsValid(def.maxForce) && def.maxForce >= 0.0f);
-		Debug.Assert(GlobalMembers.b2IsValid(def.frequencyHz) && def.frequencyHz >= 0.0f);
-		Debug.Assert(GlobalMembers.b2IsValid(def.dampingRatio) && def.dampingRatio >= 0.0f);
+		Debug.Assert(Utils.b2IsValid(def.maxForce) && def.maxForce >= 0.0f);
+		Debug.Assert(Utils.b2IsValid(def.frequencyHz) && def.frequencyHz >= 0.0f);
+		Debug.Assert(Utils.b2IsValid(def.dampingRatio) && def.dampingRatio >= 0.0f);
 
 
 
 		m_targetA = def.target;
 
 
-		m_localAnchorB = GlobalMembers.b2MulT(m_bodyB.GetTransform(), m_targetA);
+		m_localAnchorB = Utils.b2MulT(m_bodyB.GetTransform(), m_targetA);
 
 		m_maxForce = def.maxForce;
 		m_impulse.SetZero();
@@ -257,7 +257,7 @@ public class b2MouseJoint : b2Joint
 		float mass = m_bodyB.GetMass();
 
 		// Frequency
-		float omega = 2.0f * DefineConstants.b2_pi * m_frequencyHz;
+		float omega = 2.0f * Settings.b2_pi * m_frequencyHz;
 
 		// Damping coefficient
 		float d = 2.0f * mass * m_dampingRatio * omega;
@@ -280,7 +280,7 @@ public class b2MouseJoint : b2Joint
 		// Compute the effective mass matrix.
 
 
-		m_rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		m_rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 		// K    = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
 		//      = [1/m1+1/m2     0    ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]
@@ -307,7 +307,7 @@ public class b2MouseJoint : b2Joint
 		{
 			m_impulse *= data.step.dtRatio;
 			vB += m_invMassB * m_impulse;
-			wB += m_invIB * GlobalMembers.b2Cross(m_rB, m_impulse);
+			wB += m_invIB * Utils.b2Cross(m_rB, m_impulse);
 		}
 		else
 		{
@@ -325,8 +325,8 @@ public class b2MouseJoint : b2Joint
 		float wB = data.velocities[m_indexB].w;
 
 		// Cdot = v + cross(w, r)
-		b2Vec2 Cdot = vB + GlobalMembers.b2Cross(wB, m_rB);
-		b2Vec2 impulse = GlobalMembers.b2Mul(m_mass, -(Cdot + m_C + m_gamma * m_impulse));
+		b2Vec2 Cdot = vB + Utils.b2Cross(wB, m_rB);
+		b2Vec2 impulse = Utils.b2Mul(m_mass, -(Cdot + m_C + m_gamma * m_impulse));
 
 
 
@@ -340,7 +340,7 @@ public class b2MouseJoint : b2Joint
 		impulse = m_impulse - oldImpulse;
 
 		vB += m_invMassB * impulse;
-		wB += m_invIB * GlobalMembers.b2Cross(m_rB, impulse);
+		wB += m_invIB * Utils.b2Cross(m_rB, impulse);
 
 
 

@@ -142,14 +142,14 @@ public class b2RopeJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2RopeJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		GlobalMembers.b2Log("  jd.maxLength = %.15lef;\n", m_maxLength);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2RopeJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		Utils.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		Utils.b2Log("  jd.maxLength = %.15lef;\n", m_maxLength);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -211,10 +211,10 @@ public class b2RopeJoint : b2Joint
 
 
 
-		m_rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		m_rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
 
 
-		m_rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		m_rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 
 		m_u = cB + m_rB - cA - m_rA;
@@ -231,7 +231,7 @@ public class b2RopeJoint : b2Joint
 			m_state = b2LimitState.e_inactiveLimit;
 		}
 
-		if (m_length > DefineConstants.b2_linearSlop)
+		if (m_length > Settings.b2_linearSlop)
 		{
 			m_u *= 1.0f / m_length;
 		}
@@ -244,8 +244,8 @@ public class b2RopeJoint : b2Joint
 		}
 
 		// Compute effective mass.
-		float crA = GlobalMembers.b2Cross(m_rA, m_u);
-		float crB = GlobalMembers.b2Cross(m_rB, m_u);
+		float crA = Utils.b2Cross(m_rA, m_u);
+		float crB = Utils.b2Cross(m_rB, m_u);
 		float invMass = m_invMassA + m_invIA * crA * crA + m_invMassB + m_invIB * crB * crB;
 
 		m_mass = invMass != 0.0f ? 1.0f / invMass : 0.0f;
@@ -257,9 +257,9 @@ public class b2RopeJoint : b2Joint
 
 			b2Vec2 P = m_impulse * m_u;
 			vA -= m_invMassA * P;
-			wA -= m_invIA * GlobalMembers.b2Cross(m_rA, P);
+			wA -= m_invIA * Utils.b2Cross(m_rA, P);
 			vB += m_invMassB * P;
-			wB += m_invIB * GlobalMembers.b2Cross(m_rB, P);
+			wB += m_invIB * Utils.b2Cross(m_rB, P);
 		}
 		else
 		{
@@ -283,10 +283,10 @@ public class b2RopeJoint : b2Joint
 		float wB = data.velocities[m_indexB].w;
 
 		// Cdot = dot(u, v + cross(w, r))
-		b2Vec2 vpA = vA + GlobalMembers.b2Cross(wA, m_rA);
-		b2Vec2 vpB = vB + GlobalMembers.b2Cross(wB, m_rB);
+		b2Vec2 vpA = vA + Utils.b2Cross(wA, m_rA);
+		b2Vec2 vpB = vB + Utils.b2Cross(wB, m_rB);
 		float C = m_length - m_maxLength;
-		float Cdot = GlobalMembers.b2Dot(m_u, vpB - vpA);
+		float Cdot = Utils.b2Dot(m_u, vpB - vpA);
 
 		// Predictive constraint.
 		if (C < 0.0f)
@@ -296,14 +296,14 @@ public class b2RopeJoint : b2Joint
 
 		float impulse = -m_mass * Cdot;
 		float oldImpulse = m_impulse;
-		m_impulse = GlobalMembers.b2Min(0.0f, m_impulse + impulse);
+		m_impulse = Utils.b2Min(0.0f, m_impulse + impulse);
 		impulse = m_impulse - oldImpulse;
 
 		b2Vec2 P = impulse * m_u;
 		vA -= m_invMassA * P;
-		wA -= m_invIA * GlobalMembers.b2Cross(m_rA, P);
+		wA -= m_invIA * Utils.b2Cross(m_rA, P);
 		vB += m_invMassB * P;
-		wB += m_invIB * GlobalMembers.b2Cross(m_rB, P);
+		wB += m_invIB * Utils.b2Cross(m_rB, P);
 
 
 
@@ -324,22 +324,22 @@ public class b2RopeJoint : b2Joint
 		b2Rot qA = new b2Rot(aA);
 		b2Rot qB = new b2Rot(aB);
 
-		b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-		b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 		b2Vec2 u = cB + rB - cA - rA;
 
 		float length = u.Normalize();
 		float C = length - m_maxLength;
 
-		C = GlobalMembers.b2Clamp(C, 0.0f, DefineConstants.b2_maxLinearCorrection);
+		C = Utils.b2Clamp(C, 0.0f, Settings.b2_maxLinearCorrection);
 
 		float impulse = -m_mass * C;
 		b2Vec2 P = impulse * u;
 
 		cA -= m_invMassA * P;
-		aA -= m_invIA * GlobalMembers.b2Cross(rA, P);
+		aA -= m_invIA * Utils.b2Cross(rA, P);
 		cB += m_invMassB * P;
-		aB += m_invIB * GlobalMembers.b2Cross(rB, P);
+		aB += m_invIB * Utils.b2Cross(rB, P);
 
 
 
@@ -350,7 +350,7 @@ public class b2RopeJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return length - m_maxLength < DefineConstants.b2_linearSlop;
+		return length - m_maxLength < Settings.b2_linearSlop;
 	}
 
 	// Solver shared

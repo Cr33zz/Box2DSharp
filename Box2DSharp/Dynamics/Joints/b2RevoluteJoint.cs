@@ -355,20 +355,20 @@ public class b2RevoluteJoint : b2Joint
 		int indexA = m_bodyA.m_islandIndex;
 		int indexB = m_bodyB.m_islandIndex;
 
-		GlobalMembers.b2Log("  b2RevoluteJointDef jd;\n");
-		GlobalMembers.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
-		GlobalMembers.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
-		GlobalMembers.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
-		GlobalMembers.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
-		GlobalMembers.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
-		GlobalMembers.b2Log("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
-		GlobalMembers.b2Log("  jd.enableLimit = bool(%d);\n", m_enableLimit);
-		GlobalMembers.b2Log("  jd.lowerAngle = %.15lef;\n", m_lowerAngle);
-		GlobalMembers.b2Log("  jd.upperAngle = %.15lef;\n", m_upperAngle);
-		GlobalMembers.b2Log("  jd.enableMotor = bool(%d);\n", m_enableMotor);
-		GlobalMembers.b2Log("  jd.motorSpeed = %.15lef;\n", m_motorSpeed);
-		GlobalMembers.b2Log("  jd.maxMotorTorque = %.15lef;\n", m_maxMotorTorque);
-		GlobalMembers.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+		Utils.b2Log("  b2RevoluteJointDef jd;\n");
+		Utils.b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+		Utils.b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+		Utils.b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+		Utils.b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+		Utils.b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+		Utils.b2Log("  jd.referenceAngle = %.15lef;\n", m_referenceAngle);
+		Utils.b2Log("  jd.enableLimit = bool(%d);\n", m_enableLimit);
+		Utils.b2Log("  jd.lowerAngle = %.15lef;\n", m_lowerAngle);
+		Utils.b2Log("  jd.upperAngle = %.15lef;\n", m_upperAngle);
+		Utils.b2Log("  jd.enableMotor = bool(%d);\n", m_enableMotor);
+		Utils.b2Log("  jd.motorSpeed = %.15lef;\n", m_motorSpeed);
+		Utils.b2Log("  jd.maxMotorTorque = %.15lef;\n", m_maxMotorTorque);
+		Utils.b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 	}
 
 
@@ -427,10 +427,10 @@ public class b2RevoluteJoint : b2Joint
 
 
 
-		m_rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
+		m_rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
 
 
-		m_rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+		m_rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 		// J = [-I -r1_skew I r2_skew]
 		//     [ 0       -1 0       1]
@@ -472,7 +472,7 @@ public class b2RevoluteJoint : b2Joint
 		if (m_enableLimit && fixedRotation == false)
 		{
 			float jointAngle = aB - aA - m_referenceAngle;
-			if (GlobalMembers.b2Abs(m_upperAngle - m_lowerAngle) < 2.0f * (2.0f / 180.0f * DefineConstants.b2_pi))
+			if (Utils.b2Abs(m_upperAngle - m_lowerAngle) < 2.0f * (2.0f / 180.0f * Settings.b2_pi))
 			{
 				m_limitState = b2LimitState.e_equalLimits;
 			}
@@ -512,10 +512,10 @@ public class b2RevoluteJoint : b2Joint
 			b2Vec2 P = new b2Vec2(m_impulse.x, m_impulse.y);
 
 			vA -= mA * P;
-			wA -= iA * (GlobalMembers.b2Cross(m_rA, P) + m_motorImpulse + m_impulse.z);
+			wA -= iA * (Utils.b2Cross(m_rA, P) + m_motorImpulse + m_impulse.z);
 
 			vB += mB * P;
-			wB += iB * (GlobalMembers.b2Cross(m_rB, P) + m_motorImpulse + m_impulse.z);
+			wB += iB * (Utils.b2Cross(m_rB, P) + m_motorImpulse + m_impulse.z);
 		}
 		else
 		{
@@ -553,7 +553,7 @@ public class b2RevoluteJoint : b2Joint
 			float impulse = -m_motorMass * Cdot;
 			float oldImpulse = m_motorImpulse;
 			float maxImpulse = data.step.dt * m_maxMotorTorque;
-			m_motorImpulse = GlobalMembers.b2Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
+			m_motorImpulse = Utils.b2Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
 			impulse = m_motorImpulse - oldImpulse;
 
 			wA -= iA * impulse;
@@ -563,7 +563,7 @@ public class b2RevoluteJoint : b2Joint
 		// Solve limit constraint.
 		if (m_enableLimit && m_limitState != b2LimitState.e_inactiveLimit && fixedRotation == false)
 		{
-			b2Vec2 Cdot1 = vB + GlobalMembers.b2Cross(wB, m_rB) - vA - GlobalMembers.b2Cross(wA, m_rA);
+			b2Vec2 Cdot1 = vB + Utils.b2Cross(wB, m_rB) - vA - Utils.b2Cross(wA, m_rA);
 			float Cdot2 = wB - wA;
 			b2Vec3 Cdot = new b2Vec3(Cdot1.x, Cdot1.y, Cdot2);
 
@@ -615,25 +615,25 @@ public class b2RevoluteJoint : b2Joint
 			b2Vec2 P = new b2Vec2(impulse.x, impulse.y);
 
 			vA -= mA * P;
-			wA -= iA * (GlobalMembers.b2Cross(m_rA, P) + impulse.z);
+			wA -= iA * (Utils.b2Cross(m_rA, P) + impulse.z);
 
 			vB += mB * P;
-			wB += iB * (GlobalMembers.b2Cross(m_rB, P) + impulse.z);
+			wB += iB * (Utils.b2Cross(m_rB, P) + impulse.z);
 		}
 		else
 		{
 			// Solve point-to-point constraint
-			b2Vec2 Cdot = vB + GlobalMembers.b2Cross(wB, m_rB) - vA - GlobalMembers.b2Cross(wA, m_rA);
+			b2Vec2 Cdot = vB + Utils.b2Cross(wB, m_rB) - vA - Utils.b2Cross(wA, m_rA);
 			b2Vec2 impulse = m_mass.Solve22(-Cdot);
 
 			m_impulse.x += impulse.x;
 			m_impulse.y += impulse.y;
 
 			vA -= mA * impulse;
-			wA -= iA * GlobalMembers.b2Cross(m_rA, impulse);
+			wA -= iA * Utils.b2Cross(m_rA, impulse);
 
 			vB += mB * impulse;
-			wB += iB * GlobalMembers.b2Cross(m_rB, impulse);
+			wB += iB * Utils.b2Cross(m_rB, impulse);
 		}
 
 
@@ -669,9 +669,9 @@ public class b2RevoluteJoint : b2Joint
 			if (m_limitState == b2LimitState.e_equalLimits)
 			{
 				// Prevent large angular corrections
-				float C = GlobalMembers.b2Clamp(angle - m_lowerAngle, -(8.0f / 180.0f * DefineConstants.b2_pi), (8.0f / 180.0f * DefineConstants.b2_pi));
+				float C = Utils.b2Clamp(angle - m_lowerAngle, -(8.0f / 180.0f * Settings.b2_pi), (8.0f / 180.0f * Settings.b2_pi));
 				limitImpulse = -m_motorMass * C;
-				angularError = GlobalMembers.b2Abs(C);
+				angularError = Utils.b2Abs(C);
 			}
 			else if (m_limitState == b2LimitState.e_atLowerLimit)
 			{
@@ -679,7 +679,7 @@ public class b2RevoluteJoint : b2Joint
 				angularError = -C;
 
 				// Prevent large angular corrections and allow some slop.
-				C = GlobalMembers.b2Clamp(C + (2.0f / 180.0f * DefineConstants.b2_pi), -(8.0f / 180.0f * DefineConstants.b2_pi), 0.0f);
+				C = Utils.b2Clamp(C + (2.0f / 180.0f * Settings.b2_pi), -(8.0f / 180.0f * Settings.b2_pi), 0.0f);
 				limitImpulse = -m_motorMass * C;
 			}
 			else if (m_limitState == b2LimitState.e_atUpperLimit)
@@ -688,7 +688,7 @@ public class b2RevoluteJoint : b2Joint
 				angularError = C;
 
 				// Prevent large angular corrections and allow some slop.
-				C = GlobalMembers.b2Clamp(C - (2.0f / 180.0f * DefineConstants.b2_pi), 0.0f, (8.0f / 180.0f * DefineConstants.b2_pi));
+				C = Utils.b2Clamp(C - (2.0f / 180.0f * Settings.b2_pi), 0.0f, (8.0f / 180.0f * Settings.b2_pi));
 				limitImpulse = -m_motorMass * C;
 			}
 
@@ -700,8 +700,8 @@ public class b2RevoluteJoint : b2Joint
 		// Solve point-to-point constraint.
 			qA.Set(aA);
 			qB.Set(aB);
-			b2Vec2 rA = GlobalMembers.b2Mul(qA, m_localAnchorA - m_localCenterA);
-			b2Vec2 rB = GlobalMembers.b2Mul(qB, m_localAnchorB - m_localCenterB);
+			b2Vec2 rA = Utils.b2Mul(qA, m_localAnchorA - m_localCenterA);
+			b2Vec2 rB = Utils.b2Mul(qB, m_localAnchorB - m_localCenterB);
 
 			b2Vec2 C = cB + rB - cA - rA;
 			positionError = C.Length();
@@ -720,10 +720,10 @@ public class b2RevoluteJoint : b2Joint
 			b2Vec2 impulse = -K.Solve(C);
 
 			cA -= mA * impulse;
-			aA -= iA * GlobalMembers.b2Cross(rA, impulse);
+			aA -= iA * Utils.b2Cross(rA, impulse);
 
 			cB += mB * impulse;
-			aB += iB * GlobalMembers.b2Cross(rB, impulse);
+			aB += iB * Utils.b2Cross(rB, impulse);
 		}
 
 
@@ -735,7 +735,7 @@ public class b2RevoluteJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return positionError <= DefineConstants.b2_linearSlop && angularError <= (2.0f / 180.0f * DefineConstants.b2_pi);
+		return positionError <= Settings.b2_linearSlop && angularError <= (2.0f / 180.0f * Settings.b2_pi);
 	}
 
 	// Solver shared

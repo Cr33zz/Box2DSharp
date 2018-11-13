@@ -46,9 +46,9 @@ public class b2CircleShape : b2Shape
 	/// Implement b2Shape.
 	public override bool TestPoint(b2Transform transform, b2Vec2 p)
 	{
-		b2Vec2 center = transform.p + GlobalMembers.b2Mul(transform.q, m_p);
+		b2Vec2 center = transform.p + Utils.b2Mul(transform.q, m_p);
 		b2Vec2 d = p - center;
-		return GlobalMembers.b2Dot(d, d) <= m_radius * m_radius;
+		return Utils.b2Dot(d, d) <= m_radius * m_radius;
 	}
 
 	/// Implement b2Shape.
@@ -59,14 +59,14 @@ public class b2CircleShape : b2Shape
 	// norm(x) = radius
 	public override bool RayCast(b2RayCastOutput output, b2RayCastInput input, b2Transform transform, int childIndex)
 	{
-		b2Vec2 position = transform.p + GlobalMembers.b2Mul(transform.q, m_p);
+		b2Vec2 position = transform.p + Utils.b2Mul(transform.q, m_p);
 		b2Vec2 s = input.p1 - position;
-		float b = GlobalMembers.b2Dot(s, s) - m_radius * m_radius;
+		float b = Utils.b2Dot(s, s) - m_radius * m_radius;
 
 		// Solve quadratic equation.
 		b2Vec2 r = input.p2 - input.p1;
-		float c = GlobalMembers.b2Dot(s, r);
-		float rr = GlobalMembers.b2Dot(r, r);
+		float c = Utils.b2Dot(s, r);
+		float rr = Utils.b2Dot(r, r);
 		float sigma = c * c - rr * b;
 
 		// Check for negative discriminant and short segment.
@@ -94,7 +94,7 @@ public class b2CircleShape : b2Shape
 	/// @see b2Shape::ComputeAABB
 	public override void ComputeAABB(b2AABB aabb, b2Transform transform, int childIndex)
 	{
-		b2Vec2 p = transform.p + GlobalMembers.b2Mul(transform.q, m_p);
+		b2Vec2 p = transform.p + Utils.b2Mul(transform.q, m_p);
 		aabb.lowerBound.Set(p.x - m_radius, p.y - m_radius);
 		aabb.upperBound.Set(p.x + m_radius, p.y + m_radius);
 	}
@@ -102,13 +102,18 @@ public class b2CircleShape : b2Shape
 	/// @see b2Shape::ComputeMass
 	public override void ComputeMass(b2MassData massData, float density)
 	{
-		massData.mass = density * DefineConstants.b2_pi * m_radius * m_radius;
+		massData.mass = density * Settings.b2_pi * m_radius * m_radius;
 		massData.center = m_p;
 
 		// inertia about the local origin
-		massData.I = massData.mass * (0.5f * m_radius * m_radius + GlobalMembers.b2Dot(m_p, m_p));
+		massData.I = massData.mass * (0.5f * m_radius * m_radius + Utils.b2Dot(m_p, m_p));
 	}
 
-	/// Position
-	public b2Vec2 m_p = new b2Vec2();
+    public override b2Vec2[] GetVertices()
+    {
+        return new[] { m_p };
+    }
+
+    /// Position
+    public b2Vec2 m_p = new b2Vec2();
 }
