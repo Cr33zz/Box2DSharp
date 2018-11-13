@@ -144,9 +144,10 @@ public class b2World : System.IDisposable
     {
         b2BodyDef bd = new b2BodyDef();
         bd.type = BodyType.b2_dynamicBody;
+        bd.position.Set(position.x, position.y);
+        bd.angle = angle;
         var b = CreateBody(bd);
         b.CreateFixture(b2FixtureDef);
-        b.SetTransform(position, angle);
         return b;
     }
 

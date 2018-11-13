@@ -94,7 +94,7 @@ public class b2DynamicTree : System.IDisposable
 	// Create a proxy in the tree as a leaf node. We return the index
 	// of the node instead of a pointer so that we can grow
 	// the node pool.
-	public int CreateProxy(b2AABB aabb, object userData)
+	public int CreateProxy(ref b2AABB aabb, object userData)
 	{
 		int proxyId = AllocateNode();
 
@@ -124,13 +124,13 @@ public class b2DynamicTree : System.IDisposable
 	/// then the proxy is removed from the tree and re-inserted. Otherwise
 	/// the function returns immediately.
 	/// @return true if the proxy was re-inserted.
-	public bool MoveProxy(int proxyId, b2AABB aabb, b2Vec2 displacement)
+	public bool MoveProxy(int proxyId, ref b2AABB aabb, b2Vec2 displacement)
 	{
 		Debug.Assert(0 <= proxyId && proxyId < m_nodeCapacity);
 
 		Debug.Assert(m_nodes[proxyId].IsLeaf());
 
-		if (m_nodes[proxyId].aabb.Contains(aabb))
+		if (m_nodes[proxyId].aabb.Contains(ref aabb))
 		{
 			return false;
 		}
@@ -202,7 +202,7 @@ public class b2DynamicTree : System.IDisposable
 
 			b2TreeNode node = m_nodes[nodeId];
 
-			if (Utils.b2TestOverlap(node.aabb, aabb))
+			if (Utils.b2TestOverlap(ref node.aabb, ref aabb))
 			{
 				if (node.IsLeaf())
 				{
@@ -266,7 +266,7 @@ public class b2DynamicTree : System.IDisposable
 
 			b2TreeNode node = m_nodes[nodeId];
 
-			if (Utils.b2TestOverlap(node.aabb, segmentAABB) == false)
+			if (Utils.b2TestOverlap(ref node.aabb, ref segmentAABB) == false)
 			{
 				continue;
 			}
@@ -440,7 +440,7 @@ public class b2DynamicTree : System.IDisposable
 				{
 					b2AABB aabbj = m_nodes[nodes[j]].aabb;
 					b2AABB b = new b2AABB();
-					b.Combine(aabbi, aabbj);
+					b.Combine(ref aabbi, ref aabbj);
 					float cost = b.GetPerimeter();
 					if (cost < minCost)
 					{
@@ -461,7 +461,7 @@ public class b2DynamicTree : System.IDisposable
 			parentOrNext.child1 = index1;
 			parentOrNext.child2 = index2;
 			parentOrNext.height = 1 + Utils.b2Max(child1.height, child2.height);
-			parentOrNext.aabb.Combine(child1.aabb, child2.aabb);
+			parentOrNext.aabb.Combine(ref child1.aabb, ref child2.aabb);
 			parentOrNext.parentOrNext = Settings.b2_nullNode;
 
 			child1.parentOrNext = parentIndex;
@@ -566,7 +566,7 @@ public class b2DynamicTree : System.IDisposable
 			float area = m_nodes[index].aabb.GetPerimeter();
 
 			b2AABB combinedAABB = new b2AABB();
-			combinedAABB.Combine(m_nodes[index].aabb, leafAABB);
+			combinedAABB.Combine(ref m_nodes[index].aabb, ref leafAABB);
 			float combinedArea = combinedAABB.GetPerimeter();
 
 			// Cost of creating a new parentOrNext for this node and the new leaf
@@ -580,13 +580,13 @@ public class b2DynamicTree : System.IDisposable
 			if (m_nodes[child1].IsLeaf())
 			{
 				b2AABB aabb = new b2AABB();
-				aabb.Combine(leafAABB, m_nodes[child1].aabb);
+				aabb.Combine(ref leafAABB, ref m_nodes[child1].aabb);
 				cost1 = aabb.GetPerimeter() + inheritanceCost;
 			}
 			else
 			{
 				b2AABB aabb = new b2AABB();
-				aabb.Combine(leafAABB, m_nodes[child1].aabb);
+				aabb.Combine(ref leafAABB, ref m_nodes[child1].aabb);
 				float oldArea = m_nodes[child1].aabb.GetPerimeter();
 				float newArea = aabb.GetPerimeter();
 				cost1 = (newArea - oldArea) + inheritanceCost;
@@ -597,13 +597,13 @@ public class b2DynamicTree : System.IDisposable
 			if (m_nodes[child2].IsLeaf())
 			{
 				b2AABB aabb = new b2AABB();
-				aabb.Combine(leafAABB, m_nodes[child2].aabb);
+				aabb.Combine(ref leafAABB, ref m_nodes[child2].aabb);
 				cost2 = aabb.GetPerimeter() + inheritanceCost;
 			}
 			else
 			{
 				b2AABB aabb = new b2AABB();
-				aabb.Combine(leafAABB, m_nodes[child2].aabb);
+				aabb.Combine(ref leafAABB, ref m_nodes[child2].aabb);
 				float oldArea = m_nodes[child2].aabb.GetPerimeter();
 				float newArea = aabb.GetPerimeter();
 				cost2 = newArea - oldArea + inheritanceCost;
@@ -633,7 +633,7 @@ public class b2DynamicTree : System.IDisposable
 		int newParent = AllocateNode();
 		m_nodes[newParent].parentOrNext = oldParent;
 		m_nodes[newParent].userData = null;
-		m_nodes[newParent].aabb.Combine(leafAABB, m_nodes[sibling].aabb);
+		m_nodes[newParent].aabb.Combine(ref leafAABB, ref m_nodes[sibling].aabb);
 		m_nodes[newParent].height = m_nodes[sibling].height + 1;
 
 		if (oldParent != Settings.b2_nullNode)
@@ -676,7 +676,7 @@ public class b2DynamicTree : System.IDisposable
 			Debug.Assert(child2 != Settings.b2_nullNode);
 
 			m_nodes[index].height = 1 + Utils.b2Max(m_nodes[child1].height, m_nodes[child2].height);
-			m_nodes[index].aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
+			m_nodes[index].aabb.Combine(ref m_nodes[child1].aabb, ref m_nodes[child2].aabb);
 
 			index = m_nodes[index].parentOrNext;
 		}
@@ -726,7 +726,7 @@ public class b2DynamicTree : System.IDisposable
 				int child1 = m_nodes[index].child1;
 				int child2 = m_nodes[index].child2;
 
-				m_nodes[index].aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
+				m_nodes[index].aabb.Combine(ref m_nodes[child1].aabb, ref m_nodes[child2].aabb);
 				m_nodes[index].height = 1 + Utils.b2Max(m_nodes[child1].height, m_nodes[child2].height);
 
 				index = m_nodes[index].parentOrNext;
@@ -804,8 +804,8 @@ public class b2DynamicTree : System.IDisposable
 				C.child2 = iF;
 				A.child2 = iG;
 				G.parentOrNext = iA;
-				A.aabb.Combine(B.aabb, G.aabb);
-				C.aabb.Combine(A.aabb, F.aabb);
+				A.aabb.Combine(ref B.aabb, ref G.aabb);
+				C.aabb.Combine(ref A.aabb, ref F.aabb);
 
 				A.height = 1 + Utils.b2Max(B.height, G.height);
 				C.height = 1 + Utils.b2Max(A.height, F.height);
@@ -815,8 +815,8 @@ public class b2DynamicTree : System.IDisposable
 				C.child2 = iG;
 				A.child2 = iF;
 				F.parentOrNext = iA;
-				A.aabb.Combine(B.aabb, F.aabb);
-				C.aabb.Combine(A.aabb, G.aabb);
+				A.aabb.Combine(ref B.aabb, ref F.aabb);
+				C.aabb.Combine(ref A.aabb, ref G.aabb);
 
 				A.height = 1 + Utils.b2Max(B.height, F.height);
 				C.height = 1 + Utils.b2Max(A.height, G.height);
@@ -864,8 +864,8 @@ public class b2DynamicTree : System.IDisposable
 				B.child2 = iD;
 				A.child1 = iE;
 				E.parentOrNext = iA;
-				A.aabb.Combine(C.aabb, E.aabb);
-				B.aabb.Combine(A.aabb, D.aabb);
+				A.aabb.Combine(ref C.aabb, ref E.aabb);
+				B.aabb.Combine(ref A.aabb, ref D.aabb);
 
 				A.height = 1 + Utils.b2Max(C.height, E.height);
 				B.height = 1 + Utils.b2Max(A.height, D.height);
@@ -875,8 +875,8 @@ public class b2DynamicTree : System.IDisposable
 				B.child2 = iE;
 				A.child1 = iD;
 				D.parentOrNext = iA;
-				A.aabb.Combine(C.aabb, D.aabb);
-				B.aabb.Combine(A.aabb, E.aabb);
+				A.aabb.Combine(ref C.aabb, ref D.aabb);
+				B.aabb.Combine(ref A.aabb, ref E.aabb);
 
 				A.height = 1 + Utils.b2Max(C.height, D.height);
 				B.height = 1 + Utils.b2Max(A.height, E.height);
@@ -975,7 +975,7 @@ public class b2DynamicTree : System.IDisposable
 		Debug.Assert(node.height == height);
 
 		b2AABB aabb = new b2AABB();
-		aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
+		aabb.Combine(ref m_nodes[child1].aabb, ref m_nodes[child2].aabb);
 
 		Debug.Assert(aabb.lowerBound == node.aabb.lowerBound);
 		Debug.Assert(aabb.upperBound == node.aabb.upperBound);

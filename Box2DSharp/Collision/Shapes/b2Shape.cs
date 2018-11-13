@@ -77,13 +77,13 @@ public abstract class b2Shape : System.IDisposable
 	/// @param aabb returns the axis aligned box.
 	/// @param xf the world transform of the shape.
 	/// @param childIndex the child shape
-	public abstract void ComputeAABB(b2AABB aabb, b2Transform xf, int childIndex);
+	public abstract void ComputeAABB(ref b2AABB aabb, b2Transform xf, int childIndex);
 
 	/// Compute the mass properties of this shape using its dimensions and density.
 	/// The inertia tensor is computed about the local origin.
 	/// @param massData returns the mass data for this shape.
 	/// @param density the density in kilograms per meter squared.
-	public abstract void ComputeMass(b2MassData massData, float density);
+	public abstract void ComputeMass(ref b2MassData massData, float density);
 
     public abstract b2Vec2[] GetVertices();
 

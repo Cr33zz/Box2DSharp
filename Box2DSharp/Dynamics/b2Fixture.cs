@@ -256,9 +256,9 @@ public class b2Fixture
 	/// Get the mass data for this fixture. The mass data is based on the density and
 	/// the shape. The rotational inertia is about the shape's origin. This operation
 	/// may be expensive.
-	public void GetMassData(b2MassData massData)
+	public void GetMassData(ref b2MassData massData)
 	{
-		m_shape.ComputeMass(massData, m_density);
+		m_shape.ComputeMass(ref massData, m_density);
 	}
 
 	/// Set the density of this fixture. This will _not_ automatically adjust the mass
@@ -451,8 +451,8 @@ public class b2Fixture
 		for (int i = 0; i < m_proxyCount; ++i)
 		{
 			b2FixtureProxy proxy = m_proxies[i];
-			m_shape.ComputeAABB(proxy.aabb, xf, i);
-			proxy.proxyId = broadPhase.CreateProxy(proxy.aabb, proxy);
+			m_shape.ComputeAABB(ref proxy.aabb, xf, i);
+			proxy.proxyId = broadPhase.CreateProxy(ref proxy.aabb, proxy);
 			proxy.fixture = this;
 			proxy.childIndex = i;
 		}
@@ -484,14 +484,14 @@ public class b2Fixture
 			// Compute an AABB that covers the swept shape (may miss some rotation effect).
 			b2AABB aabb1 = new b2AABB();
 			b2AABB aabb2 = new b2AABB();
-			m_shape.ComputeAABB(aabb1, transform1, proxy.childIndex);
-			m_shape.ComputeAABB(aabb2, transform2, proxy.childIndex);
+			m_shape.ComputeAABB(ref aabb1, transform1, proxy.childIndex);
+			m_shape.ComputeAABB(ref aabb2, transform2, proxy.childIndex);
 
-			proxy.aabb.Combine(aabb1, aabb2);
+			proxy.aabb.Combine(ref aabb1, ref aabb2);
 
 			b2Vec2 displacement = transform2.p - transform1.p;
 
-			broadPhase.MoveProxy(proxy.proxyId, proxy.aabb, displacement);
+			broadPhase.MoveProxy(proxy.proxyId, ref proxy.aabb, displacement);
 		}
 	}
 

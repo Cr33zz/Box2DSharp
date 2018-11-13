@@ -92,7 +92,7 @@ public class b2CircleShape : b2Shape
 	}
 
 	/// @see b2Shape::ComputeAABB
-	public override void ComputeAABB(b2AABB aabb, b2Transform transform, int childIndex)
+	public override void ComputeAABB(ref b2AABB aabb, b2Transform transform, int childIndex)
 	{
 		b2Vec2 p = transform.p + Utils.b2Mul(transform.q, m_p);
 		aabb.lowerBound.Set(p.x - m_radius, p.y - m_radius);
@@ -100,7 +100,7 @@ public class b2CircleShape : b2Shape
 	}
 
 	/// @see b2Shape::ComputeMass
-	public override void ComputeMass(b2MassData massData, float density)
+	public override void ComputeMass(ref b2MassData massData, float density)
 	{
 		massData.mass = density * Settings.b2_pi * m_radius * m_radius;
 		massData.center = m_p;

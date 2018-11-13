@@ -394,7 +394,6 @@ public class b2Island : System.IDisposable
 		contactSolverDef.contacts = m_contacts;
 		contactSolverDef.count = m_contactCount;
 
-
 		contactSolverDef.step = subStep;
 		contactSolverDef.positions = m_positions;
 		contactSolverDef.velocities = m_velocities;

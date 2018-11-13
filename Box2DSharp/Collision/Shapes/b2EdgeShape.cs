@@ -133,7 +133,7 @@ public class b2EdgeShape : b2Shape
 	}
 
 	/// @see b2Shape::ComputeAABB
-	public override void ComputeAABB(b2AABB aabb, b2Transform xf, int childIndex)
+	public override void ComputeAABB(ref b2AABB aabb, b2Transform xf, int childIndex)
 	{
 		b2Vec2 v1 = Utils.b2Mul(xf, m_vertex1);
 		b2Vec2 v2 = Utils.b2Mul(xf, m_vertex2);
@@ -147,7 +147,7 @@ public class b2EdgeShape : b2Shape
 	}
 
 	/// @see b2Shape::ComputeMass
-	public override void ComputeMass(b2MassData massData, float density)
+	public override void ComputeMass(ref b2MassData massData, float density)
 	{
 		massData.mass = 0.0f;
 		massData.center = 0.5f * (m_vertex1 + m_vertex2);

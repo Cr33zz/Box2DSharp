@@ -55,9 +55,9 @@ public class b2BroadPhase : System.IDisposable
 
 	/// Create a proxy with an initial AABB. Pairs are not reported until
 	/// UpdatePairs is called.
-	public int CreateProxy(b2AABB aabb, object userData)
+	public int CreateProxy(ref b2AABB aabb, object userData)
 	{
-		int proxyId = m_tree.CreateProxy(aabb, userData);
+		int proxyId = m_tree.CreateProxy(ref aabb, userData);
 		++m_proxyCount;
 		BufferMove(proxyId);
 		return proxyId;
@@ -73,9 +73,9 @@ public class b2BroadPhase : System.IDisposable
 
 	/// Call MoveProxy as many times as you like, then when you are done
 	/// call UpdatePairs to finalized the proxy pairs (for your time step).
-	public void MoveProxy(int proxyId, b2AABB aabb, b2Vec2 displacement)
+	public void MoveProxy(int proxyId, ref b2AABB aabb, b2Vec2 displacement)
 	{
-		bool buffer = m_tree.MoveProxy(proxyId, aabb, displacement);
+		bool buffer = m_tree.MoveProxy(proxyId, ref aabb, displacement);
 		if (buffer)
 		{
 			BufferMove(proxyId);
@@ -105,7 +105,7 @@ public class b2BroadPhase : System.IDisposable
 	{
 		b2AABB aabbA = m_tree.GetFatAABB(proxyIdA);
 		b2AABB aabbB = m_tree.GetFatAABB(proxyIdB);
-		return Utils.b2TestOverlap(aabbA, aabbB);
+		return Utils.b2TestOverlap(ref aabbA, ref aabbB);
 	}
 
 	/// Get the number of proxies.

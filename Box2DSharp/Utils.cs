@@ -718,14 +718,12 @@ public static class Utils
 		return output.distance < 10.0f * float.Epsilon;
 	}
 
-	public static bool b2TestOverlap(b2AABB a, b2AABB b)
+	public static bool b2TestOverlap(ref b2AABB a, ref b2AABB b)
 	{
-		b2Vec2 d1 = new b2Vec2();
-		b2Vec2 d2 = new b2Vec2();
-		d1 = b.lowerBound - a.upperBound;
-		d2 = a.lowerBound - b.upperBound;
+		b2Vec2 d1 = b.lowerBound - a.upperBound;
+        b2Vec2 d2 = a.lowerBound - b.upperBound;
 
-		if (d1.x > 0.0f || d1.y > 0.0f)
+        if (d1.x > 0.0f || d1.y > 0.0f)
 		{
 			return false;
 		}

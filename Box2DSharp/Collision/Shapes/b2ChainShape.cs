@@ -201,7 +201,7 @@ public class b2ChainShape : b2Shape
 	}
 
 	/// @see b2Shape::ComputeAABB
-	public override void ComputeAABB(b2AABB aabb, b2Transform xf, int childIndex)
+	public override void ComputeAABB(ref b2AABB aabb, b2Transform xf, int childIndex)
 	{
 		Debug.Assert(childIndex < m_count);
 
@@ -221,7 +221,7 @@ public class b2ChainShape : b2Shape
 
 	/// Chains have zero mass.
 	/// @see b2Shape::ComputeMass
-	public override void ComputeMass(b2MassData massData, float density)
+	public override void ComputeMass(ref b2MassData massData, float density)
 	{
 		massData.mass = 0.0f;
 		massData.center.SetZero();

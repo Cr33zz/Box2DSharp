@@ -248,21 +248,21 @@ public struct b2AABB
 	}
 
 	/// Combine an AABB into this one.
-	public void Combine(b2AABB aabb)
+	public void Combine(ref b2AABB aabb)
 	{
 		lowerBound = Utils.b2Min(lowerBound, aabb.lowerBound);
 		upperBound = Utils.b2Max(upperBound, aabb.upperBound);
 	}
 
 	/// Combine two AABBs into this one.
-	public void Combine(b2AABB aabb1, b2AABB aabb2)
+	public void Combine(ref b2AABB aabb1, ref b2AABB aabb2)
 	{
 		lowerBound = Utils.b2Min(aabb1.lowerBound, aabb2.lowerBound);
 		upperBound = Utils.b2Max(aabb1.upperBound, aabb2.upperBound);
 	}
 
 	/// Does this aabb contain the provided AABB.
-	public bool Contains(b2AABB aabb)
+	public bool Contains(ref b2AABB aabb)
 	{
 		bool result = true;
 		result = result && lowerBound.x <= aabb.lowerBound.x;

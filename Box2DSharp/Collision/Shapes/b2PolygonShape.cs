@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 /*
 * Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
@@ -322,7 +323,7 @@ public class b2PolygonShape : b2Shape
 	}
 
 	/// @see b2Shape::ComputeAABB
-	public override void ComputeAABB(b2AABB aabb, b2Transform xf, int childIndex)
+	public override void ComputeAABB(ref b2AABB aabb, b2Transform xf, int childIndex)
 	{
 		b2Vec2 lower = Utils.b2Mul(xf, m_vertices[0]);
 		b2Vec2 upper = new b2Vec2(lower);
@@ -340,7 +341,7 @@ public class b2PolygonShape : b2Shape
 	}
 
 	/// @see b2Shape::ComputeMass
-	public override void ComputeMass(b2MassData massData, float density)
+	public override void ComputeMass(ref b2MassData massData, float density)
 	{
 		// Polygon mass, centroid, and inertia.
 		// Let rho be the polygon density in mass per unit area.
@@ -428,7 +429,9 @@ public class b2PolygonShape : b2Shape
 
     public override b2Vec2[] GetVertices()
     {
-        return m_vertices;
+        var v = new b2Vec2[m_count];
+        Array.Copy(m_vertices, v, m_count);
+        return v;
     }
 
     /// Validate convexity. This is a very time consuming operation.

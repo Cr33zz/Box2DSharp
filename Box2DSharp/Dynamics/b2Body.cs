@@ -601,7 +601,7 @@ public class b2Body : System.IDisposable
 			}
 
 			b2MassData massData = new b2MassData();
-			f.GetMassData(massData);
+			f.GetMassData(ref massData);
 			m_mass += massData.mass;
 			localCenter += massData.mass * massData.center;
 			m_I += massData.I;
