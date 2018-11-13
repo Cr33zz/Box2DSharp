@@ -88,7 +88,7 @@ public static class GlobalMembers
 
 		if (pair1.proxyIdA == pair2.proxyIdA)
 		{
-			return pair1.proxyIdB < pair2.proxyIdB ? 1 : -1;
+			return pair1.proxyIdB < pair2.proxyIdB ? 1 : (pair1.proxyIdB > pair2.proxyIdB ? -1 : 0);
 		}
 
 		return -1;

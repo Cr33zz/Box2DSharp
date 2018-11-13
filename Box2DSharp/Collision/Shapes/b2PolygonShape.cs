@@ -54,16 +54,16 @@ public class b2PolygonShape : b2Shape
 	/// @warning the points may be re-ordered, even if they form a convex polygon
 	/// @warning collinear points are handled but not removed. Collinear points
 	/// may lead to poor stacking behavior.
-	public void Set(b2Vec2[] vertices, int count)
+	public void Set(b2Vec2[] vertices)
 	{
-		Debug.Assert(3 <= count && count <= DefineConstants.b2_maxPolygonVertices);
-		if (count < 3)
+		Debug.Assert(3 <= vertices.Length && vertices.Length <= DefineConstants.b2_maxPolygonVertices);
+		if (vertices.Length < 3)
 		{
 			SetAsBox(1.0f, 1.0f);
 			return;
 		}
 
-		int n = GlobalMembers.b2Min(count, DefineConstants.b2_maxPolygonVertices);
+		int n = GlobalMembers.b2Min(vertices.Length, DefineConstants.b2_maxPolygonVertices);
 
 		// Perform welding and copy vertices into local buffer.
 		b2Vec2[] ps = Arrays.InitializeWithDefaultInstances<b2Vec2>(DefineConstants.b2_maxPolygonVertices);
