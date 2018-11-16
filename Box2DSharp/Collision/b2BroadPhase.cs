@@ -278,7 +278,7 @@ public class b2BroadPhase : System.IDisposable
 		{
 			b2Pair[] oldBuffer = m_pairBuffer;
 			m_pairCapacity *= 2;
-			m_pairBuffer = new b2Pair[m_pairCapacity];
+			m_pairBuffer = Arrays.InitializeWithDefaultInstances<b2Pair>(m_pairCapacity);
             Array.Copy(oldBuffer, m_pairBuffer, m_pairCount);
 		}
 
