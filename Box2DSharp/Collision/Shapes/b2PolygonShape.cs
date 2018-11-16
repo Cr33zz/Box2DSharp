@@ -55,13 +55,13 @@ public class b2PolygonShape : b2Shape
 	/// @warning the points may be re-ordered, even if they form a convex polygon
 	/// @warning collinear points are handled but not removed. Collinear points
 	/// may lead to poor stacking behavior.
-	public void Set(b2Vec2[] vertices)
+	public b2PolygonShape Set(b2Vec2[] vertices)
 	{
 		Debug.Assert(3 <= vertices.Length && vertices.Length <= Settings.b2_maxPolygonVertices);
 		if (vertices.Length < 3)
 		{
 			SetAsBox(1.0f, 1.0f);
-			return;
+			return this;
 		}
 
 		int n = Utils.b2Min(vertices.Length, Settings.b2_maxPolygonVertices);
@@ -95,14 +95,14 @@ public class b2PolygonShape : b2Shape
 			// Polygon is degenerate.
 			Debug.Assert(false);
 			SetAsBox(1.0f, 1.0f);
-			return;
-		}
+		    return this;
+        }
 
-		// Create the convex hull using the Gift wrapping algorithm
-		// http://en.wikipedia.org/wiki/Gift_wrapping_algorithm
+        // Create the convex hull using the Gift wrapping algorithm
+        // http://en.wikipedia.org/wiki/Gift_wrapping_algorithm
 
-		// Find the right most point on the hull
-		int i0 = 0;
+        // Find the right most point on the hull
+        int i0 = 0;
 		float x0 = ps[0].x;
 		for (int i = 1; i < n; ++i)
 		{
@@ -161,10 +161,10 @@ public class b2PolygonShape : b2Shape
 			// Polygon is degenerate.
 			Debug.Assert(false);
 			SetAsBox(1.0f, 1.0f);
-			return;
-		}
+            return this;
+        }
 
-		m_count = m;
+        m_count = m;
 
 		// Copy vertices.
 		for (int i = 0; i < m; ++i)
@@ -185,12 +185,14 @@ public class b2PolygonShape : b2Shape
 
 		// Compute the polygon centroid.
 		m_centroid = Utils.ComputeCentroid(m_vertices, m);
-	}
 
-	/// Build vertices to represent an axis-aligned box centered on the local origin.
-	/// @param hx the half-width.
-	/// @param hy the half-height.
-	public void SetAsBox(float hx, float hy)
+        return this;
+    }
+
+    /// Build vertices to represent an axis-aligned box centered on the local origin.
+    /// @param hx the half-width.
+    /// @param hy the half-height.
+    public b2PolygonShape SetAsBox(float hx, float hy)
 	{
 		m_count = 4;
 		m_vertices[0].Set(-hx, -hy);
@@ -202,14 +204,15 @@ public class b2PolygonShape : b2Shape
 		m_normals[2].Set(0.0f, 1.0f);
 		m_normals[3].Set(-1.0f, 0.0f);
 		m_centroid.SetZero();
-	}
+        return this;
+    }
 
-	/// Build vertices to represent an oriented box.
-	/// @param hx the half-width.
-	/// @param hy the half-height.
-	/// @param center the center of the box in local coordinates.
-	/// @param angle the rotation of the box in local coordinates.
-	public void SetAsBox(float hx, float hy, b2Vec2 center, float angle)
+    /// Build vertices to represent an oriented box.
+    /// @param hx the half-width.
+    /// @param hy the half-height.
+    /// @param center the center of the box in local coordinates.
+    /// @param angle the rotation of the box in local coordinates.
+    public b2PolygonShape SetAsBox(float hx, float hy, b2Vec2 center, float angle)
 	{
 		m_count = 4;
 		m_vertices[0].Set(-hx, -hy);
@@ -232,10 +235,12 @@ public class b2PolygonShape : b2Shape
 			m_vertices[i] = Utils.b2Mul(xf, m_vertices[i]);
 			m_normals[i] = Utils.b2Mul(xf.q, m_normals[i]);
 		}
-	}
 
-	/// @see b2Shape::TestPoint
-	public override bool TestPoint(b2Transform xf, b2Vec2 p)
+        return this;
+    }
+
+    /// @see b2Shape::TestPoint
+    public override bool TestPoint(b2Transform xf, b2Vec2 p)
 	{
 		b2Vec2 pLocal = Utils.b2MulT(xf.q, p - xf.p);
 

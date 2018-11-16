@@ -34,16 +34,17 @@ public class b2EdgeShape : b2Shape
 	}
 
 	/// Set this as an isolated edge.
-	public void Set(b2Vec2 v1, b2Vec2 v2)
+	public b2EdgeShape Set(b2Vec2 v1, b2Vec2 v2)
 	{
 		m_vertex1 = v1;
 		m_vertex2 = v2;
 		m_hasVertex0 = false;
 		m_hasVertex3 = false;
-	}
+        return this;
+    }
 
-	/// Implement b2Shape.
-	public override b2Shape Clone()
+    /// Implement b2Shape.
+    public override b2Shape Clone()
 	{
 		b2EdgeShape clone = new b2EdgeShape();
 		clone.m_vertex1 = m_vertex1;
