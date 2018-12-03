@@ -489,14 +489,14 @@ public class b2EPCollider
 			// Adjacency
 			if (Utils.b2Dot(n, perp) >= 0.0f)
 			{
-				if (Utils.b2Dot(n - m_upperLimit, m_normal) < -(2.0f / 180.0f * Settings.b2_pi))
+				if (Utils.b2Dot(n - m_upperLimit, m_normal) < -Settings.b2_angularSlop)
 				{
 					continue;
 				}
 			}
 			else
 			{
-				if (Utils.b2Dot(n - m_lowerLimit, m_normal) < -(2.0f / 180.0f * Settings.b2_pi))
+				if (Utils.b2Dot(n - m_lowerLimit, m_normal) < -Settings.b2_angularSlop)
 				{
 					continue;
 				}

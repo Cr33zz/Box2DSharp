@@ -433,7 +433,7 @@ public class b2RevoluteJoint : b2Joint
 		if (m_enableLimit && fixedRotation == false)
 		{
 			float jointAngle = aB - aA - m_referenceAngle;
-			if (Utils.b2Abs(m_upperAngle - m_lowerAngle) < 2.0f * (2.0f / 180.0f * Settings.b2_pi))
+			if (Utils.b2Abs(m_upperAngle - m_lowerAngle) < 2.0f * Settings.b2_angularSlop)
 			{
 				m_limitState = b2LimitState.e_equalLimits;
 			}
@@ -622,7 +622,7 @@ public class b2RevoluteJoint : b2Joint
 			if (m_limitState == b2LimitState.e_equalLimits)
 			{
 				// Prevent large angular corrections
-				float C = Utils.b2Clamp(angle - m_lowerAngle, -(8.0f / 180.0f * Settings.b2_pi), (8.0f / 180.0f * Settings.b2_pi));
+				float C = Utils.b2Clamp(angle - m_lowerAngle, -Settings.b2_maxAngularCorrection, Settings.b2_maxAngularCorrection);
 				limitImpulse = -m_motorMass * C;
 				angularError = Utils.b2Abs(C);
 			}
@@ -632,7 +632,7 @@ public class b2RevoluteJoint : b2Joint
 				angularError = -C;
 
 				// Prevent large angular corrections and allow some slop.
-				C = Utils.b2Clamp(C + (2.0f / 180.0f * Settings.b2_pi), -(8.0f / 180.0f * Settings.b2_pi), 0.0f);
+				C = Utils.b2Clamp(C + Settings.b2_angularSlop, -Settings.b2_maxAngularCorrection, 0.0f);
 				limitImpulse = -m_motorMass * C;
 			}
 			else if (m_limitState == b2LimitState.e_atUpperLimit)
@@ -641,7 +641,7 @@ public class b2RevoluteJoint : b2Joint
 				angularError = C;
 
 				// Prevent large angular corrections and allow some slop.
-				C = Utils.b2Clamp(C - (2.0f / 180.0f * Settings.b2_pi), 0.0f, (8.0f / 180.0f * Settings.b2_pi));
+				C = Utils.b2Clamp(C - Settings.b2_angularSlop, 0.0f, Settings.b2_maxAngularCorrection);
 				limitImpulse = -m_motorMass * C;
 			}
 
@@ -684,7 +684,7 @@ public class b2RevoluteJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return positionError <= Settings.b2_linearSlop && angularError <= (2.0f / 180.0f * Settings.b2_pi);
+		return positionError <= Settings.b2_linearSlop && angularError <= Settings.b2_angularSlop;
 	}
 
 	// Solver shared

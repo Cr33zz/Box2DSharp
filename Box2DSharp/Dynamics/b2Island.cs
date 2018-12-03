@@ -338,7 +338,7 @@ public class b2Island : System.IDisposable
 			float minSleepTime = float.MaxValue;
 
 			const float linTolSqr = Settings.b2_linearSleepTolerance * Settings.b2_linearSleepTolerance;
-			float angTolSqr = (2.0f / 180.0f * Settings.b2_pi) * (2.0f / 180.0f * Settings.b2_pi);
+			float angTolSqr = Settings.b2_angularSlop * Settings.b2_angularSlop;
 
 			for (int i = 0; i < m_bodyCount; ++i)
 			{

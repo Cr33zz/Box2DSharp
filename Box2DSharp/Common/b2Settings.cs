@@ -42,6 +42,7 @@ internal static class Settings
     public const int b2_nullNode = -1;
     public const float b2_maxRotation = 0.5f * b2_pi;
     public const float b2_maxRotationSquared = b2_maxRotation * b2_maxRotation;
+    public const float b2_angularSlop = 2.0f / 180.0f * b2_pi;
     public const float b2_maxAngularCorrection = 8.0f / 180.0f * b2_pi;
 
     public const int B2_DEBUG_SOLVER = 0;

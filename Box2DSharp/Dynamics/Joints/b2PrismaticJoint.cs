@@ -874,7 +874,7 @@ public class b2PrismaticJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return linearError <= Settings.b2_linearSlop && angularError <= (2.0f / 180.0f * Settings.b2_pi);
+		return linearError <= Settings.b2_linearSlop && angularError <= Settings.b2_angularSlop;
 	}
 
     // Solver shared

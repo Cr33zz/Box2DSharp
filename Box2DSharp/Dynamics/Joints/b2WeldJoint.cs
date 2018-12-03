@@ -519,7 +519,7 @@ public class b2WeldJoint : b2Joint
 		data.positions[m_indexB].c = cB;
 		data.positions[m_indexB].a = aB;
 
-		return positionError <= Settings.b2_linearSlop && angularError <= (2.0f / 180.0f * Settings.b2_pi);
+		return positionError <= Settings.b2_linearSlop && angularError <= Settings.b2_angularSlop;
 	}
 
 	protected float m_frequencyHz;
