@@ -644,7 +644,7 @@ public struct b2Sweep
 {
     /// Get the interpolated transform at a specific time.
     /// @param beta is a factor in [0,1], where 0 indicates alpha0.
-    public void GetTransform(b2Transform xf, float beta)
+    public void GetTransform(ref b2Transform xf, float beta)
     {
         xf.p = (1.0f - beta) * c0 + beta * c;
         float angle = (1.0f - beta) * a0 + beta * a;

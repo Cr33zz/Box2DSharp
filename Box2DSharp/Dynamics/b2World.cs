@@ -1242,11 +1242,7 @@ public class b2World : System.IDisposable
 					b2TOIInput input = new b2TOIInput();
 					input.proxyA.Set(fA.GetShape(), indexA);
 					input.proxyB.Set(fB.GetShape(), indexB);
-
-
 					input.sweepA = bA.m_sweep;
-
-
 					input.sweepB = bB.m_sweep;
 					input.tMax = 1.0f;
 

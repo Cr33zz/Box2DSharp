@@ -688,9 +688,9 @@ public class b2RevoluteJoint : b2Joint
 	}
 
 	// Solver shared
-	internal b2Vec2 m_localAnchorA = new b2Vec2();
-    internal b2Vec2 m_localAnchorB = new b2Vec2();
-	protected b2Vec3 m_impulse = new b2Vec3();
+	internal b2Vec2 m_localAnchorA;
+    internal b2Vec2 m_localAnchorB;
+	protected b2Vec3 m_impulse;
 	protected float m_motorImpulse;
 
 	protected bool m_enableMotor;
@@ -705,10 +705,10 @@ public class b2RevoluteJoint : b2Joint
 	// Solver temp
 	protected int m_indexA;
 	protected int m_indexB;
-	protected b2Vec2 m_rA = new b2Vec2();
-	protected b2Vec2 m_rB = new b2Vec2();
-	protected b2Vec2 m_localCenterA = new b2Vec2();
-	protected b2Vec2 m_localCenterB = new b2Vec2();
+	protected b2Vec2 m_rA;
+	protected b2Vec2 m_rB;
+	protected b2Vec2 m_localCenterA;
+	protected b2Vec2 m_localCenterB;
 	protected float m_invMassA;
 	protected float m_invMassB;
 	protected float m_invIA;

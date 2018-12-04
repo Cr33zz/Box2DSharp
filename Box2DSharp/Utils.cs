@@ -852,7 +852,7 @@ public static class Utils
 		b2_gjkMaxIters = b2Max(b2_gjkMaxIters, iter);
 
 		// Prepare output.
-		simplex.GetWitnessPoints(output.pointA, output.pointB);
+		simplex.GetWitnessPoints(ref output.pointA, ref output.pointB);
 		output.distance = b2Distance(output.pointA, output.pointB);
 		output.iterations = iter;
 
@@ -880,11 +880,7 @@ public static class Utils
 				// Shapes are overlapped when radii are considered.
 				// Move the witness points to the middle.
 				b2Vec2 p = 0.5f * (output.pointA + output.pointB);
-
-
 				output.pointA = p;
-
-
 				output.pointB = p;
 				output.distance = 0.0f;
 			}
@@ -974,8 +970,6 @@ public static class Utils
 					return false;
 				}
 
-
-
 				n = -v;
 				simplex.m_count = 0;
 			}
@@ -1025,8 +1019,6 @@ public static class Utils
 			}
 
 			// Get search direction.
-
-
 			v = simplex.GetClosestPoint();
 
 			// Iteration count is equated to the number of support point calls.
@@ -1036,28 +1028,20 @@ public static class Utils
 		// Prepare output.
 		b2Vec2 pointA = new b2Vec2();
 		b2Vec2 pointB = new b2Vec2();
-		simplex.GetWitnessPoints(pointB, pointA);
+		simplex.GetWitnessPoints(ref pointB, ref pointA);
 
 		if (v.LengthSquared() > 0.0f)
 		{
-
-
 			n = -v;
 			n.Normalize();
 		}
 
-
-
 		output.point = pointA + radiusA * n;
-
-
 		output.normal = n;
 		output.lambda = lambda;
 		output.iterations = iter;
 		return true;
 	}
-
-
 
 	// GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
 	public static int b2_gjkCalls;
@@ -1107,11 +1091,7 @@ public static class Utils
 		b2SimplexCache cache = new b2SimplexCache();
 		cache.count = 0;
 		b2DistanceInput distanceInput = new b2DistanceInput();
-
-
 		distanceInput.proxyA = input.proxyA;
-
-
 		distanceInput.proxyB = input.proxyB;
 		distanceInput.useRadii = false;
 
@@ -1121,16 +1101,12 @@ public static class Utils
 		{
 			b2Transform xfA = new b2Transform();
 			b2Transform xfB = new b2Transform();
-			sweepA.GetTransform(xfA, t1);
-			sweepB.GetTransform(xfB, t1);
+			sweepA.GetTransform(ref xfA, t1);
+			sweepB.GetTransform(ref xfB, t1);
 
 			// Get the distance between shapes. We can also use the results
 			// to get a separating axis.
-
-
 			distanceInput.transformA = xfA;
-
-
 			distanceInput.transformB = xfB;
 			b2DistanceOutput distanceOutput = new b2DistanceOutput();
 			b2Distance(distanceOutput, cache, distanceInput);

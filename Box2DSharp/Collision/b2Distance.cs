@@ -332,7 +332,7 @@ public class b2Simplex
         }
 	}
 
-	public void GetWitnessPoints(b2Vec2 pA, b2Vec2 pB)
+	public void GetWitnessPoints(ref b2Vec2 pA, ref b2Vec2 pB)
 	{
 		switch (m_count)
 		{

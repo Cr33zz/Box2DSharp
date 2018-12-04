@@ -68,8 +68,8 @@ public class b2SeparationFunction
 
 		b2Transform xfA = new b2Transform();
 		b2Transform xfB = new b2Transform();
-		m_sweepA.GetTransform(xfA, t1);
-		m_sweepB.GetTransform(xfB, t1);
+		m_sweepA.GetTransform(ref xfA, t1);
+		m_sweepB.GetTransform(ref xfB, t1);
 
 		if (count == 1)
 		{
@@ -139,8 +139,8 @@ public class b2SeparationFunction
 	{
 		b2Transform xfA = new b2Transform();
 		b2Transform xfB = new b2Transform();
-		m_sweepA.GetTransform(xfA, t);
-		m_sweepB.GetTransform(xfB, t);
+		m_sweepA.GetTransform(ref xfA, t);
+		m_sweepB.GetTransform(ref xfB, t);
 
 		switch (m_type)
 		{
@@ -209,8 +209,8 @@ public class b2SeparationFunction
 	{
 		b2Transform xfA = new b2Transform();
 		b2Transform xfB = new b2Transform();
-		m_sweepA.GetTransform(xfA, t);
-		m_sweepB.GetTransform(xfB, t);
+		m_sweepA.GetTransform(ref xfA, t);
+		m_sweepB.GetTransform(ref xfB, t);
 
 		switch (m_type)
 		{
