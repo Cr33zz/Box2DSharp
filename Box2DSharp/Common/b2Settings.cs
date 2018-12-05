@@ -37,7 +37,7 @@ internal static class Settings
     public const float b2_maxTranslationSquared = b2_maxTranslation * b2_maxTranslation;
     public const float b2_baumgarte = 0.2f;
     public const float b2_toiBaugarte = 0.75f;
-    public const float b2_timeToSleep = 0.5f;
+    public const float b2_timeToSleep = 0.3f;
     public const float b2_linearSleepTolerance = 0.01f;
     public const int b2_nullNode = -1;
     public const float b2_maxRotation = 0.5f * b2_pi;
